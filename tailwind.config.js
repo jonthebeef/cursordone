@@ -1,8 +1,8 @@
-import type { Config } from 'tailwindcss'
-import animate from "tailwindcss-animate"
-import typography from "@tailwindcss/typography"
+const animate = require("tailwindcss-animate")
+const typography = require("@tailwindcss/typography")
 
-const config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   darkMode: ["class"],
   content: [
     './pages/**/*.{ts,tsx}',
@@ -10,7 +10,6 @@ const config = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
-  prefix: "",
   theme: {
     container: {
       center: true,
@@ -20,11 +19,6 @@ const config = {
       },
     },
     extend: {
-      fontFamily: {
-        mono: ['GeistMono', 'monospace'],
-        inter: ['var(--font-inter)'],
-        sans: ['var(--font-inter)'],
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -82,6 +76,4 @@ const config = {
     },
   },
   plugins: [animate, typography],
-} satisfies Config
-
-export default config
+} 

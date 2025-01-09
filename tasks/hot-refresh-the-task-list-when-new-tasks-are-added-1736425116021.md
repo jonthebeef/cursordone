@@ -22,9 +22,11 @@ Added automatic task list refresh functionality:
 2. Added smart task detection:
    - Detects new tasks by comparing filenames
    - Detects removed tasks
+   - Detects changes in task properties (status, title, priority, epic, tags)
    - Only updates UI when changes are detected
 3. Added toast notifications:
    - Shows 🔄 notification when new tasks are added
+   - Shows 🔄 notification when tasks are modified
    - Clean, non-intrusive UI feedback
 4. Optimized performance:
    - Uses React useTransition for smooth updates

@@ -25,13 +25,29 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
   useEffect(() => {
     const hasNewTasks = tasks.some(task => !currentTasks.find(ct => ct.filename === task.filename))
     const hasRemovedTasks = currentTasks.some(task => !tasks.find(t => t.filename === task.filename))
+    const hasChangedTasks = tasks.some(task => {
+      const currentTask = currentTasks.find(ct => ct.filename === task.filename)
+      return currentTask && (
+        currentTask.status !== task.status ||
+        currentTask.title !== task.title ||
+        currentTask.priority !== task.priority ||
+        currentTask.epic !== task.epic ||
+        JSON.stringify(currentTask.tags) !== JSON.stringify(task.tags)
+      )
+    })
     
-    if (hasNewTasks || hasRemovedTasks) {
+    if (hasNewTasks || hasRemovedTasks || hasChangedTasks) {
       setCurrentTasks(tasks)
       if (hasNewTasks) {
         toast({
           title: "🔄 Task list updated",
           description: "New tasks have been added to your list",
+          variant: "default",
+        })
+      } else if (hasChangedTasks) {
+        toast({
+          title: "🔄 Task list updated",
+          description: "Tasks have been modified",
           variant: "default",
         })
       }

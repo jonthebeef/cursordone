@@ -5,7 +5,8 @@ status: todo
 priority: medium
 epic: ui-cleanup
 dependencies: []
-tags: []
+tags:
+  - task refs
 created: '2025-01-08'
 ---
 Pulls back report citing a problem, yet there doesn't appear to be one.

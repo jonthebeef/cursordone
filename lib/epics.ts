@@ -64,7 +64,8 @@ export async function createEpic(epic: Omit<Epic, 'id'> & { content: string }): 
     status: epic.status,
     priority: epic.priority,
     tags: epic.tags || [],
-    created: epic.created
+    created: epic.created,
+    epic: id
   }
 
   const fileContent = matter.stringify(epic.content, frontmatter)
@@ -81,7 +82,8 @@ export async function updateEpic(id: string, epic: Omit<Epic, 'id'>): Promise<vo
     status: epic.status,
     priority: epic.priority,
     tags: epic.tags || [],
-    created: epic.created
+    created: epic.created,
+    epic: id
   }
 
   const fileContent = matter.stringify(epic.content || '', frontmatter)

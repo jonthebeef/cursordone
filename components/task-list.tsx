@@ -621,7 +621,7 @@ export function TaskList({
         setIsEditing(false)
         setEditedTask(null)
       }}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           {selectedTask && (
             <>
               {isEditing ? (

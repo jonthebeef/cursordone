@@ -582,15 +582,13 @@ export function TaskList({
         setEditedTask(null)
       }}>
         <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle className="sr-only">
-              {isEditing ? 'Edit Task' : selectedTask?.title}
-            </DialogTitle>
-          </DialogHeader>
           {selectedTask && (
             <>
               {isEditing ? (
                 <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className="space-y-4">
+                  <DialogHeader>
+                    <DialogTitle className="sr-only">Edit Task</DialogTitle>
+                  </DialogHeader>
                   <div className="grid gap-6">
                     <div className="space-y-2">
                       <label htmlFor="title" className="text-sm font-medium text-zinc-400">
@@ -807,6 +805,9 @@ export function TaskList({
                 </form>
               ) : (
                 <div className="space-y-6">
+                  <DialogHeader>
+                    <DialogTitle className="sr-only">View Task: {selectedTask.title}</DialogTitle>
+                  </DialogHeader>
                   <div className="flex items-start justify-between gap-8 pb-4 border-b border-zinc-800">
                     <div className="flex-1">
                       <h2 className={cn(
@@ -929,8 +930,13 @@ export function TaskList({
                         <ReactMarkdown 
                           className="break-words"
                           components={{
-                            img: ({ src, alt }) => (
-                              <ImageViewer src={src || ''} alt={alt || ''} />
+                            img: ({ src, alt, ...props }) => (
+                              <img 
+                                src={src || ''} 
+                                alt={alt || ''} 
+                                className="max-w-full h-auto rounded-md my-4"
+                                {...props}
+                              />
                             ),
                           }}
                         >

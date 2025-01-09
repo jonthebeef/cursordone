@@ -265,32 +265,13 @@ export function TaskList({
     }
   }
 
-  // Filter tasks
-  const filteredTasks = initialTasks.filter(task => {
-    // Handle search query
-    if (searchQuery) {
-      const searchLower = searchQuery.toLowerCase()
-      const titleMatch = task.title.toLowerCase().includes(searchLower)
-      const refMatch = task.ref?.toString().includes(searchQuery)
-      if (!titleMatch && !refMatch) {
-        return false
-      }
-    }
-
-    // Handle epic filtering
-    if (selectedEpic) {
-      if (selectedEpic === 'none' && task.epic) return false
-      if (selectedEpic !== 'none' && task.epic !== selectedEpic) return false
-    }
-    
-    // Handle tag filtering
-    if (selectedTags.length > 0) {
-      if (!task.tags) return false
-      return selectedTags.some(tag => task.tags?.includes(tag))
-    }
-    
-    return true
-  })
+  // Filter tasks based on search query
+  const filteredTasks = searchQuery
+    ? initialTasks.filter(task => 
+        task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.content?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : initialTasks
 
   // Filter tasks for dependencies
   const filteredDependencyTasks = initialTasks.filter(task => {
@@ -341,8 +322,17 @@ export function TaskList({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search tasks..."
-              className="w-full pl-9 pr-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+              className="w-full pl-9 pr-8 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-300 p-1"
+                type="button"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
           <Button
             onClick={() => setShowCreateDialog(true)}

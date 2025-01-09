@@ -1,7 +1,7 @@
 ---
 ref: TSK-028
 title: Alert using when deleting a task
-status: todo
+status: done
 priority: medium
 epic: ui-cleanup
 dependencies: []
@@ -21,3 +21,17 @@ give the user 2 buttons
 
 - Delete task (enables the delete action)
 - Cancel (returns the user to the open task)
+
+# Implementation Notes
+
+Added a delete confirmation dialog using the AlertDialog component:
+
+1. Added new state `showDeleteAlert` to control the dialog visibility
+2. Modified delete button to show the alert dialog instead of deleting immediately
+3. Added AlertDialog with:
+   - Clear warning message about file deletion
+   - Reference to git for potential recovery
+   - Cancel button to abort
+   - Delete button (red) to confirm
+4. Only proceed with deletion after user confirms
+5. Close both the alert and task dialogs after successful deletion

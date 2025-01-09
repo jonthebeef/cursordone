@@ -14,6 +14,7 @@ import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Checkbox } from "@/components/ui/checkbox"
+import { useToast } from "@/components/ui/use-toast"
 import {
   Accordion,
   AccordionContent,
@@ -21,6 +22,16 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { TagInput } from "./ui/tag-input"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 interface TaskListProps {
   initialTasks: Task[]
@@ -111,6 +122,7 @@ export function TaskList({
   disabled 
 }: TaskListProps) {
   const router = useRouter()
+  const { toast } = useToast()
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [editedTask, setEditedTask] = useState<Task | null>(null)
@@ -135,6 +147,7 @@ export function TaskList({
   })
   const [isCreating, setIsCreating] = useState(false)
   const [openSections, setOpenSections] = useState<string[]>(["backlog", "done"])
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false)
 
   // Initialize newTask with current date on mount
   useEffect(() => {
@@ -177,8 +190,19 @@ export function TaskList({
       await deleteTaskAction(selectedTask.filename)
       onStateChange?.()
       setSelectedTask(null)
+      setShowDeleteAlert(false)
+      toast({
+        title: `🗑️ Task "${selectedTask.title}" deleted`,
+        description: "The task has been permanently removed",
+        variant: "default",
+      })
     } catch (error) {
       console.error('Failed to delete task:', error)
+      toast({
+        title: "❌ Error",
+        description: `Failed to delete task "${selectedTask?.title}"`,
+        variant: "destructive",
+      })
     } finally {
       setIsDeleting(false)
     }
@@ -804,7 +828,7 @@ export function TaskList({
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={handleDelete}
+                        onClick={() => setShowDeleteAlert(true)}
                         disabled={isDeleting}
                         className="hover:bg-red-900/20 hover:text-red-400"
                       >
@@ -921,6 +945,26 @@ export function TaskList({
           )}
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to delete this task?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Deleting this task removes the file from your local system. You may be able to retrieve it if you have committed your project recently to git. If not, it will be gone forever.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-red-600 text-white hover:bg-red-700"
+            >
+              Delete task
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 } 

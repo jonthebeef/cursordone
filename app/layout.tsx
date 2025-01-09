@@ -4,6 +4,8 @@ import { GeistMono } from 'geist/font/mono';
 import "./globals.css";
 import { SideNav } from "@/components/ui/side-nav";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/toaster"
+import { ClientLayout } from "./client-layout"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -28,14 +30,9 @@ export default function RootLayout({
         GeistMono.variable,
         "font-inter h-full bg-zinc-900 text-zinc-50"
       )}>
-        <div className="relative h-full">
-          <SideNav />
-          <main className="lg:pl-64 min-h-screen bg-gradient-to-b from-zinc-900 to-zinc-950">
-            <div className="max-w-[840px] mx-auto p-4">
-              {children}
-            </div>
-          </main>
-        </div>
+        <ClientLayout>
+          {children}
+        </ClientLayout>
       </body>
     </html>
   );

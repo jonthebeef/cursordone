@@ -10,6 +10,7 @@ import ReactMarkdown from 'react-markdown'
 import { Pencil, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { createEpicAction, deleteEpicAction, updateEpicAction } from "@/lib/actions"
+import { TagInput } from "./ui/tag-input"
 
 interface EpicListProps {
   initialEpics: Epic[]
@@ -52,6 +53,8 @@ export function EpicList({ initialEpics }: EpicListProps) {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [showCreateDialog, setShowCreateDialog] = useState(false)
+  const [newTagInput, setNewTagInput] = useState('')
+  const [editTagInput, setEditTagInput] = useState('')
   const [newEpic, setNewEpic] = useState<Omit<Epic, 'id'> & { content: string }>({
     title: '',
     description: '',
@@ -96,9 +99,14 @@ export function EpicList({ initialEpics }: EpicListProps) {
     if (isCreating) return
     setIsCreating(true)
     try {
-      await createEpicAction(newEpic)
+      const epicToCreate = {
+        ...newEpic,
+        tags: newTagInput ? newTagInput.split(',').map(t => t.trim()).filter(Boolean) : []
+      }
+      await createEpicAction(epicToCreate)
       router.refresh()
       setShowCreateDialog(false)
+      setNewTagInput('')
       setNewEpic({
         title: '',
         description: '',
@@ -115,16 +123,22 @@ export function EpicList({ initialEpics }: EpicListProps) {
   const handleEdit = () => {
     if (!selectedEpic) return
     setEditedEpic(selectedEpic)
+    setEditTagInput(selectedEpic.tags?.join(', ') || '')
     setIsEditing(true)
   }
 
   const handleSave = async () => {
     if (!editedEpic) return
     try {
-      await updateEpicAction(editedEpic.id, editedEpic)
+      const epicToSave = {
+        ...editedEpic,
+        tags: editTagInput ? editTagInput.split(',').map(t => t.trim()).filter(Boolean) : []
+      }
+      await updateEpicAction(editedEpic.id, epicToSave)
       router.refresh()
       setIsEditing(false)
       setSelectedEpic(null)
+      setEditTagInput('')
     } catch (error) {
       console.error('Failed to update epic:', error)
     }
@@ -289,17 +303,10 @@ export function EpicList({ initialEpics }: EpicListProps) {
                 </div>
               </div>
 
-              <div className="sm:col-span-2 space-y-2">
-                <label className="text-sm font-medium">Tags (comma-separated)</label>
-                <input
-                  type="text"
-                  value={newEpic.tags?.join(', ') || ''}
-                  onChange={(e) => setNewEpic(prev => ({
-                    ...prev,
-                    tags: e.target.value ? e.target.value.split(',').map(t => t.trim()) : undefined
-                  }))}
-                  className="w-full px-3 py-1.5 bg-background border-input rounded-md"
-                  placeholder="ui, feature, infrastructure"
+              <div className="sm:col-span-2">
+                <TagInput
+                  value={newTagInput}
+                  onChange={setNewTagInput}
                 />
               </div>
 
@@ -415,17 +422,10 @@ export function EpicList({ initialEpics }: EpicListProps) {
                       </div>
                     </div>
 
-                    <div className="sm:col-span-2 space-y-2">
-                      <label className="text-sm font-medium">Tags (comma-separated)</label>
-                      <input
-                        type="text"
-                        value={editedEpic?.tags?.join(', ') || ''}
-                        onChange={(e) => setEditedEpic(prev => prev ? {
-                          ...prev,
-                          tags: e.target.value ? e.target.value.split(',').map(t => t.trim()) : undefined
-                        } : null)}
-                        className="w-full px-3 py-1.5 bg-background border-input rounded-md"
-                        placeholder="ui, feature, infrastructure"
+                    <div className="sm:col-span-2">
+                      <TagInput
+                        value={editTagInput}
+                        onChange={setEditTagInput}
                       />
                     </div>
 

@@ -20,6 +20,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { TagInput } from "./ui/tag-input"
 
 interface TaskListProps {
   initialTasks: Task[]
@@ -113,10 +114,17 @@ export function TaskList({
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [editedTask, setEditedTask] = useState<Task | null>(null)
+  const [editTagInput, setEditTagInput] = useState('')
   const [isDeleting, setIsDeleting] = useState(false)
   const [taskOrder, setTaskOrder] = useState<string[]>(initialTasks.map(t => t.filename))
   const [searchQuery, setSearchQuery] = useState('')
   const [showCreateDialog, setShowCreateDialog] = useState(false)
+  const [tagInput, setTagInput] = useState('')
+  type NewTaskState = Omit<Task, 'filename' | 'ref' | 'content' | 'tags'> & { 
+    content: string;
+    tagInput: string;
+  }
+
   const [newTask, setNewTask] = useState<Omit<Task, 'filename' | 'ref' | 'content'> & { content: string }>({
     id: '0',
     title: '',
@@ -179,16 +187,22 @@ export function TaskList({
   const handleEdit = () => {
     if (!selectedTask || disabled) return
     setEditedTask({ ...selectedTask })
+    setEditTagInput(selectedTask.tags?.join(', ') || '')
     setIsEditing(true)
   }
 
   const handleSave = async () => {
     if (!editedTask || !selectedTask || disabled) return
     try {
-      await updateTaskAction(selectedTask.filename, editedTask)
+      const taskToSave = {
+        ...editedTask,
+        tags: editTagInput ? editTagInput.split(',').map(t => t.trim()).filter(Boolean) : []
+      }
+      await updateTaskAction(selectedTask.filename, taskToSave)
       onStateChange?.()
       setIsEditing(false)
       setSelectedTask(null)
+      setEditTagInput('')
     } catch (error) {
       console.error('Failed to update task:', error)
     }
@@ -201,6 +215,7 @@ export function TaskList({
     try {
       const taskToCreate = {
         ...newTask,
+        tags: tagInput ? tagInput.split(',').map(t => t.trim()).filter(Boolean) : [],
         id: Date.now().toString(),
         created: new Date().toISOString().split('T')[0]
       }
@@ -218,6 +233,7 @@ export function TaskList({
         content: '',
         created: ''
       })
+      setTagInput('')
     } catch (error) {
       console.error('Failed to create task:', error)
     } finally {
@@ -429,20 +445,10 @@ export function TaskList({
                 </div>
               </div>
 
-              <div className="sm:col-span-2 space-y-2">
-                <label htmlFor="tags" className="text-sm font-medium text-zinc-400">
-                  Tags (optional, comma-separated)
-                </label>
-                <input
-                  id="tags"
-                  type="text"
-                  value={newTask.tags?.join(', ') || ''}
-                  onChange={(e) => setNewTask(prev => ({
-                    ...prev,
-                    tags: e.target.value.trim() ? e.target.value.split(',').map(t => t.trim()).filter(t => t !== '') : undefined
-                  }))}
-                  className="w-full px-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                  placeholder="bug, feature, ui"
+              <div className="sm:col-span-2">
+                <TagInput
+                  value={tagInput}
+                  onChange={setTagInput}
                 />
               </div>
 
@@ -695,20 +701,10 @@ export function TaskList({
                       </div>
                     </div>
 
-                    <div className="sm:col-span-2 space-y-2">
-                      <label htmlFor="tags" className="text-sm font-medium text-zinc-400">
-                        Tags (optional, comma-separated)
-                      </label>
-                      <input
-                        id="tags"
-                        type="text"
-                        value={editedTask?.tags?.join(', ') || ''}
-                        onChange={(e) => setEditedTask(prev => prev ? {
-                          ...prev,
-                          tags: e.target.value.trim() ? e.target.value.split(',').map(t => t.trim()).filter(t => t !== '') : undefined
-                        } : null)}
-                        className="w-full px-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                        placeholder="bug, feature, ui"
+                    <div className="sm:col-span-2">
+                      <TagInput
+                        value={editTagInput}
+                        onChange={setEditTagInput}
                       />
                     </div>
 

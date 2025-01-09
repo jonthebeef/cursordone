@@ -1,11 +1,12 @@
 'use client'
 
 import { cn } from "@/lib/utils"
-import { Menu, X, LayoutList, Layers, ChevronDown, ChevronRight, Hash } from "lucide-react"
+import { Menu, X, LayoutList, Layers, ChevronDown, ChevronRight, Hash, RefreshCw, AlertCircle, CheckCircle2, Info } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { Button } from "./button"
+import { useToast } from "./use-toast"
 
 interface SideNavProps {
   epics?: { id: string; title: string }[]
@@ -27,7 +28,78 @@ export function SideNav({
   const [isOpen, setIsOpen] = useState(false)
   const [isEpicsOpen, setIsEpicsOpen] = useState(true)
   const [isTagsOpen, setIsTagsOpen] = useState(true)
+  const [isUpdating, setIsUpdating] = useState(false)
   const pathname = usePathname()
+  const { toast } = useToast()
+
+  const updateRefs = async () => {
+    if (isUpdating) return
+    
+    try {
+      setIsUpdating(true)
+      console.log('Starting update refs...')
+      toast({
+        title: "Updating refs...",
+        description: "Checking for new tasks and updating references.",
+        variant: "default",
+      })
+      console.log('Initial toast fired')
+
+      const response = await fetch('/api/update-refs', { method: 'POST' })
+      console.log('API response:', response)
+      const data = await response.json()
+      console.log('API data:', data)
+      
+      if (data.error) {
+        console.log('Error from API:', data.error)
+        toast({
+          title: "Error",
+          description: data.error,
+          variant: "destructive",
+          icon: <AlertCircle className="h-5 w-5" />
+        })
+        return
+      }
+
+      if (!data.isValid) {
+        console.log('Invalid refs found')
+        toast({
+          title: "Warning",
+          description: "Found gaps or duplicates in task references. Some cleanup may be needed.",
+          variant: "warning",
+          icon: <AlertCircle className="h-5 w-5" />
+        })
+      }
+
+      if (data.updatedCount > 0) {
+        console.log('Updated tasks:', data.updatedCount)
+        toast({
+          title: "Success",
+          description: `Updated ${data.updatedCount} task${data.updatedCount === 1 ? '' : 's'} with new references.`,
+          variant: "success",
+          icon: <CheckCircle2 className="h-5 w-5" />
+        })
+      } else {
+        console.log('No updates needed')
+        toast({
+          title: "No updates needed",
+          description: "All tasks already have reference numbers.",
+          variant: "default",
+          icon: <Info className="h-5 w-5" />
+        })
+      }
+    } catch (error) {
+      console.error('Error in updateRefs:', error)
+      toast({
+        title: "Error",
+        description: "Failed to update task references. Please try again.",
+        variant: "destructive",
+        icon: <AlertCircle className="h-5 w-5" />
+      })
+    } finally {
+      setIsUpdating(false)
+    }
+  }
 
   const navItems = [
     {
@@ -189,6 +261,25 @@ export function SideNav({
               </div>
             </div>
           )}
+
+          {/* Add the update refs button at the bottom */}
+          <div className="mt-auto p-4 border-t border-zinc-800">
+            <Button 
+              variant="outline" 
+              className={cn(
+                "w-full justify-start transition-colors",
+                isUpdating && "opacity-70 cursor-not-allowed"
+              )}
+              onClick={updateRefs}
+              disabled={isUpdating}
+            >
+              <RefreshCw className={cn(
+                "mr-2 h-4 w-4",
+                isUpdating && "animate-spin"
+              )} />
+              {isUpdating ? "Updating..." : "Update Task Refs"}
+            </Button>
+          </div>
         </div>
       </aside>
     </>

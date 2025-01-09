@@ -10,6 +10,8 @@ tags:
 created: '2024-01-09'
 ---
 
+I cannot add multiple tags to a task, the field won't let me. I need to be able to add multiple tags to a task in comma separated fashion.
+
 # Implementation Notes
 
 Fixed the tag input functionality across all dialogs (create task, edit task, create epic, edit epic) by:

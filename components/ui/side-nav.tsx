@@ -214,7 +214,7 @@ export function SideNav({
                         variant={selectedEpic === epic.id ? "default" : "ghost"}
                         size="sm"
                         className={cn(
-                          "w-full justify-start transition-colors",
+                          "w-full justify-start text-left whitespace-normal",
                           selectedEpic === epic.id
                             ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-800/90"
                             : "text-zinc-300 hover:bg-zinc-800/50 hover:text-zinc-100"

@@ -480,13 +480,53 @@ export function TaskList({
                 <label htmlFor="content" className="text-sm font-medium text-zinc-400">
                   Content
                 </label>
-                <textarea
-                  id="content"
-                  value={newTask.content}
-                  onChange={(e) => setNewTask(prev => ({ ...prev, content: e.target.value }))}
-                  className="w-full h-24 px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-md text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                  required
-                />
+                <div className="space-y-2">
+                  <textarea
+                    id="content"
+                    value={newTask.content}
+                    onChange={(e) => setNewTask(prev => ({ ...prev, content: e.target.value }))}
+                    className="w-full h-24 px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-md text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                    required
+                  />
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="create-image-upload" className="cursor-pointer">
+                      <div className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-300">
+                        <ImagePlus className="h-4 w-4" />
+                        Add Image
+                      </div>
+                      <input
+                        id="create-image-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0]
+                          if (!file) return
+
+                          const safeFilename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`
+                          const formData = new FormData()
+                          formData.append('file', file)
+                          formData.append('filename', safeFilename)
+
+                          try {
+                            await fetch('/api/upload', {
+                              method: 'POST',
+                              body: formData,
+                            })
+
+                            const imageMarkdown = `\n![${file.name}](/task-images/${safeFilename})\n`
+                            setNewTask(prev => ({
+                              ...prev,
+                              content: prev.content + imageMarkdown
+                            }))
+                          } catch (error) {
+                            console.error('Failed to upload image:', error)
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
 

@@ -127,7 +127,7 @@ export function SideNav({
       {/* Mobile burger menu */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 right-4 w-10 h-10 flex items-center justify-center bg-zinc-900 rounded-md shadow-lg hover:bg-zinc-800 lg:hidden z-30"
+        className="fixed top-2 right-4 w-10 h-10 flex items-center justify-center bg-zinc-900 rounded-md shadow-lg hover:bg-zinc-800 lg:hidden z-30"
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>

@@ -24,10 +24,15 @@ const buttonVariants = cva(
         sm: "h-9 px-3 rounded-md",
         lg: "h-11 px-8 rounded-md",
       },
+      margin: {
+        none: "",
+        responsive: "mr-12 lg:mr-0",
+      }
     },
     defaultVariants: {
       variant: "default",
       size: "default",
+      margin: "none",
     },
   }
 )

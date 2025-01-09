@@ -331,686 +331,690 @@ export function TaskList({
   const doneTasks = sortedTasks.filter(task => task.status === 'done')
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search tasks..."
-            className="w-full pl-9 pr-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-          />
-        </div>
-        <Button
-          onClick={() => setShowCreateDialog(true)}
-          className="bg-blue-500 text-white hover:bg-blue-600"
-        >
-          Create Task
-        </Button>
-      </div>
+    <div className="relative -mt-6">
+      <div>
+        <header className="fixed top-0 right-0 left-0 lg:left-[250px] flex items-center justify-between px-6 py-2 bg-[#18181b] z-10">
+          <div className="relative w-[320px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search tasks..."
+              className="w-full pl-9 pr-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+            />
+          </div>
+          <Button
+            onClick={() => setShowCreateDialog(true)}
+            className="bg-blue-500 text-white hover:bg-blue-600 whitespace-nowrap mr-12"
+          >
+            Create Task
+          </Button>
+        </header>
 
-      {/* Create Task Dialog */}
-      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Create New Task</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleCreate} className="space-y-4 mt-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="sm:col-span-2 space-y-2">
-                <label htmlFor="title" className="text-sm font-medium text-zinc-400">
-                  Title
-                </label>
-                <input
-                  id="title"
-                  type="text"
-                  value={newTask.title}
-                  onChange={(e) => setNewTask(prev => ({ ...prev, title: e.target.value }))}
-                  className="w-full px-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400">Priority</label>
-                <div className="flex gap-2">
-                  {(['low', 'medium', 'high'] as const).map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => setNewTask(prev => ({ ...prev, priority: p }))}
-                      className={cn(
-                        'px-3 py-1.5 rounded-md capitalize text-sm flex-1 border',
-                        newTask.priority === p ? 'bg-zinc-800 text-zinc-100 border-zinc-700' : 'bg-zinc-900/50 text-zinc-400 hover:text-zinc-300 border-zinc-800'
-                      )}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="epic" className="text-sm font-medium text-zinc-400">
-                  Epic (optional)
-                </label>
-                <select
-                  id="epic"
-                  value={newTask.epic || ''}
-                  onChange={(e) => setNewTask(prev => ({ ...prev, epic: e.target.value || undefined }))}
-                  className="w-full px-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                >
-                  <option value="">No epic</option>
-                  {epics.map(epic => (
-                    <option key={epic.id} value={epic.title}>
-                      {epic.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="sm:col-span-2 space-y-2">
-                <label className="text-sm font-medium text-zinc-400">Dependencies</label>
-                <div className="relative">
-                  <div className="flex items-center px-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md mb-2">
-                    <Search className="w-4 h-4 text-zinc-400 mr-2" />
+        <main className="pt-[52px]">
+          {/* Create Task Dialog */}
+          <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Create New Task</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleCreate} className="space-y-4 mt-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="sm:col-span-2 space-y-2">
+                    <label htmlFor="title" className="text-sm font-medium text-zinc-400">
+                      Title
+                    </label>
                     <input
+                      id="title"
                       type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search tasks..."
-                      className="flex-1 bg-transparent outline-none text-sm text-zinc-100 placeholder:text-zinc-500"
+                      value={newTask.title}
+                      onChange={(e) => setNewTask(prev => ({ ...prev, title: e.target.value }))}
+                      className="w-full px-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                      required
                     />
                   </div>
-                  <div className="border border-zinc-800 rounded-md divide-y divide-zinc-800 max-h-32 overflow-y-auto bg-zinc-900/50">
-                    {filteredDependencyTasks.length === 0 ? (
-                      <div className="p-3 text-sm text-zinc-500 text-center">
-                        No tasks found
-                      </div>
-                    ) : (
-                      filteredDependencyTasks.map((task) => (
-                        <div
-                          key={task.filename}
-                          className="flex items-center gap-3 p-2 hover:bg-zinc-800/50"
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-zinc-400">Priority</label>
+                    <div className="flex gap-2">
+                      {(['low', 'medium', 'high'] as const).map((p) => (
+                        <button
+                          key={p}
+                          type="button"
+                          onClick={() => setNewTask(prev => ({ ...prev, priority: p }))}
+                          className={cn(
+                            'px-3 py-1.5 rounded-md capitalize text-sm flex-1 border',
+                            newTask.priority === p ? 'bg-zinc-800 text-zinc-100 border-zinc-700' : 'bg-zinc-900/50 text-zinc-400 hover:text-zinc-300 border-zinc-800'
+                          )}
                         >
-                          <Checkbox
-                            id={`dep-${task.filename}`}
-                            checked={newTask.dependencies?.includes(task.filename)}
-                            onCheckedChange={(checked) => {
-                              setNewTask(prev => {
-                                const deps = prev.dependencies || []
-                                return {
-                                  ...prev,
-                                  dependencies: checked 
-                                    ? [...deps, task.filename]
-                                    : deps.filter(d => d !== task.filename)
-                                }
-                              })
-                            }}
-                            className="h-4 w-4 border-2 border-zinc-500 data-[state=checked]:bg-zinc-500 data-[state=checked]:border-zinc-500 hover:border-zinc-400 transition-colors"
-                          />
-                          <label
-                            htmlFor={`dep-${task.filename}`}
-                            className="flex-1 text-sm cursor-pointer truncate text-zinc-100"
-                          >
-                            <span className="font-medium">{task.title}</span>
-                            {task.epic && (
-                              <span className="ml-2 text-zinc-400">
-                                in {task.epic}
-                              </span>
-                            )}
-                          </label>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <TagInput
-                  value={tagInput}
-                  onChange={setTagInput}
-                />
-              </div>
-
-              <div className="sm:col-span-2 space-y-2">
-                <label htmlFor="content" className="text-sm font-medium text-zinc-400">
-                  Content
-                </label>
-                <div className="space-y-2">
-                  <textarea
-                    id="content"
-                    value={newTask.content}
-                    onChange={(e) => setNewTask(prev => ({ ...prev, content: e.target.value }))}
-                    className="w-full h-24 px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-md text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                    required
-                  />
-                  <div className="flex items-center gap-2">
-                    <label htmlFor="create-image-upload" className="cursor-pointer">
-                      <div className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-300">
-                        <ImagePlus className="h-4 w-4" />
-                        Add Image
-                      </div>
-                      <input
-                        id="create-image-upload"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={async (e) => {
-                          const file = e.target.files?.[0]
-                          if (!file) return
-
-                          const safeFilename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`
-                          const formData = new FormData()
-                          formData.append('file', file)
-                          formData.append('filename', safeFilename)
-
-                          try {
-                            await fetch('/api/upload', {
-                              method: 'POST',
-                              body: formData,
-                            })
-
-                            const imageMarkdown = `\n![${file.name}](/task-images/${safeFilename})\n`
-                            setNewTask(prev => ({
-                              ...prev,
-                              content: prev.content + imageMarkdown
-                            }))
-                          } catch (error) {
-                            console.error('Failed to upload image:', error)
-                          }
-                        }}
-                      />
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4">
-              <Button
-                variant="outline"
-                type="button"
-                onClick={() => setShowCreateDialog(false)}
-                className="bg-zinc-900/50 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50"
-              >
-                Cancel
-              </Button>
-              <Button 
-                type="submit"
-                disabled={isCreating}
-                className="bg-blue-500 text-white hover:bg-blue-600"
-              >
-                {isCreating ? 'Creating...' : 'Create Task'}
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      <Accordion 
-        type="multiple" 
-        value={openSections}
-        onValueChange={setOpenSections}
-        className="space-y-4"
-      >
-        <AccordionItem value="backlog" className="border-none">
-          <AccordionTrigger className="hover:no-underline">
-            <h2 className="text-xl font-medium tracking-tight text-zinc-100 font-mono flex items-center gap-2">
-              <ListTodo className="w-5 h-5" />
-              Backlog ({backlogTasks.length})
-            </h2>
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="pt-4">
-              <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={backlogTasks.map(t => t.filename)} strategy={verticalListSortingStrategy}>
-                  <div className="space-y-4">
-                    {backlogTasks.map((task, index) => (
-                      <SortableTaskCard
-                        key={task.filename}
-                        task={task}
-                        number={index + 1}
-                        onComplete={handleComplete}
-                        onClick={setSelectedTask}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        {doneTasks.length > 0 && (
-          <AccordionItem value="done" className="border-none">
-            <AccordionTrigger className="hover:no-underline">
-              <h2 className="text-xl font-medium tracking-tight text-zinc-100 font-mono flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5" />
-                Done ({doneTasks.length})
-              </h2>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="pt-4">
-                <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                  <SortableContext items={doneTasks.map(t => t.filename)} strategy={verticalListSortingStrategy}>
-                    <div className="space-y-4">
-                      {doneTasks.map((task, index) => (
-                        <SortableTaskCard
-                          key={task.filename}
-                          task={task}
-                          number={backlogTasks.length + index + 1}
-                          onComplete={handleComplete}
-                          onClick={setSelectedTask}
-                        />
+                          {p}
+                        </button>
                       ))}
                     </div>
-                  </SortableContext>
-                </DndContext>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        )}
-      </Accordion>
+                  </div>
 
-      <Dialog open={!!selectedTask} onOpenChange={() => {
-        setSelectedTask(null)
-        setIsEditing(false)
-        setEditedTask(null)
-      }}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          {selectedTask && (
-            <>
-              {isEditing ? (
-                <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className="space-y-4">
-                  <DialogHeader>
-                    <DialogTitle className="sr-only">Edit Task</DialogTitle>
-                  </DialogHeader>
-                  <div className="grid gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="title" className="text-sm font-medium text-zinc-400">
-                        Title
-                      </label>
-                      <input
-                        id="title"
-                        type="text"
-                        value={editedTask?.title || ''}
-                        onChange={(e) => setEditedTask(prev => prev ? { ...prev, title: e.target.value } : null)}
-                        className="w-full px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <label htmlFor="epic" className="text-sm font-medium text-zinc-400">
+                      Epic (optional)
+                    </label>
+                    <select
+                      id="epic"
+                      value={newTask.epic || ''}
+                      onChange={(e) => setNewTask(prev => ({ ...prev, epic: e.target.value || undefined }))}
+                      className="w-full px-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                    >
+                      <option value="">No epic</option>
+                      {epics.map(epic => (
+                        <option key={epic.id} value={epic.title}>
+                          {epic.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-400">Priority</label>
-                      <div className="flex gap-2">
-                        {(['low', 'medium', 'high'] as const).map((p) => (
-                          <button
-                            key={p}
-                            type="button"
-                            onClick={() => setEditedTask(prev => prev ? { ...prev, priority: p } : null)}
-                            className={cn(
-                              'px-3 py-1.5 rounded-md capitalize text-sm flex-1 transition-colors',
-                              editedTask?.priority === p 
-                                ? 'bg-zinc-800 text-zinc-100' 
-                                : 'bg-zinc-900/50 text-zinc-400 hover:text-zinc-300 border border-zinc-800'
-                            )}
-                          >
-                            {p}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-400">Status</label>
-                      <select
-                        value={editedTask?.status || 'todo'}
-                        onChange={(e) => setEditedTask(prev => prev ? { ...prev, status: e.target.value as Task['status'] } : null)}
-                        className="w-full px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                      >
-                        <option value="todo">Todo</option>
-                        <option value="done">Done</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="epic" className="text-sm font-medium text-zinc-400">
-                        Epic (optional)
-                      </label>
-                      <input
-                        id="epic"
-                        type="text"
-                        value={editedTask?.epic || ''}
-                        onChange={(e) => setEditedTask(prev => prev ? { ...prev, epic: e.target.value || undefined } : null)}
-                        className="w-full px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                        placeholder="Epic name"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="parent" className="text-sm font-medium text-zinc-400">
-                        Parent (optional)
-                      </label>
-                      <input
-                        id="parent"
-                        type="text"
-                        value={editedTask?.parent || ''}
-                        onChange={(e) => setEditedTask(prev => prev ? { ...prev, parent: e.target.value || undefined } : null)}
-                        className="w-full px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                        placeholder="Parent task"
-                      />
-                    </div>
-
-                    <div className="sm:col-span-2 space-y-2">
-                      <label className="text-sm font-medium text-zinc-400">Dependencies</label>
-                      <div className="relative">
-                        <div className="flex items-center px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md mb-2">
-                          <Search className="w-4 h-4 text-zinc-400 mr-2" />
-                          <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search tasks..."
-                            className="flex-1 bg-transparent outline-none text-sm text-zinc-100 placeholder:text-zinc-500"
-                          />
-                        </div>
-                        <div className="border border-zinc-800 rounded-md divide-y divide-zinc-800 max-h-32 overflow-y-auto bg-zinc-900/50">
-                          {filteredDependencyTasks.length === 0 ? (
-                            <div className="p-3 text-sm text-zinc-500 text-center">
-                              No tasks found
-                            </div>
-                          ) : (
-                            filteredDependencyTasks.map((task) => (
-                              <div
-                                key={task.filename}
-                                className="flex items-center gap-3 p-2 hover:bg-zinc-800/50"
-                              >
-                                <Checkbox
-                                  id={`dep-${task.filename}`}
-                                  checked={editedTask?.dependencies?.includes(task.filename)}
-                                  onCheckedChange={(checked) => {
-                                    setEditedTask(prev => {
-                                      if (!prev) return prev
-                                      const deps = prev.dependencies || []
-                                      return {
-                                        ...prev,
-                                        dependencies: checked 
-                                          ? [...deps, task.filename]
-                                          : deps.filter(d => d !== task.filename)
-                                      }
-                                    })
-                                  }}
-                                  className="h-4 w-4 border-2 border-zinc-500 data-[state=checked]:bg-zinc-500 data-[state=checked]:border-zinc-500 hover:border-zinc-400 transition-colors"
-                                />
-                                <label
-                                  htmlFor={`dep-${task.filename}`}
-                                  className="flex-1 text-sm cursor-pointer truncate text-zinc-100"
-                                >
-                                  <span className="font-medium">{task.title}</span>
-                                  {task.epic && (
-                                    <span className="ml-2 text-zinc-400">
-                                      in {task.epic}
-                                    </span>
-                                  )}
-                                </label>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="sm:col-span-2">
-                      <TagInput
-                        value={editTagInput}
-                        onChange={setEditTagInput}
-                      />
-                    </div>
-
-                    <div className="sm:col-span-2 space-y-2">
-                      <label htmlFor="content" className="text-sm font-medium text-zinc-400">
-                        Content
-                      </label>
-                      <div className="space-y-2">
-                        <textarea
-                          id="content"
-                          value={editedTask?.content || ''}
-                          onChange={(e) => setEditedTask(prev => prev ? { ...prev, content: e.target.value } : null)}
-                          className="w-full h-24 px-3 py-2 bg-zinc-900/50 border-zinc-800 rounded-md text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                  <div className="sm:col-span-2 space-y-2">
+                    <label className="text-sm font-medium text-zinc-400">Dependencies</label>
+                    <div className="relative">
+                      <div className="flex items-center px-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md mb-2">
+                        <Search className="w-4 h-4 text-zinc-400 mr-2" />
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="Search tasks..."
+                          className="flex-1 bg-transparent outline-none text-sm text-zinc-100 placeholder:text-zinc-500"
                         />
-                        <div className="flex items-center gap-2">
-                          <label htmlFor="image-upload" className="cursor-pointer">
-                            <div className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-300">
-                              <ImagePlus className="h-4 w-4" />
-                              Add Image
-                            </div>
-                            <input
-                              id="image-upload"
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={async (e) => {
-                                const file = e.target.files?.[0]
-                                if (!file) return
-
-                                const safeFilename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`
-                                const formData = new FormData()
-                                formData.append('file', file)
-                                formData.append('filename', safeFilename)
-
-                                try {
-                                  await fetch('/api/upload', {
-                                    method: 'POST',
-                                    body: formData,
+                      </div>
+                      <div className="border border-zinc-800 rounded-md divide-y divide-zinc-800 max-h-32 overflow-y-auto bg-zinc-900/50">
+                        {filteredDependencyTasks.length === 0 ? (
+                          <div className="p-3 text-sm text-zinc-500 text-center">
+                            No tasks found
+                          </div>
+                        ) : (
+                          filteredDependencyTasks.map((task) => (
+                            <div
+                              key={task.filename}
+                              className="flex items-center gap-3 p-2 hover:bg-zinc-800/50"
+                            >
+                              <Checkbox
+                                id={`dep-${task.filename}`}
+                                checked={newTask.dependencies?.includes(task.filename)}
+                                onCheckedChange={(checked) => {
+                                  setNewTask(prev => {
+                                    const deps = prev.dependencies || []
+                                    return {
+                                      ...prev,
+                                      dependencies: checked 
+                                        ? [...deps, task.filename]
+                                        : deps.filter(d => d !== task.filename)
+                                    }
                                   })
-
-                                  const imageMarkdown = `\n![${file.name}](/task-images/${safeFilename})\n`
-                                  setEditedTask(prev => prev ? {
-                                    ...prev,
-                                    content: prev.content + imageMarkdown
-                                  } : null)
-                                } catch (error) {
-                                  console.error('Failed to upload image:', error)
-                                }
-                              }}
-                            />
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end gap-3 pt-4">
-                    <Button
-                      variant="outline"
-                      type="button"
-                      onClick={() => {
-                        setIsEditing(false)
-                        setEditedTask(null)
-                      }}
-                      className="bg-zinc-900/50 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50"
-                    >
-                      Cancel
-                    </Button>
-                    <Button 
-                      type="submit"
-                      className="bg-blue-500 text-white hover:bg-blue-600"
-                    >
-                      Save Changes
-                    </Button>
-                  </div>
-                </form>
-              ) : (
-                <div className="space-y-6">
-                  <DialogHeader>
-                    <DialogTitle className="sr-only">View Task: {selectedTask.title}</DialogTitle>
-                  </DialogHeader>
-                  <div className="flex items-start justify-between gap-8 pb-4 border-b border-zinc-800">
-                    <div className="flex-1">
-                      <h2 className={cn(
-                        "text-2xl font-medium tracking-tight text-zinc-100 font-mono",
-                        selectedTask.status === "done" && "line-through text-zinc-400"
-                      )}>
-                        {selectedTask.title}
-                      </h2>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleEdit}
-                        className="hover:bg-zinc-800"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowDeleteAlert(true)}
-                        disabled={isDeleting}
-                        className="hover:bg-red-900/20 hover:text-red-400"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-6">
-                    <div className="grid gap-6 sm:grid-cols-2 bg-zinc-800/50 p-4 rounded-lg border border-zinc-800">
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-zinc-400">Status</label>
-                        <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
-                          <span className={cn(
-                            "w-2 h-2 rounded-full",
-                            selectedTask.status === "done" ? "bg-green-500" : "bg-blue-500"
-                          )} />
-                          <span className="capitalize text-zinc-100">{selectedTask.status}</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-zinc-400">Priority</label>
-                        <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
-                          <span className={cn(
-                            "w-2 h-2 rounded-full",
-                            selectedTask.priority === "high" && "bg-amber-500",
-                            selectedTask.priority === "medium" && "bg-blue-500",
-                            selectedTask.priority === "low" && "bg-green-500"
-                          )} />
-                          <span className="capitalize text-zinc-100">{selectedTask.priority}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid gap-6 sm:grid-cols-2 bg-zinc-800/50 p-4 rounded-lg border border-zinc-800">
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-zinc-400">Epic</label>
-                        {selectedTask.epic ? (
-                          <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
-                            <span className="w-2 h-2 rounded-full bg-blue-400" />
-                            <span className="text-zinc-100">{selectedTask.epic}</span>
-                          </div>
-                        ) : (
-                          <div className="text-sm text-zinc-500 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">No epic assigned</div>
-                        )}
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-zinc-400">Parent</label>
-                        {selectedTask.parent ? (
-                          <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
-                            <span className="w-2 h-2 rounded-full bg-purple-400" />
-                            <span className="text-zinc-100">{selectedTask.parent}</span>
-                          </div>
-                        ) : (
-                          <div className="text-sm text-zinc-500 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">No parent task</div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="space-y-1.5 bg-zinc-800/50 p-4 rounded-lg border border-zinc-800">
-                      <label className="text-sm font-medium text-zinc-400">Tags</label>
-                      {selectedTask.tags?.length ? (
-                        <div className="flex flex-wrap gap-2 bg-zinc-900/50 p-3 rounded-md border border-zinc-800">
-                          {selectedTask.tags.map((tag, i) => (
-                            <span key={i} className="flex items-center gap-1 bg-zinc-800 px-2.5 py-1 rounded-full text-sm text-zinc-100">
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-sm text-zinc-500 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">No tags</div>
-                      )}
-                    </div>
-
-                    {(selectedTask.dependencies && selectedTask.dependencies.length > 0) && (
-                      <div className="space-y-1.5 bg-zinc-800/50 p-4 rounded-lg border border-zinc-800">
-                        <label className="text-sm font-medium text-zinc-400">Dependencies</label>
-                        <div className="bg-zinc-900/50 p-3 rounded-md border border-zinc-800">
-                          <ul className="space-y-1">
-                            {selectedTask.dependencies.map((dep, i) => (
-                              <li key={i}>
-                                <a href={dep} className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1.5">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                                  {dep}
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-zinc-400">Content</label>
-                      <div className="prose prose-invert prose-zinc prose-headings:mt-4 prose-headings:mb-2 prose-p:my-2 prose-ul:my-2 max-w-none border border-zinc-800 rounded-md p-4 bg-zinc-900/50">
-                        <ReactMarkdown 
-                          className="break-words"
-                          components={{
-                            img: ({ src, alt, ...props }) => (
-                              <img 
-                                src={src || ''} 
-                                alt={alt || ''} 
-                                className="max-w-full h-auto rounded-md my-4"
-                                {...props}
+                                }}
+                                className="h-4 w-4 border-2 border-zinc-500 data-[state=checked]:bg-zinc-500 data-[state=checked]:border-zinc-500 hover:border-zinc-400 transition-colors"
                               />
-                            ),
-                          }}
-                        >
-                          {selectedTask.content}
-                        </ReactMarkdown>
+                              <label
+                                htmlFor={`dep-${task.filename}`}
+                                className="flex-1 text-sm cursor-pointer truncate text-zinc-100"
+                              >
+                                <span className="font-medium">{task.title}</span>
+                                {task.epic && (
+                                  <span className="ml-2 text-zinc-400">
+                                    in {task.epic}
+                                  </span>
+                                )}
+                              </label>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <TagInput
+                      value={tagInput}
+                      onChange={setTagInput}
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2 space-y-2">
+                    <label htmlFor="content" className="text-sm font-medium text-zinc-400">
+                      Content
+                    </label>
+                    <div className="space-y-2">
+                      <textarea
+                        id="content"
+                        value={newTask.content}
+                        onChange={(e) => setNewTask(prev => ({ ...prev, content: e.target.value }))}
+                        className="w-full h-24 px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-md text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                        required
+                      />
+                      <div className="flex items-center gap-2">
+                        <label htmlFor="create-image-upload" className="cursor-pointer">
+                          <div className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-300">
+                            <ImagePlus className="h-4 w-4" />
+                            Add Image
+                          </div>
+                          <input
+                            id="create-image-upload"
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0]
+                              if (!file) return
+
+                              const safeFilename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`
+                              const formData = new FormData()
+                              formData.append('file', file)
+                              formData.append('filename', safeFilename)
+
+                              try {
+                                await fetch('/api/upload', {
+                                  method: 'POST',
+                                  body: formData,
+                                })
+
+                                const imageMarkdown = `\n![${file.name}](/task-images/${safeFilename})\n`
+                                setNewTask(prev => ({
+                                  ...prev,
+                                  content: prev.content + imageMarkdown
+                                }))
+                              } catch (error) {
+                                console.error('Failed to upload image:', error)
+                              }
+                            }}
+                          />
+                        </label>
                       </div>
                     </div>
                   </div>
                 </div>
-              )}
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
 
-      <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure you want to delete this task?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Deleting this task removes the file from your local system. You may be able to retrieve it if you have committed your project recently to git. If not, it will be gone forever.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-red-600 text-white hover:bg-red-700"
-            >
-              Delete task
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+                <div className="flex justify-end gap-3 pt-4">
+                  <Button
+                    variant="outline"
+                    type="button"
+                    onClick={() => setShowCreateDialog(false)}
+                    className="bg-zinc-900/50 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50"
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    type="submit"
+                    disabled={isCreating}
+                    className="bg-blue-500 text-white hover:bg-blue-600"
+                  >
+                    {isCreating ? 'Creating...' : 'Create Task'}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          <Accordion 
+            type="multiple" 
+            value={openSections}
+            onValueChange={setOpenSections}
+            className="space-y-4"
+          >
+            <AccordionItem value="backlog" className="border-none">
+              <AccordionTrigger className="hover:no-underline">
+                <h2 className="text-xl font-medium tracking-tight text-zinc-100 font-mono flex items-center gap-2">
+                  <ListTodo className="w-5 h-5" />
+                  Backlog ({backlogTasks.length})
+                </h2>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="pt-4">
+                  <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <SortableContext items={backlogTasks.map(t => t.filename)} strategy={verticalListSortingStrategy}>
+                      <div className="space-y-4">
+                        {backlogTasks.map((task, index) => (
+                          <SortableTaskCard
+                            key={task.filename}
+                            task={task}
+                            number={index + 1}
+                            onComplete={handleComplete}
+                            onClick={setSelectedTask}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {doneTasks.length > 0 && (
+              <AccordionItem value="done" className="border-none">
+                <AccordionTrigger className="hover:no-underline">
+                  <h2 className="text-xl font-medium tracking-tight text-zinc-100 font-mono flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" />
+                    Done ({doneTasks.length})
+                  </h2>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="pt-4">
+                    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                      <SortableContext items={doneTasks.map(t => t.filename)} strategy={verticalListSortingStrategy}>
+                        <div className="space-y-4">
+                          {doneTasks.map((task, index) => (
+                            <SortableTaskCard
+                              key={task.filename}
+                              task={task}
+                              number={backlogTasks.length + index + 1}
+                              onComplete={handleComplete}
+                              onClick={setSelectedTask}
+                            />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            )}
+          </Accordion>
+
+          <Dialog open={!!selectedTask} onOpenChange={() => {
+            setSelectedTask(null)
+            setIsEditing(false)
+            setEditedTask(null)
+          }}>
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+              {selectedTask && (
+                <>
+                  {isEditing ? (
+                    <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className="space-y-4">
+                      <DialogHeader>
+                        <DialogTitle className="sr-only">Edit Task</DialogTitle>
+                      </DialogHeader>
+                      <div className="grid gap-6">
+                        <div className="space-y-2">
+                          <label htmlFor="title" className="text-sm font-medium text-zinc-400">
+                            Title
+                          </label>
+                          <input
+                            id="title"
+                            type="text"
+                            value={editedTask?.title || ''}
+                            onChange={(e) => setEditedTask(prev => prev ? { ...prev, title: e.target.value } : null)}
+                            className="w-full px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-zinc-400">Priority</label>
+                          <div className="flex gap-2">
+                            {(['low', 'medium', 'high'] as const).map((p) => (
+                              <button
+                                key={p}
+                                type="button"
+                                onClick={() => setEditedTask(prev => prev ? { ...prev, priority: p } : null)}
+                                className={cn(
+                                  'px-3 py-1.5 rounded-md capitalize text-sm flex-1 transition-colors',
+                                  editedTask?.priority === p 
+                                    ? 'bg-zinc-800 text-zinc-100' 
+                                    : 'bg-zinc-900/50 text-zinc-400 hover:text-zinc-300 border border-zinc-800'
+                                )}
+                              >
+                                {p}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-zinc-400">Status</label>
+                          <select
+                            value={editedTask?.status || 'todo'}
+                            onChange={(e) => setEditedTask(prev => prev ? { ...prev, status: e.target.value as Task['status'] } : null)}
+                            className="w-full px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                          >
+                            <option value="todo">Todo</option>
+                            <option value="done">Done</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label htmlFor="epic" className="text-sm font-medium text-zinc-400">
+                            Epic (optional)
+                          </label>
+                          <input
+                            id="epic"
+                            type="text"
+                            value={editedTask?.epic || ''}
+                            onChange={(e) => setEditedTask(prev => prev ? { ...prev, epic: e.target.value || undefined } : null)}
+                            className="w-full px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                            placeholder="Epic name"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label htmlFor="parent" className="text-sm font-medium text-zinc-400">
+                            Parent (optional)
+                          </label>
+                          <input
+                            id="parent"
+                            type="text"
+                            value={editedTask?.parent || ''}
+                            onChange={(e) => setEditedTask(prev => prev ? { ...prev, parent: e.target.value || undefined } : null)}
+                            className="w-full px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                            placeholder="Parent task"
+                          />
+                        </div>
+
+                        <div className="sm:col-span-2 space-y-2">
+                          <label className="text-sm font-medium text-zinc-400">Dependencies</label>
+                          <div className="relative">
+                            <div className="flex items-center px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md mb-2">
+                              <Search className="w-4 h-4 text-zinc-400 mr-2" />
+                              <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search tasks..."
+                                className="flex-1 bg-transparent outline-none text-sm text-zinc-100 placeholder:text-zinc-500"
+                              />
+                            </div>
+                            <div className="border border-zinc-800 rounded-md divide-y divide-zinc-800 max-h-32 overflow-y-auto bg-zinc-900/50">
+                              {filteredDependencyTasks.length === 0 ? (
+                                <div className="p-3 text-sm text-zinc-500 text-center">
+                                  No tasks found
+                                </div>
+                              ) : (
+                                filteredDependencyTasks.map((task) => (
+                                  <div
+                                    key={task.filename}
+                                    className="flex items-center gap-3 p-2 hover:bg-zinc-800/50"
+                                  >
+                                    <Checkbox
+                                      id={`dep-${task.filename}`}
+                                      checked={editedTask?.dependencies?.includes(task.filename)}
+                                      onCheckedChange={(checked) => {
+                                        setEditedTask(prev => {
+                                          if (!prev) return prev
+                                          const deps = prev.dependencies || []
+                                          return {
+                                            ...prev,
+                                            dependencies: checked 
+                                              ? [...deps, task.filename]
+                                              : deps.filter(d => d !== task.filename)
+                                          }
+                                        })
+                                      }}
+                                      className="h-4 w-4 border-2 border-zinc-500 data-[state=checked]:bg-zinc-500 data-[state=checked]:border-zinc-500 hover:border-zinc-400 transition-colors"
+                                    />
+                                    <label
+                                      htmlFor={`dep-${task.filename}`}
+                                      className="flex-1 text-sm cursor-pointer truncate text-zinc-100"
+                                    >
+                                      <span className="font-medium">{task.title}</span>
+                                      {task.epic && (
+                                        <span className="ml-2 text-zinc-400">
+                                          in {task.epic}
+                                        </span>
+                                      )}
+                                    </label>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="sm:col-span-2">
+                          <TagInput
+                            value={editTagInput}
+                            onChange={setEditTagInput}
+                          />
+                        </div>
+
+                        <div className="sm:col-span-2 space-y-2">
+                          <label htmlFor="content" className="text-sm font-medium text-zinc-400">
+                            Content
+                          </label>
+                          <div className="space-y-2">
+                            <textarea
+                              id="content"
+                              value={editedTask?.content || ''}
+                              onChange={(e) => setEditedTask(prev => prev ? { ...prev, content: e.target.value } : null)}
+                              className="w-full h-24 px-3 py-2 bg-zinc-900/50 border-zinc-800 rounded-md text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                            />
+                            <div className="flex items-center gap-2">
+                              <label htmlFor="image-upload" className="cursor-pointer">
+                                <div className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-300">
+                                  <ImagePlus className="h-4 w-4" />
+                                  Add Image
+                                </div>
+                                <input
+                                  id="image-upload"
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={async (e) => {
+                                    const file = e.target.files?.[0]
+                                    if (!file) return
+
+                                    const safeFilename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`
+                                    const formData = new FormData()
+                                    formData.append('file', file)
+                                    formData.append('filename', safeFilename)
+
+                                    try {
+                                      await fetch('/api/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                      })
+
+                                      const imageMarkdown = `\n![${file.name}](/task-images/${safeFilename})\n`
+                                      setEditedTask(prev => prev ? {
+                                        ...prev,
+                                        content: prev.content + imageMarkdown
+                                      } : null)
+                                    } catch (error) {
+                                      console.error('Failed to upload image:', error)
+                                    }
+                                  }}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-4">
+                        <Button
+                          variant="outline"
+                          type="button"
+                          onClick={() => {
+                            setIsEditing(false)
+                            setEditedTask(null)
+                          }}
+                          className="bg-zinc-900/50 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50"
+                        >
+                          Cancel
+                        </Button>
+                        <Button 
+                          type="submit"
+                          className="bg-blue-500 text-white hover:bg-blue-600"
+                        >
+                          Save Changes
+                        </Button>
+                      </div>
+                    </form>
+                  ) : (
+                    <div className="space-y-6">
+                      <DialogHeader>
+                        <DialogTitle className="sr-only">View Task: {selectedTask.title}</DialogTitle>
+                      </DialogHeader>
+                      <div className="flex items-start justify-between gap-8 pb-4 border-b border-zinc-800">
+                        <div className="flex-1">
+                          <h2 className={cn(
+                            "text-2xl font-medium tracking-tight text-zinc-100 font-mono",
+                            selectedTask.status === "done" && "line-through text-zinc-400"
+                          )}>
+                            {selectedTask.title}
+                          </h2>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleEdit}
+                            className="hover:bg-zinc-800"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowDeleteAlert(true)}
+                            disabled={isDeleting}
+                            className="hover:bg-red-900/20 hover:text-red-400"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-6">
+                        <div className="grid gap-6 sm:grid-cols-2 bg-zinc-800/50 p-4 rounded-lg border border-zinc-800">
+                          <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-zinc-400">Status</label>
+                            <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
+                              <span className={cn(
+                                "w-2 h-2 rounded-full",
+                                selectedTask.status === "done" ? "bg-green-500" : "bg-blue-500"
+                              )} />
+                              <span className="capitalize text-zinc-100">{selectedTask.status}</span>
+                            </div>
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-zinc-400">Priority</label>
+                            <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
+                              <span className={cn(
+                                "w-2 h-2 rounded-full",
+                                selectedTask.priority === "high" && "bg-amber-500",
+                                selectedTask.priority === "medium" && "bg-blue-500",
+                                selectedTask.priority === "low" && "bg-green-500"
+                              )} />
+                              <span className="capitalize text-zinc-100">{selectedTask.priority}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid gap-6 sm:grid-cols-2 bg-zinc-800/50 p-4 rounded-lg border border-zinc-800">
+                          <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-zinc-400">Epic</label>
+                            {selectedTask.epic ? (
+                              <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
+                                <span className="w-2 h-2 rounded-full bg-blue-400" />
+                                <span className="text-zinc-100">{selectedTask.epic}</span>
+                              </div>
+                            ) : (
+                              <div className="text-sm text-zinc-500 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">No epic assigned</div>
+                            )}
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-zinc-400">Parent</label>
+                            {selectedTask.parent ? (
+                              <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
+                                <span className="w-2 h-2 rounded-full bg-purple-400" />
+                                <span className="text-zinc-100">{selectedTask.parent}</span>
+                              </div>
+                            ) : (
+                              <div className="text-sm text-zinc-500 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">No parent task</div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5 bg-zinc-800/50 p-4 rounded-lg border border-zinc-800">
+                          <label className="text-sm font-medium text-zinc-400">Tags</label>
+                          {selectedTask.tags?.length ? (
+                            <div className="flex flex-wrap gap-2 bg-zinc-900/50 p-3 rounded-md border border-zinc-800">
+                              {selectedTask.tags.map((tag, i) => (
+                                <span key={i} className="flex items-center gap-1 bg-zinc-800 px-2.5 py-1 rounded-full text-sm text-zinc-100">
+                                  #{tag}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="text-sm text-zinc-500 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">No tags</div>
+                          )}
+                        </div>
+
+                        {(selectedTask.dependencies && selectedTask.dependencies.length > 0) && (
+                          <div className="space-y-1.5 bg-zinc-800/50 p-4 rounded-lg border border-zinc-800">
+                            <label className="text-sm font-medium text-zinc-400">Dependencies</label>
+                            <div className="bg-zinc-900/50 p-3 rounded-md border border-zinc-800">
+                              <ul className="space-y-1">
+                                {selectedTask.dependencies.map((dep, i) => (
+                                  <li key={i}>
+                                    <a href={dep} className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1.5">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                                      {dep}
+                                    </a>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="space-y-1.5">
+                          <label className="text-sm font-medium text-zinc-400">Content</label>
+                          <div className="prose prose-invert prose-zinc prose-headings:mt-4 prose-headings:mb-2 prose-p:my-2 prose-ul:my-2 max-w-none border border-zinc-800 rounded-md p-4 bg-zinc-900/50">
+                            <ReactMarkdown 
+                              className="break-words"
+                              components={{
+                                img: ({ src, alt, ...props }) => (
+                                  <img 
+                                    src={src || ''} 
+                                    alt={alt || ''} 
+                                    className="max-w-full h-auto rounded-md my-4"
+                                    {...props}
+                                  />
+                                ),
+                              }}
+                            >
+                              {selectedTask.content}
+                            </ReactMarkdown>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
+
+          <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure you want to delete this task?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Deleting this task removes the file from your local system. You may be able to retrieve it if you have committed your project recently to git. If not, it will be gone forever.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  className="bg-red-600 text-white hover:bg-red-700"
+                >
+                  Delete task
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </main>
+      </div>
     </div>
   )
 } 

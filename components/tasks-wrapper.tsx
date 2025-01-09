@@ -91,7 +91,7 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
         onEpicSelect={handleEpicSelect}
         onTagSelect={handleTagSelect}
       />
-      <div className="mt-6">
+      <div className="mt-1">
         <TaskList 
           initialTasks={currentTasks} 
           epics={epics}

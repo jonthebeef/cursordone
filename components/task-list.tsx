@@ -581,18 +581,18 @@ export function TaskList({
         setIsEditing(false)
         setEditedTask(null)
       }}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="sr-only">
+              {isEditing ? 'Edit Task' : selectedTask?.title}
+            </DialogTitle>
+          </DialogHeader>
           {selectedTask && (
             <>
-              <DialogHeader>
-                <DialogTitle>
-                  {isEditing ? 'Edit Task' : selectedTask.title}
-                </DialogTitle>
-              </DialogHeader>
               {isEditing ? (
-                <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className="space-y-4 mt-4">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="sm:col-span-2 space-y-2">
+                <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className="space-y-4">
+                  <div className="grid gap-6">
+                    <div className="space-y-2">
                       <label htmlFor="title" className="text-sm font-medium text-zinc-400">
                         Title
                       </label>

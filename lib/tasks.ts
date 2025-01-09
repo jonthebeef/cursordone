@@ -136,12 +136,35 @@ export async function updateTask(filename: string, task: Omit<Task, 'filename'>)
 export async function deleteTask(filename: string) {
   const filePath = path.join(TASKS_DIR, filename)
   if (fs.existsSync(filePath)) {
-    // Get the task's ref before deleting
+    // Get the task's content before deleting
     const content = fs.readFileSync(filePath, 'utf8')
-    const { data } = matter(content)
+    const { data, content: markdown } = matter(content)
+    
+    // Handle ref cleanup
     if (data.ref) {
       markRefAsUnused(data.ref)
     }
+
+    // Find and delete associated images
+    const imageRegex = /!\[.*?\]\(\/task-images\/(.*?)\)/g
+    const matches = [...markdown.matchAll(imageRegex)]
+    
+    if (matches.length > 0) {
+      const imagesDir = path.join(process.cwd(), 'public', 'task-images')
+      for (const match of matches) {
+        const imagePath = path.join(imagesDir, match[1])
+        try {
+          if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath)
+            console.log(`Deleted image: ${match[1]}`)
+          }
+        } catch (error) {
+          console.error(`Failed to delete image ${match[1]}:`, error)
+        }
+      }
+    }
+
+    // Delete the task file
     fs.unlinkSync(filePath)
   }
 }

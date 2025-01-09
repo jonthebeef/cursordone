@@ -32,6 +32,19 @@ export function SideNav({
   const pathname = usePathname()
   const { toast } = useToast()
 
+  // Debug logs
+  console.log('SideNav props:', { selectedEpic, selectedTags, epics })
+
+  const handleEpicClick = (epicId: string | null) => {
+    console.log('Epic clicked:', epicId)
+    onEpicSelect?.(epicId)
+  }
+
+  const handleTagClick = (tag: string) => {
+    console.log('Tag clicked:', tag)
+    onTagSelect?.(tag)
+  }
+
   const updateRefs = async () => {
     if (isUpdating) return
     
@@ -191,7 +204,7 @@ export function SideNav({
                           ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-800/90" 
                           : "text-zinc-300 hover:bg-zinc-800/50 hover:text-zinc-100"
                       )}
-                      onClick={() => onEpicSelect(null)}
+                      onClick={() => handleEpicClick(null)}
                     >
                       All Tasks
                     </Button>
@@ -204,7 +217,7 @@ export function SideNav({
                           ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-800/90"
                           : "text-zinc-300 hover:bg-zinc-800/50 hover:text-zinc-100"
                       )}
-                      onClick={() => onEpicSelect(selectedEpic === 'none' ? null : 'none')}
+                      onClick={() => handleEpicClick(selectedEpic === 'none' ? null : 'none')}
                     >
                       No Epic
                     </Button>
@@ -219,7 +232,7 @@ export function SideNav({
                             ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-800/90"
                             : "text-zinc-300 hover:bg-zinc-800/50 hover:text-zinc-100"
                         )}
-                        onClick={() => onEpicSelect(epic.id)}
+                        onClick={() => handleEpicClick(epic.id)}
                       >
                         {epic.title}
                       </Button>
@@ -248,11 +261,11 @@ export function SideNav({
                           "w-full justify-start gap-2 transition-colors",
                           selectedTags.includes(tag)
                             ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-800/90 active:bg-zinc-800/80"
-                            : "text-zinc-300 hover:bg-zinc-800/50 hover:text-zinc-100 active:bg-zinc-800/60"
+                            : "text-zinc-300 hover:bg-zinc-800/50 hover:text-zinc-100"
                         )}
-                        onClick={() => onTagSelect(tag)}
+                        onClick={() => handleTagClick(tag)}
                       >
-                        <Hash className="h-4 w-4" />
+                        <Hash className="h-3.5 w-3.5" />
                         {tag}
                       </Button>
                     ))}

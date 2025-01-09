@@ -5,6 +5,7 @@ title: >-
   all of the content
 status: done
 priority: high
+epic: ui-cleanup
 dependencies: []
 tags:
   - dialog

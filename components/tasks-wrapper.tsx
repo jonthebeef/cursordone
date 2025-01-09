@@ -21,6 +21,25 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [currentTasks, setCurrentTasks] = useState<Task[]>([])
 
+  // Debug logs
+  console.log('TasksWrapper state:', { selectedEpic, selectedTags })
+
+  const handleTagSelect = useCallback((tag: string) => {
+    console.log('Tag selected:', tag)
+    setSelectedTags(prev => {
+      const newTags = prev.includes(tag)
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+      console.log('New selected tags:', newTags)
+      return newTags
+    })
+  }, [])
+
+  const handleEpicSelect = useCallback((epic: string | null) => {
+    console.log('Epic selected:', epic)
+    setSelectedEpic(epic)
+  }, [])
+
   // Update tasks when they change from the server
   useEffect(() => {
     const hasNewTasks = tasks.some(task => !currentTasks.find(ct => ct.filename === task.filename))
@@ -54,18 +73,6 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
     }
   }, [tasks, currentTasks, toast])
 
-  const handleTagSelect = useCallback((tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag)
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
-    )
-  }, [])
-
-  const handleEpicSelect = useCallback((epic: string | null) => {
-    setSelectedEpic(epic)
-  }, [])
-
   const refresh = useCallback(() => {
     startTransition(() => {
       router.refresh()
@@ -81,6 +88,28 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
     return () => clearInterval(interval)
   }, [refresh])
 
+  // Filter tasks based on selected epic and tags
+  const filteredTasks = currentTasks.filter(task => {
+    // Debug epic matching
+    console.log('Task filtering:', {
+      taskEpic: task.epic,
+      selectedEpic,
+      taskTags: task.tags,
+      selectedTags
+    })
+
+    // Filter by epic - match exact epic name
+    const matchesEpic = !selectedEpic || 
+      (selectedEpic === 'none' ? !task.epic : task.epic?.toLowerCase() === selectedEpic)
+
+    // Filter by tags (handle undefined tags)
+    const taskTags = task.tags || []
+    const matchesTags = selectedTags.length === 0 || 
+      selectedTags.every(tag => taskTags.includes(tag))
+
+    return matchesEpic && matchesTags
+  })
+
   return (
     <div className="relative">
       <TaskFilters 
@@ -93,7 +122,7 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
       />
       <div className="mt-1">
         <TaskList 
-          initialTasks={currentTasks} 
+          initialTasks={filteredTasks} 
           epics={epics}
           selectedEpic={selectedEpic}
           selectedTags={selectedTags}

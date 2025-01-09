@@ -3,7 +3,7 @@
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
-import { getNextRef } from './ref-counter'
+import { getNextRef, markRefAsUnused } from './ref-counter'
 
 export interface Task {
   id: string
@@ -136,6 +136,12 @@ export async function updateTask(filename: string, task: Omit<Task, 'filename'>)
 export async function deleteTask(filename: string) {
   const filePath = path.join(TASKS_DIR, filename)
   if (fs.existsSync(filePath)) {
+    // Get the task's ref before deleting
+    const content = fs.readFileSync(filePath, 'utf8')
+    const { data } = matter(content)
+    if (data.ref) {
+      markRefAsUnused(data.ref)
+    }
     fs.unlinkSync(filePath)
   }
 }

@@ -1,6 +1,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import matter from 'gray-matter'
+import { getNextRef, getCurrentRef } from '../lib/ref-counter'
 
 const TASKS_DIR = path.join(process.cwd(), 'tasks')
 const REF_PREFIX = 'TSK-'
@@ -67,10 +68,6 @@ async function updateTaskRefs() {
     console.log('Warning: Existing refs have gaps or duplicates')
   }
 
-  let nextRef = existingRefs.length > 0 
-    ? Math.max(...existingRefs.map(r => r.number)) + 1 
-    : 1
-
   let updatedCount = 0
 
   for (const file of files) {
@@ -83,9 +80,8 @@ async function updateTaskRefs() {
     // Skip if already has a ref
     if (data.ref) continue
 
-    // Add ref to frontmatter
-    data.ref = `${REF_PREFIX}${String(nextRef).padStart(3, '0')}`
-    nextRef++
+    // Get next ref from our counter system
+    data.ref = getNextRef()
     updatedCount++
 
     // Write back to file

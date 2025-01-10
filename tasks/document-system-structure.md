@@ -8,6 +8,7 @@ epic: system-rebuild
 tags:
   - documentation
   - architecture
+  - 10 jan
 created: 2024-01-08
 assignee: user
 depends_on: ["clean-system-structure"]

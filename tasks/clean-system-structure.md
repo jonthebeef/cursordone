@@ -1,17 +1,16 @@
 ---
 ref: TSK-028
 title: Clean System Structure
-description: Remove test content and establish clean system structure
 status: active
 priority: high
 epic: system-rebuild
+dependencies: []
 tags:
   - cleanup
   - documentation
-created: 2024-01-08
-assignee: user
+  - 10 jan
+created: 2024-01-08T00:00:00.000Z
 ---
-
 # Clean System Structure
 
 ## Objectives
@@ -27,4 +26,6 @@ assignee: user
 - [ ] Migration guide written
 
 ## Notes
-This is the first step in rebuilding the system. We need to start with a clean slate while documenting everything we need to preserve. 
+This is the first step in rebuilding the system. We need to start with a clean slate while documenting everything we need to preserve.
+
+Before commencing work, give a full outline of planned activity and implications to the user to explain your approach.

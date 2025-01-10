@@ -9,6 +9,7 @@ dependencies:
 tags:
   - search
   - id
+  - 10 jan
 created: '2025-01-09'
 ---
 The search bar was very good at being able to enter either words from a task title or the ID ref. as we are using the ID refs in general discussion, it's helpful to be able to look them up quickly.

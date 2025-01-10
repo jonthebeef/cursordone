@@ -122,25 +122,23 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                   Debug - Filters: {JSON.stringify({ selectedEpic, selectedTags, displayEpicTitle })}
                 </div>
 
-                {/* Filter indicators - with increased z-index */}
-                <div className="pl-10 relative z-50">
-                  {(selectedEpic || selectedTags.length > 0) && (
-                    <div className="flex items-center gap-2 text-sm bg-[#18181b] py-2">
-                      {selectedEpic && (
-                        <div className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
-                          <Folder className="w-3.5 h-3.5 text-zinc-400" />
-                          <span className="text-zinc-300">{displayEpicTitle}</span>
-                        </div>
-                      )}
-                      {selectedTags.map((tag, i) => (
-                        <div key={i} className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
-                          <Hash className="w-3.5 h-3.5 text-zinc-400" />
-                          <span className="text-zinc-300">{tag}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                {/* Filter indicators - moved outside AccordionTrigger */}
+                {(selectedEpic || selectedTags.length > 0) && (
+                  <div className="flex items-center gap-2 text-sm py-2 pl-10 relative z-50 bg-[#18181b]">
+                    {selectedEpic && (
+                      <div className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
+                        <Folder className="w-3.5 h-3.5 text-zinc-400" />
+                        <span className="text-zinc-300">{displayEpicTitle}</span>
+                      </div>
+                    )}
+                    {selectedTags.map((tag, i) => (
+                      <div key={i} className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
+                        <Hash className="w-3.5 h-3.5 text-zinc-400" />
+                        <span className="text-zinc-300">{tag}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <AccordionContent>

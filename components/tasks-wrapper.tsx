@@ -21,6 +21,24 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [currentTasks, setCurrentTasks] = useState<Task[]>([])
 
+  // Load saved filter state on mount
+  useEffect(() => {
+    const savedFilters = localStorage.getItem('taskFilters')
+    if (savedFilters) {
+      const { epic, tags } = JSON.parse(savedFilters)
+      setSelectedEpic(epic)
+      setSelectedTags(tags)
+    }
+  }, [])
+
+  // Save filter state when it changes
+  useEffect(() => {
+    localStorage.setItem('taskFilters', JSON.stringify({
+      epic: selectedEpic,
+      tags: selectedTags
+    }))
+  }, [selectedEpic, selectedTags])
+
   // Debug logs
   console.log('TasksWrapper state:', { selectedEpic, selectedTags })
 
@@ -90,17 +108,30 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
 
   // Filter tasks based on selected epic and tags
   const filteredTasks = currentTasks.filter(task => {
+    const selectedEpicTitle = epics.find(e => e.id === selectedEpic)?.title
+
+    // Normalize epic titles (lowercase and replace spaces with hyphens)
+    const normalizeEpicTitle = (title: string | undefined) => 
+      title?.toLowerCase().replace(/\s+/g, '-') || ''
+    
     // Debug epic matching
     console.log('Task filtering:', {
       taskEpic: task.epic,
       selectedEpic,
+      selectedEpicTitle,
+      normalizedTaskEpic: normalizeEpicTitle(task.epic),
+      normalizedSelectedEpic: normalizeEpicTitle(selectedEpicTitle),
       taskTags: task.tags,
-      selectedTags
+      selectedTags,
+      epicMatch: !selectedEpic || 
+        (selectedEpic === 'none' ? !task.epic : 
+          normalizeEpicTitle(selectedEpicTitle) === normalizeEpicTitle(task.epic))
     })
 
-    // Filter by epic - match exact epic name
+    // Filter by epic - match normalized epic titles
     const matchesEpic = !selectedEpic || 
-      (selectedEpic === 'none' ? !task.epic : task.epic?.toLowerCase() === selectedEpic)
+      (selectedEpic === 'none' ? !task.epic : 
+        normalizeEpicTitle(selectedEpicTitle) === normalizeEpicTitle(task.epic))
 
     // Filter by tags (handle undefined tags)
     const taskTags = task.tags || []

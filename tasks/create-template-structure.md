@@ -8,6 +8,7 @@ epic: system-rebuild
 tags:
   - templates
   - structure
+  - 10 jan
 created: 2024-01-08
 assignee: user
 depends_on: ["document-system-structure"]

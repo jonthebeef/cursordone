@@ -4,6 +4,12 @@ status: todo
 priority: high
 complexity: XL
 epic: task-management-enhancement
+dependencies:
+  - implement-core-archive-data-structure-1736601484934.md
+  - implement-archive-ui-components-1736601484935.md
+  - implement-batch-archive-operations-1736601484936.md
+  - implement-archive-search-and-filtering-1736601484937.md
+  - implement-epic-archive-integration-1736601484938.md
 tags:
   - enhancement
   - core
@@ -12,6 +18,16 @@ ref: TSK-065
 ---
 
 Implement a system for archiving tasks that are no longer relevant or needed in the active task list, while preserving all task data and relationships. This helps maintain a focused task list while retaining historical information.
+
+This task has been broken down into smaller, more manageable subtasks:
+
+1. TSK-088: Implement core archive data structure (M)
+2. TSK-089: Implement archive UI components (S)
+3. TSK-090: Implement batch archive operations (M)
+4. TSK-091: Implement archive search and filtering (S)
+5. TSK-092: Implement epic archive integration (S)
+
+The original requirements have been distributed across these subtasks. This task will be considered complete when all subtasks are completed.
 
 ## Requirements
 

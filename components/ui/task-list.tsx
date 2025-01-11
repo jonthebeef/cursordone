@@ -623,6 +623,11 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                   </DialogHeader>
                   <div className="flex items-start justify-between gap-8 pb-4 border-b border-zinc-800">
                     <div className="flex-1">
+                      {selectedTask.ref && (
+                        <div className="text-sm font-mono text-zinc-400 mb-1">
+                          {selectedTask.ref}
+                        </div>
+                      )}
                       <h2 className={cn(
                         "text-2xl font-medium tracking-tight text-zinc-100 font-mono",
                         selectedTask.status === "done" && "line-through text-zinc-400"

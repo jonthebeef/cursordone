@@ -1,4 +1,5 @@
 ---
+ref: TSK-087
 title: Update task view and edit dialog layout
 status: todo
 priority: medium
@@ -29,3 +30,4 @@ Requirements:
 - Maintain consistent styling
   - Use same spacing and grid layout as create dialog
   - Keep consistent button and input styling 
+  - Change the rendered markdown headline to geist mono

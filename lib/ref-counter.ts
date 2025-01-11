@@ -60,19 +60,19 @@ export function getNextRef(): string {
     data = JSON.parse(fs.readFileSync(COUNTER_FILE, 'utf8')) as Counter
   }
 
-  // Ensure we have the latest used refs
+  // Get the latest used refs to ensure we have the most up-to-date state
   data.usedRefs = getUsedRefs()
-
-  // Find the next available ref
-  let next = data.current + 1
-  let nextRef = `TSK-${String(next).padStart(3, '0')}`
   
-  // Keep incrementing until we find an unused ref
-  while (data.usedRefs.includes(nextRef)) {
-    next++
-    nextRef = `TSK-${String(next).padStart(3, '0')}`
-  }
-
+  // Always increment from the highest number used
+  const maxRef = data.usedRefs.reduce((max, ref) => {
+    const num = parseInt(ref.replace('TSK-', ''))
+    return Math.max(max, num)
+  }, data.current)
+  
+  // Set the next ref number
+  const next = maxRef + 1
+  const nextRef = `TSK-${String(next).padStart(3, '0')}`
+  
   // Update the counter file
   data.current = next
   data.usedRefs.push(nextRef)

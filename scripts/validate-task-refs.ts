@@ -85,17 +85,6 @@ async function validateTaskRefs(autoFix: boolean = false): Promise<ValidationRes
     }
   }
 
-  // Find gaps
-  const numbers = validRefs.map(r => r.number).sort((a, b) => a - b)
-  let expectedNumber = 1
-  for (const number of numbers) {
-    while (expectedNumber < number) {
-      result.gaps.push(`TSK-${String(expectedNumber).padStart(3, '0')}`)
-      expectedNumber++
-    }
-    expectedNumber = number + 1
-  }
-
   // Auto-fix if requested
   if (autoFix && !result.isValid) {
     console.log(chalk.yellow('\nAttempting to fix issues...'))
@@ -171,11 +160,6 @@ function printValidationResult(result: ValidationResult) {
       console.log(`\n${ref}:`)
       tasks.forEach(task => console.log(`- ${task.file} (created: ${task.created})`))
     }
-  }
-
-  if (result.gaps.length > 0) {
-    console.log(chalk.blue('\nGaps in ref sequence:'))
-    console.log(result.gaps.join(', '))
   }
 
   console.log('\nRun with --fix to automatically resolve these issues.')

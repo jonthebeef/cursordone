@@ -35,8 +35,6 @@ interface TaskFrontmatter {
 const TASKS_DIR = path.join(process.cwd(), 'tasks')
 
 export async function getAllTasks(): Promise<Task[]> {
-  console.log('Loading tasks from:', TASKS_DIR)
-  
   // Ensure directory exists
   if (!fs.existsSync(TASKS_DIR)) {
     fs.mkdirSync(TASKS_DIR, { recursive: true })
@@ -45,7 +43,6 @@ export async function getAllTasks(): Promise<Task[]> {
   // Get all markdown files
   const files = fs.readdirSync(TASKS_DIR)
     .filter(file => file.endsWith('.md'))
-  console.log('Task files:', files)
 
   // Parse all tasks
   const tasks: Task[] = []
@@ -53,7 +50,6 @@ export async function getAllTasks(): Promise<Task[]> {
   for (const file of files) {
     const content = fs.readFileSync(path.join(TASKS_DIR, file), 'utf8')
     const { data, content: markdown } = matter(content)
-    console.log('Parsed task:', { filename: file, data })
     tasks.push({
       filename: file,
       ...data,
@@ -61,7 +57,6 @@ export async function getAllTasks(): Promise<Task[]> {
     } as Task)
   }
 
-  console.log('Total tasks loaded:', tasks.length)
   return tasks
 }
 

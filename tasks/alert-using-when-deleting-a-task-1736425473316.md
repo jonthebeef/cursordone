@@ -1,5 +1,5 @@
 ---
-ref: TSK-028
+ref: TSK-073
 title: Alert using when deleting a task
 status: done
 priority: medium

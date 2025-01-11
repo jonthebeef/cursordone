@@ -1,5 +1,5 @@
 ---
-ref: TSK-018
+ref: TSK-081
 title: 'BUG: Can only add one tag in a new task in web'
 status: done
 priority: high

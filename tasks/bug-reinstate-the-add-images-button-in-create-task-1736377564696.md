@@ -1,5 +1,5 @@
 ---
-ref: TSK-017
+ref: TSK-075
 title: 'BUG: Reinstate the add images button in create task'
 status: done
 priority: high

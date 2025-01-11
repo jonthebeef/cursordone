@@ -1,5 +1,5 @@
 ---
-ref: TSK-026
+ref: TSK-079
 title: Show the filters applied in the task list
 status: todo
 priority: low

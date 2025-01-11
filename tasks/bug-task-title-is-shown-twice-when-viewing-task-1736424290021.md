@@ -1,5 +1,5 @@
 ---
-ref: TSK-024
+ref: TSK-080
 title: 'BUG: Task title is shown twice when viewing task'
 status: done
 priority: high

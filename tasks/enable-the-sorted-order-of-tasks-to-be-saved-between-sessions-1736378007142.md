@@ -1,5 +1,5 @@
 ---
-ref: TSK-020
+ref: TSK-078
 title: Enable the sorted order of tasks to be saved between sessions
 status: done
 priority: high

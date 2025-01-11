@@ -32,16 +32,11 @@ export function SideNav({
   const pathname = usePathname()
   const { toast } = useToast()
 
-  // Debug logs
-  console.log('SideNav props:', { selectedEpic, selectedTags, epics })
-
   const handleEpicClick = (epicId: string | null) => {
-    console.log('Epic clicked:', epicId)
     onEpicSelect?.(epicId)
   }
 
   const handleTagClick = (tag: string) => {
-    console.log('Tag clicked:', tag)
     onTagSelect?.(tag)
   }
 
@@ -50,21 +45,16 @@ export function SideNav({
     
     try {
       setIsUpdating(true)
-      console.log('Starting update refs...')
       toast({
         title: "Updating refs...",
         description: "Checking for new tasks and updating references.",
         variant: "default",
       })
-      console.log('Initial toast fired')
 
       const response = await fetch('/api/update-refs', { method: 'POST' })
-      console.log('API response:', response)
       const data = await response.json()
-      console.log('API data:', data)
       
       if (data.error) {
-        console.log('Error from API:', data.error)
         toast({
           title: "Error",
           description: data.error,
@@ -75,7 +65,6 @@ export function SideNav({
       }
 
       if (!data.isValid) {
-        console.log('Invalid refs found')
         toast({
           title: "Warning",
           description: "Found gaps or duplicates in task references. Some cleanup may be needed.",
@@ -85,7 +74,6 @@ export function SideNav({
       }
 
       if (data.updatedCount > 0) {
-        console.log('Updated tasks:', data.updatedCount)
         toast({
           title: "Success",
           description: `Updated ${data.updatedCount} task${data.updatedCount === 1 ? '' : 's'} with new references.`,
@@ -93,7 +81,6 @@ export function SideNav({
           icon: <CheckCircle2 className="h-5 w-5" />
         })
       } else {
-        console.log('No updates needed')
         toast({
           title: "No updates needed",
           description: "All tasks already have reference numbers.",
@@ -258,14 +245,14 @@ export function SideNav({
                         variant={selectedTags.includes(tag) ? "default" : "ghost"}
                         size="sm"
                         className={cn(
-                          "w-full justify-start gap-2 transition-colors",
+                          "w-full justify-start gap-2 transition-colors text-left whitespace-normal",
                           selectedTags.includes(tag)
                             ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-800/90 active:bg-zinc-800/80"
                             : "text-zinc-300 hover:bg-zinc-800/50 hover:text-zinc-100"
                         )}
                         onClick={() => handleTagClick(tag)}
                       >
-                        <Hash className="h-3.5 w-3.5" />
+                        <Hash className="h-3.5 w-3.5 shrink-0" />
                         {tag}
                       </Button>
                     ))}

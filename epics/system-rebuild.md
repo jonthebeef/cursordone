@@ -19,7 +19,7 @@ This epic covers the complete rebuild of our task management system to make it m
 - Clean and standardize the current system
 - Create a reusable package structure
 - Enhance task management capabilities
-- Implement AI integration framework
+- Implement Supabase database and Edge Function setup
 - Establish comprehensive testing
 
 ## Key Features
@@ -32,8 +32,8 @@ This epic covers the complete rebuild of our task management system to make it m
 
 2. Package Structure
    - Core dependencies
-   - Configuration system
-   - Documentation framework
+   - Supabase database schema and migrations
+   - Edge Function deployment
    - Installation process
 
 3. Task Management
@@ -42,23 +42,24 @@ This epic covers the complete rebuild of our task management system to make it m
    - Operation protocols
    - Error handling
 
-4. AI Integration
-   - Context documentation
-   - Interaction protocols
-   - Template system
-   - Testing framework
+4. Supabase Integration
+   - Users table setup (beta flags, subscription status)
+   - Projects table (optional)
+   - Edge Function for subscription checks
+   - Integration testing
 
 ## Success Criteria
 
 - [ ] Clean system with only essential components
 - [ ] Complete package structure with documentation
-- [ ] Standardized task management system
+- [ ] Supabase database and Edge Functions implemented
 - [ ] Working AI integration framework
 - [ ] Comprehensive test coverage
 
 ## Related Tasks
 
 - [Clean System Structure](/tasks/clean-system-structure.md)
-- [Create Package Setup](/tasks/create-package-setup.md)
+- [Create Supabase Database Schema](/tasks/create-supabase-schema.md)
+- [Deploy Edge Functions](/tasks/deploy-edge-functions.md)
+- [Setup AI Context](/tasks/setup-ai-context.md)
 - [Define Front Matter Schema](/tasks/define-front-matter-schema.md)
-- [Setup AI Context](/tasks/setup-ai-context.md) 

@@ -1,5 +1,5 @@
 ---
-ref: TSK-027
+ref: TSK-072
 title: Hot refresh the task list when new tasks are added
 status: done
 priority: medium

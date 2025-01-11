@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { Task, completeTask, createTask, deleteTask, updateTask } from './tasks'
 import { Epic, createEpic, deleteEpic, updateEpic } from './epics'
+import { saveTaskOrder } from './task-order-actions'
 
 export async function completeTaskAction(filename: string) {
   try {
@@ -72,6 +73,20 @@ export async function deleteEpicAction(id: string) {
     revalidatePath('/', 'layout')
   } catch (error) {
     console.error('Failed to delete epic:', error)
+    throw error
+  }
+}
+
+export async function saveTaskOrderAction(key: string, order: string[]) {
+  try {
+    console.log('\n=== Server Action: Save Task Order ===')
+    console.log('Key:', key)
+    console.log('Order:', order)
+    await saveTaskOrder(key, order)
+    console.log('Server action completed')
+    revalidatePath('/', 'layout')
+  } catch (error) {
+    console.error('Failed to save task order:', error)
     throw error
   }
 } 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useTransition } from "react"
 import { Task } from "@/lib/tasks"
-import { TaskList } from "./task-list"
+import { TaskList } from "./ui/task-list"
 import { TaskFilters } from "./task-filters"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
@@ -39,22 +39,16 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
     }))
   }, [selectedEpic, selectedTags])
 
-  // Debug logs
-  console.log('TasksWrapper state:', { selectedEpic, selectedTags })
-
   const handleTagSelect = useCallback((tag: string) => {
-    console.log('Tag selected:', tag)
     setSelectedTags(prev => {
       const newTags = prev.includes(tag)
         ? prev.filter(t => t !== tag)
         : [...prev, tag]
-      console.log('New selected tags:', newTags)
       return newTags
     })
   }, [])
 
   const handleEpicSelect = useCallback((epic: string | null) => {
-    console.log('Epic selected:', epic)
     setSelectedEpic(epic)
   }, [])
 
@@ -113,20 +107,6 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
     // Normalize epic titles (lowercase and replace spaces with hyphens)
     const normalizeEpicTitle = (title: string | undefined) => 
       title?.toLowerCase().replace(/\s+/g, '-') || ''
-    
-    // Debug epic matching
-    console.log('Task filtering:', {
-      taskEpic: task.epic,
-      selectedEpic,
-      selectedEpicTitle,
-      normalizedTaskEpic: normalizeEpicTitle(task.epic),
-      normalizedSelectedEpic: normalizeEpicTitle(selectedEpicTitle),
-      taskTags: task.tags,
-      selectedTags,
-      epicMatch: !selectedEpic || 
-        (selectedEpic === 'none' ? !task.epic : 
-          normalizeEpicTitle(selectedEpicTitle) === normalizeEpicTitle(task.epic))
-    })
 
     // Filter by epic - match normalized epic titles
     const matchesEpic = !selectedEpic || 

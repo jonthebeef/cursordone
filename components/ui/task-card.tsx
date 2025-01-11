@@ -37,7 +37,7 @@ export function TaskCard({ task, onClick, onComplete }: TaskCardProps) {
   }
 
   const handleCardClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
+    e.preventDefault()
     onClick(task)
   }
 

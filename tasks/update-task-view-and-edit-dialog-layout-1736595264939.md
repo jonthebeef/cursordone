@@ -22,5 +22,7 @@ Match the new create task dialog layout and improve content display.
   - Fixed state management to ensure task updates are immediately reflected in the UI
   - Added proper error handling and loading states
   - Improved visual hierarchy with consistent spacing and styling
+  - Fixed dependencies display to properly show dependent tasks with their refs, titles, and epics
+  - Added click-through navigation between dependent tasks
 
 The task view and edit dialog now provides a more consistent and polished experience that matches the create task dialog.

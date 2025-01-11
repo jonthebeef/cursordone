@@ -332,7 +332,11 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
   }
 
   const handleTaskClick = (task: Task) => {
-    setSelectedTask(task)
+    // Get the latest task data from initialTasks
+    const latestTask = initialTasks.find(t => t.filename === task.filename)
+    if (!latestTask) return
+    
+    setSelectedTask(latestTask)
     setIsEditing(false)
     setEditedTask(null)
   }
@@ -774,7 +778,11 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                             <div
                               key={ref}
                               className="flex items-center gap-3 p-2 border border-zinc-800 rounded-md hover:bg-zinc-800/50 cursor-pointer"
-                              onClick={() => setSelectedTask(task)}
+                              onClick={() => {
+                                setSelectedTask(task)
+                                setIsEditing(false)
+                                setEditedTask(null)
+                              }}
                             >
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2">

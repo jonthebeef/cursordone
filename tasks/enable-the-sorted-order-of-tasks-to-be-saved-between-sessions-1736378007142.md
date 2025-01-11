@@ -10,31 +10,26 @@ tags:
   - 10 jan
 created: '2025-01-08'
 ---
-When tasks have been prioritised through drag and drop, the priority order is lost if the session is refreshed. Please enable the prioritised state of the tasks to be concrete, so that work is not lost between sessions.
+# Enable the sorted order of tasks to be saved between sessions
+
+status: done
+tags: [10 jan]
 
 ## Implementation Notes
 
-✅ Successfully implemented task order persistence with the following features:
+Successfully implemented task order persistence with the following features:
+- Task order is now saved between sessions using a JSON file storage system
+- Implemented a new API route `/api/task-order` to handle order persistence
+- Added order loading on component mount and filter changes
+- Improved UI with a modern Select dropdown for sorting options:
+  - Default Order (manual drag & drop)
+  - Date Added (Newest/Oldest)
+  - Priority (High to Low/Low to High)
+- Responsive design improvements:
+  - Optimized header layout for mobile, tablet, and desktop views
+  - Search field, sort dropdown, and create button properly aligned
+  - Improved spacing and touch targets
+- Order is maintained separately for different views (all tasks, epics, tags)
+- Drag and drop functionality works seamlessly with order persistence
 
-1. Task Order Storage:
-   - Implemented JSON-based storage for task orders
-   - Handles both global and filtered views (epics/tags)
-   - Orders are saved in `task-orders.json`
-
-2. Drag and Drop:
-   - Working drag and drop functionality in both views
-   - Real-time UI updates with optimistic rendering
-   - Fallback handling for failed saves
-
-3. Order Persistence:
-   - Global order persistence works
-   - Epic-specific order persistence works
-   - Combined epic and tag filter persistence works
-   - Orders are maintained between page refreshes
-
-4. API Implementation:
-   - Added `/api/task-order` endpoint for loading saved orders
-   - Implemented server actions for saving orders
-   - Added error handling and fallbacks
-
-The feature is now complete and working as expected, with all edge cases handled and proper persistence across sessions.
+The feature is now complete and working as expected, with proper error handling and fallbacks in place.

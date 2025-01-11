@@ -9,7 +9,7 @@ import { useState, useEffect, useRef, useMemo } from "react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Pencil, Trash2, ImagePlus, X, Search, ListTodo, CheckCircle2, Hash, Folder } from "lucide-react"
+import { Pencil, Trash2, ImagePlus, X, Search, ListTodo, CheckCircle2, Hash, Folder, ArrowUpDown } from "lucide-react"
 import ReactMarkdown from 'react-markdown'
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -20,6 +20,23 @@ import { TagInput } from "@/components/ui/tag-input"
 import { SearchInput } from "@/components/ui/search-input"
 import { getOrderKey } from '@/lib/task-order'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+const sortOptions = [
+  { value: 'manual', label: 'Default Order' },
+  { value: 'date-newest', label: 'Date Added (Newest)' },
+  { value: 'date-oldest', label: 'Date Added (Oldest)' },
+  { value: 'priority-high', label: 'Priority (High to Low)' },
+  { value: 'priority-low', label: 'Priority (Low to High)' },
+] as const
+
+type SortOption = typeof sortOptions[number]['value']
 
 interface TaskListProps {
   initialTasks: Task[]
@@ -46,6 +63,7 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
   const [isInitialized, setIsInitialized] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
+  const [sortOption, setSortOption] = useState<SortOption>('manual')
   const [newTask, setNewTask] = useState<Omit<Task, 'filename' | 'ref'> & { content: string }>({
     id: Date.now().toString(),
     title: '',
@@ -94,17 +112,37 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
     )
   }, [initialTasks, searchQuery])
 
-  // Sort filtered tasks based on taskOrder
+  // Sort filtered tasks based on current sort option
   const sortedFilteredTasks = useMemo(() => {
-    return [...filteredTasks].sort((a, b) => {
-      const aIndex = taskOrder.indexOf(a.filename)
-      const bIndex = taskOrder.indexOf(b.filename)
-      if (aIndex === -1 && bIndex === -1) return 0
-      if (aIndex === -1) return 1
-      if (bIndex === -1) return -1
-      return aIndex - bIndex
-    })
-  }, [filteredTasks, taskOrder])
+    const tasks = [...filteredTasks]
+    
+    switch (sortOption) {
+      case 'date-newest':
+        return tasks.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())
+      case 'date-oldest':
+        return tasks.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime())
+      case 'priority-high':
+        return tasks.sort((a, b) => {
+          const priorityOrder = { high: 0, medium: 1, low: 2 }
+          return priorityOrder[a.priority] - priorityOrder[b.priority]
+        })
+      case 'priority-low':
+        return tasks.sort((a, b) => {
+          const priorityOrder = { high: 0, medium: 1, low: 2 }
+          return priorityOrder[b.priority] - priorityOrder[a.priority]
+        })
+      default:
+        // Manual order using taskOrder array
+        return tasks.sort((a, b) => {
+          const aIndex = taskOrder.indexOf(a.filename)
+          const bIndex = taskOrder.indexOf(b.filename)
+          if (aIndex === -1 && bIndex === -1) return 0
+          if (aIndex === -1) return 1
+          if (bIndex === -1) return -1
+          return aIndex - bIndex
+        })
+    }
+  }, [filteredTasks, taskOrder, sortOption])
 
   // Split into backlog and done
   const sortedBacklogTasks = useMemo(() => 
@@ -255,35 +293,58 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
   return (
     <div className="relative -mt-6">
       <div>
-        <header className="fixed top-0 right-0 left-0 lg:left-[250px] flex items-center justify-between px-6 py-2 bg-[#18181b] z-10">
-          <div className="relative w-[320px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search tasks..."
-              className="w-full pl-9 pr-8 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-300 p-1"
-                type="button"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
+        <header className="fixed top-0 right-0 left-0 lg:left-[250px] flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 lg:p-3 bg-[#18181b] z-10">
+          <div className="w-full sm:max-w-[40%] lg:max-w-[50%] max-w-[calc(100%-48px)] ml-2.5">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search tasks..."
+                className="w-full pl-9 pr-8 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-300 p-1"
+                  type="button"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           </div>
-          <Button
-            onClick={() => setShowCreateDialog(true)}
-            className="bg-blue-500 text-white hover:bg-blue-600 whitespace-nowrap mr-12"
-          >
-            Create Task
-          </Button>
+          <div className="flex items-center gap-2 justify-between w-full sm:w-auto sm:flex-1 sm:justify-end">
+            <div className="flex items-center gap-2 sm:-ml-4">
+              <ArrowUpDown className="w-4 h-4 text-zinc-400" />
+              <Select value={sortOption} onValueChange={(value: SortOption) => setSortOption(value)}>
+                <SelectTrigger className="w-[180px] bg-zinc-900 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20">
+                  <SelectValue placeholder="Sort by..." />
+                </SelectTrigger>
+                <SelectContent className="bg-zinc-900 border border-zinc-800">
+                  {sortOptions.map(option => (
+                    <SelectItem 
+                      key={option.value} 
+                      value={option.value}
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800 cursor-pointer text-left"
+                    >
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button
+              onClick={() => setShowCreateDialog(true)}
+              className="bg-blue-500 text-white hover:bg-blue-600 whitespace-nowrap sm:ml-4 lg:ml-6"
+            >
+              Create Task
+            </Button>
+          </div>
         </header>
 
-        <main className="pt-[52px] px-4">
+        <main className="pt-[104px] sm:pt-[52px] px-4">
           <Accordion 
             type="multiple" 
             value={openSections}

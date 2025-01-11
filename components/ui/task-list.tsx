@@ -64,15 +64,26 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
   const [isSaving, setIsSaving] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [sortOption, setSortOption] = useState<SortOption>('manual')
-  const [newTask, setNewTask] = useState<Omit<Task, 'filename' | 'ref'> & { content: string }>({
-    id: Date.now().toString(),
+  const [newTask, setNewTask] = useState<Omit<Task, 'ref' | 'filename'> & { content: string }>({
+    id: '0',
     title: '',
     priority: 'medium',
     status: 'todo',
     content: '',
-    created: new Date().toISOString().split('T')[0]
+    created: '',
+    dependencies: []
   })
   const [tagInput, setTagInput] = useState('')
+
+  // Filter tasks for dependencies
+  const filteredDependencyTasks = useMemo(() => {
+    const query = searchQuery.toLowerCase()
+    return initialTasks.filter(task => 
+      (task.title.toLowerCase().includes(query) || 
+       (task.ref && task.ref.toLowerCase().includes(query))) && 
+      task.id !== newTask.id
+    )
+  }, [searchQuery, initialTasks, newTask.id])
 
   // Load task order when component mounts or filters change
   useEffect(() => {
@@ -230,9 +241,10 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
     if (isCreating || disabled) return
     setIsCreating(true)
     try {
-      const taskToCreate: Omit<Task, 'filename' | 'ref'> & { content: string } = {
+      const taskToCreate: Omit<Task, 'ref' | 'filename'> & { content: string } = {
         ...newTask,
         tags: tagInput ? tagInput.split(',').map(t => t.trim()).filter(Boolean) : [],
+        dependencies: newTask.dependencies || [],
         id: Date.now().toString(),
         created: new Date().toISOString().split('T')[0],
         content: newTask.content || ''
@@ -244,14 +256,16 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
       onStateChange?.()
       setShowCreateDialog(false)
       setNewTask({
-        id: Date.now().toString(),
+        id: '0',
         title: '',
         priority: 'medium',
         status: 'todo',
         content: '',
-        created: new Date().toISOString().split('T')[0]
+        created: '',
+        dependencies: []
       })
       setTagInput('')
+      setSearchQuery('')
     } catch (error) {
       console.error('Failed to create task:', error)
     } finally {
@@ -791,22 +805,26 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="epic" className="text-sm font-medium text-zinc-400">
-                  Epic (optional)
-                </label>
-                <select
-                  id="epic"
+                <label className="text-sm font-medium text-zinc-400">Epic (optional)</label>
+                <Select
                   value={newTask.epic || ''}
-                  onChange={(e) => setNewTask(prev => ({ ...prev, epic: e.target.value || undefined }))}
-                  className="w-full px-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                  onValueChange={(value) => setNewTask(prev => ({ ...prev, epic: value }))}
                 >
-                  <option value="">Select an epic</option>
-                  {epics.map((epic) => (
-                    <option key={epic.id} value={epic.title}>
-                      {epic.title}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50">
+                    <SelectValue placeholder="Select an epic" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-900 border border-zinc-800">
+                    {epics.map(epic => (
+                      <SelectItem
+                        key={epic.id}
+                        value={epic.id}
+                        className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800 cursor-pointer"
+                      >
+                        {epic.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="sm:col-span-2">
@@ -817,9 +835,65 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
               </div>
 
               <div className="sm:col-span-2 space-y-2">
-                <label htmlFor="content" className="text-sm font-medium text-zinc-400">
-                  Content
-                </label>
+                <label className="text-sm font-medium text-zinc-400">Dependencies</label>
+                <div className="relative">
+                  <div className="flex items-center px-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md mb-2">
+                    <Search className="w-4 h-4 text-zinc-400 mr-2" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search tasks..."
+                      className="flex-1 bg-transparent outline-none text-sm text-zinc-100 placeholder:text-zinc-500"
+                    />
+                  </div>
+                  <div className="border border-zinc-800 rounded-md divide-y divide-zinc-800 max-h-32 overflow-y-auto bg-zinc-900/50">
+                    {filteredDependencyTasks.length === 0 ? (
+                      <div className="p-3 text-sm text-zinc-500 text-center">
+                        No tasks found
+                      </div>
+                    ) : (
+                      filteredDependencyTasks.map((task) => (
+                        <div
+                          key={task.filename}
+                          className="flex items-center gap-3 p-2 hover:bg-zinc-800/50"
+                        >
+                          <Checkbox
+                            id={`dep-${task.filename}`}
+                            checked={newTask.dependencies?.includes(task.filename)}
+                            onCheckedChange={(checked) => {
+                              setNewTask(prev => ({
+                                ...prev,
+                                dependencies: checked
+                                  ? [...(prev.dependencies || []), task.filename]
+                                  : (prev.dependencies || []).filter(d => d !== task.filename)
+                              }))
+                            }}
+                            className="border-zinc-700 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                          />
+                          <label
+                            htmlFor={`dep-${task.filename}`}
+                            className="flex-1 text-sm cursor-pointer truncate text-zinc-100"
+                          >
+                            {task.ref && (
+                              <span className="font-mono text-zinc-400 mr-2">{task.ref}</span>
+                            )}
+                            <span className="font-medium">{task.title}</span>
+                            {task.epic && (
+                              <span className="ml-2 text-zinc-400">
+                                in {task.epic}
+                              </span>
+                            )}
+                          </label>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="sm:col-span-2 space-y-2">
+                <label className="text-sm font-medium text-zinc-400">Content</label>
                 <div className="space-y-2">
                   <textarea
                     id="content"

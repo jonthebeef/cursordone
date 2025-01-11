@@ -57,6 +57,7 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
   const [isEditing, setIsEditing] = useState(false)
   const [editedTask, setEditedTask] = useState<Task | null>(null)
   const [editTagInput, setEditTagInput] = useState('')
+  const [dependencySearchQuery, setDependencySearchQuery] = useState('')
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeleteAlert, setShowDeleteAlert] = useState(false)
   const [taskOrder, setTaskOrder] = useState<string[]>(initialTasks.map(t => t.filename))
@@ -77,15 +78,70 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
   })
   const [tagInput, setTagInput] = useState('')
 
-  // Filter tasks for dependencies
   const filteredDependencyTasks = useMemo(() => {
-    const query = searchQuery.toLowerCase()
+    if (!dependencySearchQuery) return initialTasks
+    const query = dependencySearchQuery.toLowerCase()
     return initialTasks.filter(task => 
-      (task.title.toLowerCase().includes(query) || 
-       (task.ref && task.ref.toLowerCase().includes(query))) && 
-      task.id !== newTask.id
+      task.title.toLowerCase().includes(query) || 
+      task.ref?.toLowerCase().includes(query)
     )
-  }, [searchQuery, initialTasks, newTask.id])
+  }, [initialTasks, dependencySearchQuery])
+
+  const handleStartEditing = () => {
+    if (!selectedTask) return
+    setIsEditing(true)
+    setEditedTask(selectedTask)
+    setEditTagInput(selectedTask.tags?.join(', ') || '')
+  }
+
+  const handleSave = async (e?: React.FormEvent) => {
+    e?.preventDefault()
+    if (!editedTask || !selectedTask || disabled) return
+    
+    try {
+      const tags = editTagInput.split(',').map(tag => tag.trim()).filter(Boolean)
+      const taskToSave = { ...editedTask, tags }
+      await updateTaskAction(selectedTask.filename, taskToSave)
+      
+      // Update the selected task with the latest content
+      const updatedTask = initialTasks.find(t => t.filename === selectedTask.filename)
+      if (updatedTask) {
+        setSelectedTask(updatedTask)
+      }
+      
+      setIsEditing(false)
+      setEditedTask(null)
+      onStateChange?.()
+      router.refresh()
+    } catch (error) {
+      console.error('Failed to update task:', error)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!selectedTask || isDeleting || disabled) return
+    setIsDeleting(true)
+    try {
+      await deleteTaskAction(selectedTask.filename)
+      onStateChange?.()
+      setSelectedTask(null)
+      setShowDeleteAlert(false)
+      toast({
+        title: `🗑️ Task "${selectedTask.title}" deleted`,
+        description: "The task has been permanently removed",
+        variant: "default",
+      })
+    } catch (error) {
+      console.error('Failed to delete task:', error)
+      toast({
+        title: "❌ Error",
+        description: `Failed to delete task "${selectedTask?.title}"`,
+        variant: "destructive",
+      })
+    } finally {
+      setIsDeleting(false)
+    }
+  }
 
   // Load task order when component mounts or filters change
   useEffect(() => {
@@ -226,16 +282,15 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
   }
 
   const handleEdit = () => {
+    if (!selectedTask || disabled) return
+    
+    // Get the latest task data from initialTasks
+    const latestTask = initialTasks.find(t => t.filename === selectedTask.filename)
+    if (!latestTask) return
+    
+    setEditedTask(latestTask)
+    setEditTagInput(latestTask.tags?.join(', ') || '')
     setIsEditing(true)
-    setEditedTask(selectedTask)
-  }
-
-  const handleSave = () => {
-    if (editedTask) {
-      // Implement save logic here
-    }
-    setIsEditing(false)
-    setEditedTask(null)
   }
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -280,31 +335,6 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
     setSelectedTask(task)
     setIsEditing(false)
     setEditedTask(null)
-  }
-
-  const handleDelete = async () => {
-    if (!selectedTask || isDeleting || disabled) return
-    setIsDeleting(true)
-    try {
-      await deleteTaskAction(selectedTask.filename)
-      onStateChange?.()
-      setSelectedTask(null)
-      setShowDeleteAlert(false)
-      toast({
-        title: `🗑️ Task "${selectedTask.title}" deleted`,
-        description: "The task has been permanently removed",
-        variant: "default",
-      })
-    } catch (error) {
-      console.error('Failed to delete task:', error)
-      toast({
-        title: "❌ Error",
-        description: `Failed to delete task "${selectedTask?.title}"`,
-        variant: "destructive",
-      })
-    } finally {
-      setIsDeleting(false)
-    }
   }
 
   return (
@@ -470,197 +500,163 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
           setEditedTask(null)
         }
       }}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           {selectedTask && (
             <>
               {isEditing ? (
-                <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className="space-y-4">
+                <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className="space-y-6">
                   <DialogHeader>
                     <DialogTitle className="sr-only">Edit Task</DialogTitle>
                   </DialogHeader>
-                  <div className="grid gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="title" className="text-sm font-medium text-zinc-400">
-                        Title
-                      </label>
-                      <input
-                        id="title"
-                        type="text"
-                        value={editedTask?.title || ''}
-                        onChange={(e) => setEditedTask(prev => prev ? { ...prev, title: e.target.value } : null)}
-                        className="w-full px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-400">Priority</label>
-                      <div className="flex gap-2">
-                        {(['low', 'medium', 'high'] as const).map((p) => (
-                          <button
-                            key={p}
-                            type="button"
-                            onClick={() => setEditedTask(prev => prev ? { ...prev, priority: p } : null)}
-                            className={cn(
-                              'px-3 py-1.5 rounded-md capitalize text-sm flex-1 transition-colors',
-                              editedTask?.priority === p 
-                                ? 'bg-zinc-800 text-zinc-100' 
-                                : 'bg-zinc-900/50 text-zinc-400 hover:text-zinc-300 border border-zinc-800'
-                            )}
-                          >
-                            {p}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-400">Status</label>
-                      <select
-                        value={editedTask?.status || 'todo'}
-                        onChange={(e) => setEditedTask(prev => prev ? { ...prev, status: e.target.value as Task['status'] } : null)}
-                        className="w-full px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                      >
-                        <option value="todo">Todo</option>
-                        <option value="done">Done</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="epic" className="text-sm font-medium text-zinc-400">
-                        Epic (optional)
-                      </label>
-                      <input
-                        id="epic"
-                        type="text"
-                        value={editedTask?.epic || ''}
-                        onChange={(e) => setEditedTask(prev => prev ? { ...prev, epic: e.target.value || undefined } : null)}
-                        className="w-full px-3 py-1.5 bg-zinc-900/50 border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                        placeholder="Epic name"
-                      />
-                    </div>
-
-                    <div className="sm:col-span-2">
-                      <TagInput
-                        value={editTagInput}
-                        onChange={setEditTagInput}
-                      />
-                    </div>
-
-                    <div className="sm:col-span-2 space-y-2">
-                      <label className="text-sm font-medium text-zinc-400">Content</label>
-                      <TextEditor
-                        value={editedTask?.content || ''}
-                        onChange={(value) => setEditedTask(prev => prev ? { ...prev, content: value } : null)}
-                        onImageUpload={async (file) => {
-                          const safeFilename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`
-                          const formData = new FormData()
-                          formData.append('file', file)
-                          formData.append('filename', safeFilename)
-
-                          const response = await fetch('/api/upload', {
-                            method: 'POST',
-                            body: formData,
-                          })
-                          
-                          if (!response.ok) {
-                            throw new Error('Failed to upload image')
-                          }
-
-                          return `/task-images/${safeFilename}`
-                        }}
-                        onFileUpload={async (file) => {
-                          const safeFilename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`
-                          const formData = new FormData()
-                          formData.append('file', file)
-                          formData.append('filename', safeFilename)
-
-                          const response = await fetch('/api/upload', {
-                            method: 'POST',
-                            body: formData,
-                          })
-                          
-                          if (!response.ok) {
-                            throw new Error('Failed to upload file')
-                          }
-
-                          return `/task-files/${safeFilename}`
-                        }}
-                        className="h-[280px]"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-400">Complexity</label>
-                      <div className="flex gap-2">
-                        {[
-                          { value: 'XS', label: 'Extra Small' },
-                          { value: 'S', label: 'Small' },
-                          { value: 'M', label: 'Medium' },
-                          { value: 'L', label: 'Large' },
-                          { value: 'XL', label: 'Extra Large' }
-                        ].map(({ value, label }) => (
-                          <button
-                            key={value}
-                            type="button"
-                            onClick={() => setEditedTask(prev => prev ? { ...prev, complexity: value as Task['complexity'] } : null)}
-                            className={cn(
-                              'px-3 py-1.5 rounded-md text-sm flex-1 border',
-                              editedTask?.complexity === value ? 'bg-zinc-800 text-zinc-100 border-zinc-700' : 'bg-zinc-900/50 text-zinc-400 hover:text-zinc-300 border-zinc-800'
-                            )}
-                          >
-                            {value}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-zinc-400">Content</label>
+                  <div className="grid grid-cols-3 gap-4">
+                    {/* Left Column - Main Content */}
+                    <div className="col-span-2 space-y-4">
                       <div className="space-y-2">
-                        <textarea
-                          id="content"
-                          value={editedTask?.content || ''}
-                          onChange={(e) => setEditedTask(prev => prev ? { ...prev, content: e.target.value } : null)}
-                          className="w-full h-24 px-3 py-2 bg-zinc-900/50 border-zinc-800 rounded-md text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+                        <label htmlFor="title" className="text-sm font-medium text-zinc-400">
+                          Title
+                        </label>
+                        <input
+                          id="title"
+                          type="text"
+                          value={editedTask?.title || ''}
+                          onChange={(e) => setEditedTask(prev => prev ? { ...prev, title: e.target.value } : null)}
+                          className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20 text-lg"
                         />
-                        <div className="flex items-center gap-2">
-                          <label htmlFor="image-upload" className="cursor-pointer">
-                            <div className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-300">
-                              <ImagePlus className="h-4 w-4" />
-                              Add Image
-                            </div>
-                            <input
-                              id="image-upload"
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={async (e) => {
-                                const file = e.target.files?.[0]
-                                if (!file) return
+                      </div>
 
-                                const safeFilename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`
-                                const formData = new FormData()
-                                formData.append('file', file)
-                                formData.append('filename', safeFilename)
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-zinc-400">Content</label>
+                        <TextEditor
+                          value={editedTask?.content || ''}
+                          onChange={(value) => setEditedTask(prev => prev ? { ...prev, content: value } : null)}
+                          onImageUpload={async (file) => {
+                            const formData = new FormData()
+                            formData.append('file', file)
+                            const response = await fetch('/api/upload', {
+                              method: 'POST',
+                              body: formData,
+                            })
+                            if (!response.ok) {
+                              throw new Error('Failed to upload image')
+                            }
+                            const data = await response.json()
+                            return data.url
+                          }}
+                          className="h-[280px] border border-zinc-800 rounded-md bg-zinc-900/50"
+                        />
+                      </div>
+                    </div>
 
-                                try {
-                                  await fetch('/api/upload', {
-                                    method: 'POST',
-                                    body: formData,
-                                  })
+                    {/* Right Column - Metadata */}
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-zinc-400">Priority</label>
+                        <div className="flex gap-2">
+                          {(['low', 'medium', 'high'] as const).map((p) => (
+                            <button
+                              key={p}
+                              type="button"
+                              onClick={() => setEditedTask(prev => prev ? { ...prev, priority: p } : null)}
+                              className={cn(
+                                'px-3 py-1.5 rounded-md capitalize text-sm flex-1 border',
+                                editedTask?.priority === p ? 'bg-zinc-800 text-zinc-100 border-zinc-700' : 'bg-zinc-900/50 text-zinc-400 hover:text-zinc-300 border-zinc-800'
+                              )}
+                            >
+                              {p}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
 
-                                  const imageMarkdown = `\n![${file.name}](/task-images/${safeFilename})\n`
-                                  setEditedTask(prev => prev ? {
-                                    ...prev,
-                                    content: prev.content + imageMarkdown
-                                  } : null)
-                                } catch (error) {
-                                  console.error('Failed to upload image:', error)
-                                }
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-zinc-400">Complexity</label>
+                        <div className="flex gap-2">
+                          {(['XS', 'S', 'M', 'L', 'XL'] as const).map((c) => (
+                            <button
+                              key={c}
+                              type="button"
+                              onClick={() => setEditedTask(prev => prev ? { ...prev, complexity: c } : null)}
+                              className={cn(
+                                'px-3 py-1.5 rounded-md text-sm flex-1 border',
+                                editedTask?.complexity === c ? 'bg-zinc-800 text-zinc-100 border-zinc-700' : 'bg-zinc-900/50 text-zinc-400 hover:text-zinc-300 border-zinc-800'
+                              )}
+                            >
+                              {c}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-zinc-400">Epic</label>
+                        <Select
+                          value={editedTask?.epic || ''}
+                          onValueChange={(value) => setEditedTask(prev => prev ? { ...prev, epic: value } : null)}
+                        >
+                          <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800">
+                            <SelectValue placeholder="Select an epic" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {epics.map((epic) => (
+                              <SelectItem key={epic.id} value={epic.id}>
+                                {epic.title}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-zinc-400">Tags</label>
+                        <TagInput
+                          value={editTagInput}
+                          onChange={setEditTagInput}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Dependencies Section */}
+                  <div className="space-y-2 pt-4 col-span-2">
+                    <label className="text-sm font-medium text-zinc-400">Dependencies</label>
+                    <div className="space-y-2">
+                      <SearchInput
+                        value={dependencySearchQuery}
+                        onChange={setDependencySearchQuery}
+                        placeholder="Search tasks..."
+                        className="w-full"
+                      />
+                      <div className="max-h-48 overflow-y-auto border border-zinc-800 rounded-md divide-y divide-zinc-800">
+                        {filteredDependencyTasks.map((task) => (
+                          <div key={task.filename} className="flex items-center gap-3 p-2 hover:bg-zinc-800/50">
+                            <Checkbox
+                              checked={editedTask?.dependencies?.includes(task.ref) || false}
+                              onCheckedChange={(checked) => {
+                                setEditedTask(prev => {
+                                  if (!prev) return null
+                                  const deps = new Set(prev.dependencies || [])
+                                  if (checked) {
+                                    deps.add(task.ref)
+                                  } else {
+                                    deps.delete(task.ref)
+                                  }
+                                  return { ...prev, dependencies: Array.from(deps) }
+                                })
                               }}
                             />
-                          </label>
-                        </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-mono text-zinc-400">{task.ref}</span>
+                                <span className="text-sm text-zinc-100 truncate">{task.title}</span>
+                              </div>
+                              {task.epic && (
+                                <div className="text-xs text-zinc-500 truncate">
+                                  {epics.find(e => e.id === task.epic)?.title || task.epic}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -690,157 +686,14 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                   <DialogHeader>
                     <DialogTitle className="sr-only">View Task: {selectedTask.title}</DialogTitle>
                   </DialogHeader>
-                  <div className="flex items-start justify-between gap-8 pb-4 border-b border-zinc-800">
-                    <div className="flex-1">
+                  <div className="grid grid-cols-3 gap-4">
+                    {/* Left Column - Main Content */}
+                    <div className="col-span-2 space-y-4">
                       {selectedTask.ref && (
-                        <div className="text-sm font-mono text-zinc-400 mb-1">
-                          {selectedTask.ref}
-                        </div>
+                        <div className="font-mono text-zinc-400">{selectedTask.ref}</div>
                       )}
-                      <h2 className={cn(
-                        "text-2xl font-medium tracking-tight text-zinc-100 font-mono",
-                        selectedTask.status === "done" && "line-through text-zinc-400"
-                      )}>
-                        {selectedTask.title}
-                      </h2>
-                      <div className="flex flex-wrap gap-4 text-sm text-zinc-300 mt-2">
-                        <span className="flex items-center gap-1.5">
-                          <span className={cn(
-                            "w-2 h-2 rounded-full",
-                            selectedTask.priority === 'high' 
-                              ? 'bg-amber-400' 
-                              : selectedTask.priority === 'medium' 
-                                ? 'bg-blue-400' 
-                                : 'bg-zinc-400'
-                          )} />
-                          {selectedTask.priority}
-                        </span>
-                        {selectedTask.complexity && (
-                          <span className="flex items-center gap-1.5">
-                            <Shirt className="h-3.5 w-3.5 text-purple-400" />
-                            {selectedTask.complexity === 'XS' ? 'Extra Small' :
-                             selectedTask.complexity === 'S' ? 'Small' :
-                             selectedTask.complexity === 'M' ? 'Medium' :
-                             selectedTask.complexity === 'L' ? 'Large' :
-                             'Extra Large'}
-                          </span>
-                        )}
-                        {selectedTask.epic && (
-                          <span className="flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-blue-400" />
-                            {selectedTask.epic}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleEdit}
-                        className="hover:bg-zinc-800"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowDeleteAlert(true)}
-                        disabled={isDeleting}
-                        className="hover:bg-red-900/20 hover:text-red-400"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-6">
-                    <div className="grid gap-6 sm:grid-cols-2 bg-zinc-800/50 p-4 rounded-lg border border-zinc-800">
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-zinc-400">Status</label>
-                        <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
-                          <span className={cn(
-                            "w-2 h-2 rounded-full",
-                            selectedTask.status === "done" ? "bg-green-400" : "bg-blue-400"
-                          )} />
-                          <span className="text-zinc-100 capitalize">{selectedTask.status}</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-zinc-400">Priority</label>
-                        <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
-                          <span className={cn(
-                            "w-2 h-2 rounded-full",
-                            selectedTask.priority === "high" ? "bg-yellow-400" :
-                            selectedTask.priority === "medium" ? "bg-blue-400" :
-                            "bg-slate-400"
-                          )} />
-                          <span className="text-zinc-100 capitalize">{selectedTask.priority}</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-zinc-400">Epic</label>
-                        {selectedTask.epic ? (
-                          <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
-                            <span className="w-2 h-2 rounded-full bg-blue-400" />
-                            <span className="text-zinc-100">{selectedTask.epic}</span>
-                          </div>
-                        ) : (
-                          <div className="text-sm text-zinc-500 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">No epic assigned</div>
-                        )}
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-zinc-400">Parent</label>
-                        {selectedTask.parent ? (
-                          <div className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">
-                            <span className="w-2 h-2 rounded-full bg-purple-400" />
-                            <span className="text-zinc-100">{selectedTask.parent}</span>
-                          </div>
-                        ) : (
-                          <div className="text-sm text-zinc-500 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">No parent task</div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="space-y-1.5 bg-zinc-800/50 p-4 rounded-lg border border-zinc-800">
-                      <label className="text-sm font-medium text-zinc-400">Tags</label>
-                      {selectedTask.tags?.length ? (
-                        <div className="flex flex-wrap gap-2 bg-zinc-900/50 p-3 rounded-md border border-zinc-800">
-                          {selectedTask.tags.map((tag, i) => (
-                            <span key={i} className="flex items-center gap-1 bg-zinc-700/50 px-2 py-0.5 rounded-full text-xs text-zinc-200 font-inter">
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-sm text-zinc-500 bg-zinc-900/50 px-3 py-1.5 rounded-md border border-zinc-800">No tags</div>
-                      )}
-                    </div>
-
-                    {(selectedTask.dependencies && selectedTask.dependencies.length > 0) && (
-                      <div className="space-y-1.5 bg-zinc-800/50 p-4 rounded-lg border border-zinc-800">
-                        <label className="text-sm font-medium text-zinc-400">Dependencies</label>
-                        <div className="bg-zinc-900/50 p-3 rounded-md border border-zinc-800">
-                          <ul className="space-y-1">
-                            {selectedTask.dependencies.map((dep, i) => (
-                              <li key={i}>
-                                <a href={dep} className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1.5">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                                  {dep}
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-zinc-400">Content</label>
-                      <div className="prose prose-invert prose-zinc prose-headings:mt-4 prose-headings:mb-2 prose-p:my-2 prose-ul:my-2 max-w-none border border-zinc-800 rounded-md p-4 bg-zinc-900/50">
+                      <h1 className="text-2xl font-semibold text-zinc-100">{selectedTask.title}</h1>
+                      <div className="prose prose-invert prose-zinc prose-headings:font-mono prose-headings:mt-4 prose-headings:mb-2 prose-p:my-2 prose-ul:my-2 max-w-none border border-zinc-800 rounded-md p-4 bg-zinc-900/50">
                         <ReactMarkdown 
                           className="break-words"
                           components={{
@@ -858,6 +711,110 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                         </ReactMarkdown>
                       </div>
                     </div>
+
+                    {/* Right Column - Metadata */}
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-zinc-400">Priority</label>
+                        <div className="text-sm text-zinc-100 capitalize">{selectedTask.priority}</div>
+                      </div>
+
+                      {selectedTask.complexity && (
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-zinc-400">Complexity</label>
+                          <div className="flex items-center gap-1.5">
+                            <Shirt className="w-4 h-4 text-purple-400" />
+                            <span className="text-sm text-zinc-100">
+                              {selectedTask.complexity === 'XS' && 'Extra Small'}
+                              {selectedTask.complexity === 'S' && 'Small'}
+                              {selectedTask.complexity === 'M' && 'Medium'}
+                              {selectedTask.complexity === 'L' && 'Large'}
+                              {selectedTask.complexity === 'XL' && 'Extra Large'}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedTask.epic && (
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-zinc-400">Epic</label>
+                          <div className="text-sm text-zinc-100">
+                            {epics.find(e => e.id === selectedTask.epic)?.title || selectedTask.epic}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedTask.tags && selectedTask.tags.length > 0 && (
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-zinc-400">Tags</label>
+                          <div className="flex flex-wrap gap-1.5">
+                            {selectedTask.tags.map(tag => (
+                              <div
+                                key={tag}
+                                className="px-2 py-0.5 text-xs rounded-full bg-zinc-800 text-zinc-300"
+                              >
+                                {tag}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Dependencies Section */}
+                  {selectedTask.dependencies && selectedTask.dependencies.length > 0 && (
+                    <div className="space-y-2 pt-4">
+                      <label className="text-sm font-medium text-zinc-400">Dependencies</label>
+                      <div className="space-y-2">
+                        {selectedTask.dependencies.map(ref => {
+                          const task = initialTasks.find(t => t.ref === ref)
+                          if (!task) return null
+                          return (
+                            <div
+                              key={ref}
+                              className="flex items-center gap-3 p-2 border border-zinc-800 rounded-md hover:bg-zinc-800/50 cursor-pointer"
+                              onClick={() => setSelectedTask(task)}
+                            >
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-mono text-zinc-400">{task.ref}</span>
+                                  <span className="text-sm text-zinc-100 truncate">{task.title}</span>
+                                </div>
+                                {task.epic && (
+                                  <div className="text-xs text-zinc-500 truncate">
+                                    {epics.find(e => e.id === task.epic)?.title || task.epic}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex justify-end gap-3 pt-4 mt-2 border-t border-zinc-800">
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowDeleteAlert(true)}
+                      className="bg-zinc-900/50 border-zinc-800 text-red-400 hover:text-red-300 hover:bg-zinc-800/50"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setIsEditing(true)
+                        setEditedTask(selectedTask)
+                        setEditTagInput(selectedTask.tags?.join(', ') || '')
+                      }}
+                      className="bg-zinc-900/50 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50"
+                    >
+                      <Pencil className="w-4 h-4 mr-2" />
+                      Edit
+                    </Button>
                   </div>
                 </div>
               )}

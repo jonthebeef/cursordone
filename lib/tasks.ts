@@ -12,6 +12,7 @@ export interface Task {
   title: string
   status: 'todo' | 'done'
   priority: 'low' | 'medium' | 'high'
+  complexity?: 'XS' | 'S' | 'M' | 'L' | 'XL'
   epic?: string
   parent?: string
   dependencies?: string[]
@@ -25,6 +26,7 @@ interface TaskFrontmatter {
   title: string
   status: Task['status']
   priority: Task['priority']
+  complexity?: Task['complexity']
   epic?: string
   parent?: string
   dependencies?: string[]
@@ -81,6 +83,7 @@ export async function createTask(task: Omit<Task, 'filename' | 'content' | 'ref'
     title: task.title,
     status: task.status,
     priority: task.priority,
+    complexity: task.complexity,
     epic: task.epic ? task.epic.toLowerCase().replace(/[^a-z0-9]+/g, '-') : undefined,
     parent: task.parent,
     dependencies: task.dependencies || [],
@@ -109,6 +112,7 @@ export async function updateTask(filename: string, task: Omit<Task, 'filename'>)
     title: task.title,
     status: task.status,
     priority: task.priority,
+    complexity: task.complexity,
     epic: task.epic ? task.epic.toLowerCase().replace(/[^a-z0-9]+/g, '-') : undefined,
     parent: task.parent,
     dependencies: task.dependencies || [],

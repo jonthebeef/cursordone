@@ -9,7 +9,7 @@ import { useState, useEffect, useRef, useMemo } from "react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Pencil, Trash2, ImagePlus, X, Search, ListTodo, CheckCircle2, Hash, Folder, ArrowUpDown } from "lucide-react"
+import { Pencil, Trash2, ImagePlus, X, Search, ListTodo, CheckCircle2, Hash, Folder, ArrowUpDown, Shirt } from "lucide-react"
 import ReactMarkdown from 'react-markdown'
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -71,7 +71,8 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
     status: 'todo',
     content: '',
     created: '',
-    dependencies: []
+    dependencies: [],
+    complexity: 'M'
   })
   const [tagInput, setTagInput] = useState('')
 
@@ -262,7 +263,8 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
         status: 'todo',
         content: '',
         created: '',
-        dependencies: []
+        dependencies: [],
+        complexity: 'M'
       })
       setTagInput('')
       setSearchQuery('')
@@ -543,10 +545,33 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                       />
                     </div>
 
-                    <div className="sm:col-span-2 space-y-2">
-                      <label htmlFor="content" className="text-sm font-medium text-zinc-400">
-                        Content
-                      </label>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-zinc-400">Complexity</label>
+                      <div className="flex gap-2">
+                        {[
+                          { value: 'XS', label: 'Extra Small' },
+                          { value: 'S', label: 'Small' },
+                          { value: 'M', label: 'Medium' },
+                          { value: 'L', label: 'Large' },
+                          { value: 'XL', label: 'Extra Large' }
+                        ].map(({ value, label }) => (
+                          <button
+                            key={value}
+                            type="button"
+                            onClick={() => setEditedTask(prev => prev ? { ...prev, complexity: value as Task['complexity'] } : null)}
+                            className={cn(
+                              'px-3 py-1.5 rounded-md text-sm flex-1 border',
+                              editedTask?.complexity === value ? 'bg-zinc-800 text-zinc-100 border-zinc-700' : 'bg-zinc-900/50 text-zinc-400 hover:text-zinc-300 border-zinc-800'
+                            )}
+                          >
+                            {value}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-zinc-400">Content</label>
                       <div className="space-y-2">
                         <textarea
                           id="content"
@@ -634,6 +659,35 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                       )}>
                         {selectedTask.title}
                       </h2>
+                      <div className="flex flex-wrap gap-4 text-sm text-zinc-300 mt-2">
+                        <span className="flex items-center gap-1.5">
+                          <span className={cn(
+                            "w-2 h-2 rounded-full",
+                            selectedTask.priority === 'high' 
+                              ? 'bg-amber-400' 
+                              : selectedTask.priority === 'medium' 
+                                ? 'bg-blue-400' 
+                                : 'bg-zinc-400'
+                          )} />
+                          {selectedTask.priority}
+                        </span>
+                        {selectedTask.complexity && (
+                          <span className="flex items-center gap-1.5">
+                            <Shirt className="h-3.5 w-3.5 text-purple-400" />
+                            {selectedTask.complexity === 'XS' ? 'Extra Small' :
+                             selectedTask.complexity === 'S' ? 'Small' :
+                             selectedTask.complexity === 'M' ? 'Medium' :
+                             selectedTask.complexity === 'L' ? 'Large' :
+                             'Extra Large'}
+                          </span>
+                        )}
+                        {selectedTask.epic && (
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-blue-400" />
+                            {selectedTask.epic}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center gap-4">
                       <Button
@@ -804,6 +858,31 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                       )}
                     >
                       {p}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-zinc-400">Complexity</label>
+                <div className="flex gap-2">
+                  {[
+                    { value: 'XS', label: 'Extra Small' },
+                    { value: 'S', label: 'Small' },
+                    { value: 'M', label: 'Medium' },
+                    { value: 'L', label: 'Large' },
+                    { value: 'XL', label: 'Extra Large' }
+                  ].map(({ value, label }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setNewTask(prev => ({ ...prev, complexity: value as Task['complexity'] }))}
+                      className={cn(
+                        'px-3 py-1.5 rounded-md text-sm flex-1 border',
+                        newTask.complexity === value ? 'bg-zinc-800 text-zinc-100 border-zinc-700' : 'bg-zinc-900/50 text-zinc-400 hover:text-zinc-300 border-zinc-800'
+                      )}
+                    >
+                      {value}
                     </button>
                   ))}
                 </div>

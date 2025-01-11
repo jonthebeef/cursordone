@@ -6,7 +6,7 @@ import { Task } from "@/lib/tasks"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Link2, Calendar } from "lucide-react"
+import { Link2, Calendar, Shirt } from "lucide-react"
 
 interface TaskCardProps {
   task: Task
@@ -105,6 +105,16 @@ export function TaskCard({ task, onClick, onComplete }: TaskCardProps) {
               )} />
               {task.priority}
             </span>
+            {task.complexity && (
+              <span className="flex items-center gap-1.5 font-inter">
+                <Shirt className="h-3.5 w-3.5 text-purple-400" />
+                {task.complexity === 'XS' ? 'Extra Small' :
+                 task.complexity === 'S' ? 'Small' :
+                 task.complexity === 'M' ? 'Medium' :
+                 task.complexity === 'L' ? 'Large' :
+                 'Extra Large'}
+              </span>
+            )}
             {hasDependencies && (
               <span className="flex items-center gap-1.5 font-inter text-zinc-400">
                 <Link2 className="h-3.5 w-3.5" />

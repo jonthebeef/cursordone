@@ -2,6 +2,7 @@
 title: Enable tag starring for improved organization
 status: todo
 priority: medium
+complexity: S
 epic: task-management-enhancement
 tags:
   - enhancement

@@ -32,12 +32,13 @@ Added complexity field to tasks with T-shirt sizing:
    - Added complexity selector to task creation dialog
    - Added complexity selector to task edit dialog
    - Default value set to 'M' for new tasks
-   - Used consistent button-based selector style matching priority selector
+   - Used simple button-based selector showing only size codes (XS, S, M, L, XL)
 
 3. Task Display:
-   - Added complexity to task card metadata
-   - Used purple indicator dot for visual distinction
+   - Added complexity to task card metadata with T-shirt icon
+   - Used purple T-shirt icon for visual distinction
    - Added complexity to task view dialog metadata
+   - Shows full size names in display views (e.g., "Extra Small" instead of "XS")
    - Maintained consistent styling with other metadata
 
 4. State Management:
@@ -45,4 +46,10 @@ Added complexity field to tasks with T-shirt sizing:
    - Added complexity to task reset state
    - Preserved complexity in task updates
 
-The feature is now complete and working as expected, providing users with a clear way to indicate task complexity using T-shirt sizes.
+5. UI Refinements:
+   - Simplified selector UI to show only size codes
+   - Removed T-shirt icons from create/edit dialogs
+   - Kept T-shirt icons only in display views (task card and view dialog)
+   - Improved visual hierarchy with consistent button styling
+
+The feature is now complete and working as expected, providing users with a clear way to indicate task complexity using T-shirt sizes while maintaining a clean and intuitive interface.

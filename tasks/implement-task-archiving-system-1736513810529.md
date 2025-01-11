@@ -2,6 +2,7 @@
 title: Implement task archiving system
 status: todo
 priority: high
+complexity: XL
 epic: task-management-enhancement
 tags:
   - enhancement

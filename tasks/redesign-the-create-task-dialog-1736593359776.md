@@ -3,6 +3,7 @@ ref: TSK-083
 title: Redesign the create task dialog
 status: todo
 priority: medium
+complexity: M
 epic: ui-cleanup
 dependencies: []
 tags:

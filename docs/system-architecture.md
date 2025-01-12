@@ -1,14 +1,15 @@
 ---
 title: System Architecture
 description: Comprehensive documentation of the system architecture and components
-created: '2024-01-11'
 type: architecture
 tags:
   - documentation
   - architecture
   - system
+created: '2024-01-11'
+epic: ''
+dependencies: []
 ---
-
 # System Architecture
 
 This document provides a comprehensive overview of the system architecture, including directory structure, component relationships, file naming conventions, and data schemas.
@@ -197,4 +198,4 @@ tags: string[]     # List of tags
    - Efficient file operations
    - Optimized state updates
    - Lazy loading
-   - Caching strategies 
+   - Caching strategies

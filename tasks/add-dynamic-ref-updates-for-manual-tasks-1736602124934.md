@@ -8,6 +8,7 @@ tags:
   - enhancement
   - task refs
 created: '2024-01-11'
+ref: TSK-098
 ---
 
 Currently, when tasks are created manually by adding markdown files to the tasks directory, the TSK ref is not assigned until the page is refreshed. We need to make this process dynamic so refs are assigned immediately.

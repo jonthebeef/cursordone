@@ -53,7 +53,7 @@ export function TaskCard({ task, onClick, onComplete }: TaskCardProps) {
   return (
     <Card 
       className={cn(
-        "transition-all duration-200 cursor-pointer hover:shadow-xl shadow-md border relative",
+        "transition-all duration-200 cursor-pointer hover:shadow-xl shadow-md border relative w-full",
         "bg-zinc-800/40 hover:bg-zinc-800/60 border-zinc-800/50",
         task.status === "done" && "opacity-60"
       )}

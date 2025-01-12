@@ -343,114 +343,144 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
 
   return (
     <div className="relative -mt-6">
-      <div>
-        <header className="fixed top-0 right-0 left-0 lg:left-[250px] flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 lg:p-3 bg-[#18181b] z-10">
-          <div className="w-full sm:max-w-[40%] lg:max-w-[50%] max-w-[calc(100%-48px)] ml-2.5">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search tasks..."
-                className="w-full pl-9 pr-8 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-300 p-1"
-                  type="button"
-                >
-                  <X className="h-4 w-4" />
-                </button>
+      <header className="fixed top-0 right-0 left-0 lg:left-[250px] flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 lg:p-3 bg-[#18181b] z-10">
+        <div className="w-full sm:max-w-[40%] lg:max-w-[50%] max-w-[calc(100%-48px)] ml-2.5">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search tasks..."
+              className="w-full pl-9 pr-8 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-300 p-1"
+                type="button"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 justify-between w-full sm:w-auto sm:flex-1 sm:justify-end">
+          <div className="flex items-center gap-2 sm:-ml-4">
+            <ArrowUpDown className="w-4 h-4 text-zinc-400" />
+            <Select value={sortOption} onValueChange={(value: SortOption) => setSortOption(value)}>
+              <SelectTrigger className="w-[180px] bg-zinc-900 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20">
+                <SelectValue placeholder="Sort by..." />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border border-zinc-800">
+                {sortOptions.map(option => (
+                  <SelectItem 
+                    key={option.value} 
+                    value={option.value}
+                    className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800 cursor-pointer text-left"
+                  >
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <Button
+            onClick={() => setShowCreateDialog(true)}
+            className="bg-blue-500 text-white hover:bg-blue-600 whitespace-nowrap sm:ml-4 lg:ml-6"
+          >
+            Create Task
+          </Button>
+        </div>
+      </header>
+
+      <main className="pt-[104px] sm:pt-[52px] px-2">
+        <Accordion 
+          type="multiple" 
+          value={openSections}
+          onValueChange={setOpenSections}
+          className="space-y-4"
+        >
+          <AccordionItem value="backlog" className="border-none">
+            <div className="flex flex-col gap-2">
+              <AccordionTrigger className="hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <ListTodo className="w-5 h-5" />
+                  <span className="text-xl font-medium tracking-tight text-zinc-100 font-mono">
+                    Backlog ({sortedBacklogTasks.length})
+                  </span>
+                </div>
+              </AccordionTrigger>
+
+              {/* Filter indicators */}
+              {(selectedEpic || selectedTags.length > 0) && (
+                <div className="flex items-center gap-2 text-sm py-2 pl-10 relative z-50 bg-[#18181b]">
+                  {selectedEpic && (
+                    <div className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
+                      <Folder className="w-3.5 h-3.5 text-zinc-400" />
+                      <span className="text-zinc-300">
+                        {selectedEpic === 'none' ? 'No Epic' : 
+                          epics.find(e => e.id === selectedEpic)?.title || selectedEpic}
+                      </span>
+                    </div>
+                  )}
+                  {selectedTags.map((tag, i) => (
+                    <div key={i} className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
+                      <Hash className="w-3.5 h-3.5 text-zinc-400" />
+                      <span className="text-zinc-300">{tag}</span>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
-          </div>
-          <div className="flex items-center gap-2 justify-between w-full sm:w-auto sm:flex-1 sm:justify-end">
-            <div className="flex items-center gap-2 sm:-ml-4">
-              <ArrowUpDown className="w-4 h-4 text-zinc-400" />
-              <Select value={sortOption} onValueChange={(value: SortOption) => setSortOption(value)}>
-                <SelectTrigger className="w-[180px] bg-zinc-900 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20">
-                  <SelectValue placeholder="Sort by..." />
-                </SelectTrigger>
-                <SelectContent className="bg-zinc-900 border border-zinc-800">
-                  {sortOptions.map(option => (
-                    <SelectItem 
-                      key={option.value} 
-                      value={option.value}
-                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800 cursor-pointer text-left"
-                    >
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <Button
-              onClick={() => setShowCreateDialog(true)}
-              className="bg-blue-500 text-white hover:bg-blue-600 whitespace-nowrap sm:ml-4 lg:ml-6"
-            >
-              Create Task
-            </Button>
-          </div>
-        </header>
 
-        <main className="pt-[104px] sm:pt-[52px] px-4">
-          <Accordion 
-            type="multiple" 
-            value={openSections}
-            onValueChange={setOpenSections}
-            className="space-y-4"
-          >
-            <AccordionItem value="backlog" className="border-none">
-              <div className="flex flex-col gap-2">
-                <AccordionTrigger className="hover:no-underline">
-                  <div className="flex items-center gap-2">
-                    <ListTodo className="w-5 h-5" />
-                    <span className="text-xl font-medium tracking-tight text-zinc-100 font-mono">
-                      Backlog ({sortedBacklogTasks.length})
-                    </span>
-                  </div>
-                </AccordionTrigger>
-
-                {/* Filter indicators */}
-                {(selectedEpic || selectedTags.length > 0) && (
-                  <div className="flex items-center gap-2 text-sm py-2 pl-10 relative z-50 bg-[#18181b]">
-                    {selectedEpic && (
-                      <div className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
-                        <Folder className="w-3.5 h-3.5 text-zinc-400" />
-                        <span className="text-zinc-300">
-                          {selectedEpic === 'none' ? 'No Epic' : 
-                            epics.find(e => e.id === selectedEpic)?.title || selectedEpic}
-                        </span>
-                      </div>
-                    )}
-                    {selectedTags.map((tag, i) => (
-                      <div key={i} className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
-                        <Hash className="w-3.5 h-3.5 text-zinc-400" />
-                        <span className="text-zinc-300">{tag}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+            <AccordionContent>
+              <div className="pt-4">
+                <DndContext 
+                  collisionDetection={closestCenter} 
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext 
+                    items={sortedBacklogTasks.map(t => t.filename)} 
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="space-y-4">
+                      {sortedBacklogTasks.map((task, index) => (
+                        <SortableTaskCard
+                          key={task.filename}
+                          task={task}
+                          number={index + 1}
+                          onComplete={handleComplete}
+                          onClick={handleTaskClick}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
               </div>
+            </AccordionContent>
+          </AccordionItem>
 
+          {sortedDoneTasks.length > 0 && (
+            <AccordionItem value="done" className="border-none">
+              <AccordionTrigger className="hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span className="text-xl font-medium tracking-tight text-zinc-100 font-mono">
+                    Done ({sortedDoneTasks.length})
+                  </span>
+                </div>
+              </AccordionTrigger>
               <AccordionContent>
                 <div className="pt-4">
-                  <DndContext 
-                    collisionDetection={closestCenter} 
-                    onDragEnd={handleDragEnd}
-                  >
-                    <SortableContext 
-                      items={sortedBacklogTasks.map(t => t.filename)} 
-                      strategy={verticalListSortingStrategy}
-                    >
+                  <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <SortableContext items={sortedDoneTasks.map(t => t.filename)} strategy={verticalListSortingStrategy}>
                       <div className="space-y-4">
-                        {sortedBacklogTasks.map((task, index) => (
+                        {sortedDoneTasks.map((task, index) => (
                           <SortableTaskCard
                             key={task.filename}
                             task={task}
-                            number={index + 1}
+                            number={sortedBacklogTasks.length + index + 1}
                             onComplete={handleComplete}
                             onClick={handleTaskClick}
                           />
@@ -461,41 +491,9 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                 </div>
               </AccordionContent>
             </AccordionItem>
-
-            {sortedDoneTasks.length > 0 && (
-              <AccordionItem value="done" className="border-none">
-                <AccordionTrigger className="hover:no-underline">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span className="text-xl font-medium tracking-tight text-zinc-100 font-mono">
-                      Done ({sortedDoneTasks.length})
-                    </span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="pt-4">
-                    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                      <SortableContext items={sortedDoneTasks.map(t => t.filename)} strategy={verticalListSortingStrategy}>
-                        <div className="space-y-4">
-                          {sortedDoneTasks.map((task, index) => (
-                            <SortableTaskCard
-                              key={task.filename}
-                              task={task}
-                              number={sortedBacklogTasks.length + index + 1}
-                              onComplete={handleComplete}
-                              onClick={handleTaskClick}
-                            />
-                          ))}
-                        </div>
-                      </SortableContext>
-                    </DndContext>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            )}
-          </Accordion>
-        </main>
-      </div>
+          )}
+        </Accordion>
+      </main>
 
       <Dialog open={!!selectedTask} onOpenChange={(open) => {
         if (!open) {

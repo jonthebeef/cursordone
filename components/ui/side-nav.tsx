@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from "@/lib/utils"
-import { Menu, X, LayoutList, Layers, ChevronDown, ChevronRight, Hash, RefreshCw, AlertCircle, CheckCircle2, Info } from "lucide-react"
+import { Menu, X, LayoutList, Layers, ChevronDown, ChevronRight, Hash, RefreshCw, AlertCircle, CheckCircle2, Info, FileText } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
@@ -111,6 +111,11 @@ export function SideNav({
       href: "/epics",
       label: "Epics",
       icon: Layers
+    },
+    {
+      href: "/docs",
+      label: "Docs",
+      icon: FileText
     }
   ]
 

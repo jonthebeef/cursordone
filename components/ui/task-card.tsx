@@ -37,7 +37,7 @@ export function TaskCard({ task, onClick, onComplete }: TaskCardProps) {
   }
 
   const handleCardClick = (e: React.MouseEvent) => {
-    e.preventDefault()
+    if (e.defaultPrevented || (e.target as HTMLElement).closest('.checkbox-container')) return
     onClick(task)
   }
 
@@ -71,7 +71,6 @@ export function TaskCard({ task, onClick, onComplete }: TaskCardProps) {
           className="checkbox-container" 
           onClick={e => {
             e.stopPropagation()
-            e.preventDefault()
           }}
         >
           <Checkbox

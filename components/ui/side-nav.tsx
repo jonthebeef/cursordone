@@ -1,10 +1,10 @@
 'use client'
 
 import { cn } from "@/lib/utils"
-import { Menu, X, LayoutList, Layers, ChevronDown, ChevronRight, Hash, RefreshCw, AlertCircle, CheckCircle2, Info, FileText } from "lucide-react"
+import { Menu, X, LayoutList, Layers, ChevronDown, ChevronRight, Hash, RefreshCw, AlertCircle, CheckCircle2, Info, FileText, Star } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "./button"
 import { useToast } from "./use-toast"
 
@@ -29,8 +29,69 @@ export function SideNav({
   const [isEpicsOpen, setIsEpicsOpen] = useState(true)
   const [isTagsOpen, setIsTagsOpen] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
+  const [starredTags, setStarredTags] = useState<string[]>([])
+  const [isLoadingStars, setIsLoadingStars] = useState(true)
   const pathname = usePathname()
   const { toast } = useToast()
+
+  // Load starred tags
+  useEffect(() => {
+    const loadStarredTags = async () => {
+      try {
+        const response = await fetch('/api/starred-tags')
+        if (response.ok) {
+          const data = await response.json()
+          setStarredTags(data)
+        }
+      } catch (error) {
+        console.error('Failed to load starred tags:', error)
+      } finally {
+        setIsLoadingStars(false)
+      }
+    }
+
+    loadStarredTags()
+  }, [])
+
+  // Handle starring/unstarring tags
+  const handleStarClick = async (tag: string, isStarred: boolean) => {
+    try {
+      const response = await fetch('/api/starred-tags', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tag,
+          action: isStarred ? 'unstar' : 'star'
+        })
+      })
+
+      if (response.ok) {
+        const updatedStarredTags = await response.json()
+        setStarredTags(updatedStarredTags)
+        toast({
+          title: isStarred ? "Tag unstarred" : "Tag starred",
+          description: `${tag} has been ${isStarred ? 'removed from' : 'added to'} starred tags.`,
+          variant: "default"
+        })
+      }
+    } catch (error) {
+      console.error('Failed to update starred tag:', error)
+      toast({
+        title: "Error",
+        description: "Failed to update starred tag. Please try again.",
+        variant: "destructive"
+      })
+    }
+  }
+
+  // Sort tags: starred first, then alphabetically
+  const sortedTags = [...tags].sort((a, b) => {
+    const aStarred = starredTags.includes(a)
+    const bStarred = starredTags.includes(b)
+    if (aStarred && !bStarred) return -1
+    if (!aStarred && bStarred) return 1
+    return a.localeCompare(b)
+  })
 
   const handleEpicClick = (epicId: string | null) => {
     onEpicSelect?.(epicId)
@@ -244,23 +305,38 @@ export function SideNav({
                 </button>
                 {isTagsOpen && onTagSelect && (
                   <div className="pl-4 space-y-1">
-                    {tags.map(tag => (
-                      <Button
-                        key={tag}
-                        variant={selectedTags.includes(tag) ? "default" : "ghost"}
-                        size="sm"
-                        className={cn(
-                          "w-full justify-start gap-2 transition-colors text-left whitespace-normal",
-                          selectedTags.includes(tag)
-                            ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-800/90 active:bg-zinc-800/80"
-                            : "text-zinc-300 hover:bg-zinc-800/50 hover:text-zinc-100"
-                        )}
-                        onClick={() => handleTagClick(tag)}
-                      >
-                        <Hash className="h-3.5 w-3.5 shrink-0" />
-                        {tag}
-                      </Button>
-                    ))}
+                    {sortedTags.map(tag => {
+                      const isStarred = starredTags.includes(tag)
+                      return (
+                        <div key={tag} className="flex items-center gap-1">
+                          <Button
+                            variant={selectedTags.includes(tag) ? "default" : "ghost"}
+                            size="sm"
+                            className={cn(
+                              "flex-1 justify-start gap-2 transition-colors text-left whitespace-normal",
+                              selectedTags.includes(tag)
+                                ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-800/90 active:bg-zinc-800/80"
+                                : "text-zinc-300 hover:bg-zinc-800/50 hover:text-zinc-100"
+                            )}
+                            onClick={() => handleTagClick(tag)}
+                          >
+                            <Hash className="h-3.5 w-3.5 shrink-0" />
+                            {tag}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className={cn(
+                              "px-2 hover:bg-zinc-800/50",
+                              isStarred && "text-yellow-400"
+                            )}
+                            onClick={() => handleStarClick(tag, isStarred)}
+                          >
+                            <Star className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
               </div>

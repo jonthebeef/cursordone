@@ -1,33 +1,19 @@
 {
   "orders": {
     "global": [
-      "implement-ref-update-notifications.md",
-      "bug-fix-urls-and-linking-to-other-tasks-1736600581329.md",
-      "add-progress-bar-to-epics-1736430107428.md",
-      "add-a-size-filter-1736600954077.md",
-      "add-clear-button-to-search-field-1736430903721.md",
-      "add-the-task-id-to-the-view-state-of-a-task-1736528126830.md",
-      "bug-there-are-repeated-task-id-refs-1736513810527.md",
-      "alert-using-when-deleting-a-task-1736425473316.md",
-      "bug-align-all-epics-in-the-sidebar-to-the-left-1736366445922.md",
-      "bug-can-only-add-one-tag-in-a-new-task-1736377742466.md",
-      "bug-fix-the-epic-front-matter-1736378567696.md",
-      "bug-reinstate-the-add-images-button-in-create-task-1736377564696.md",
-      "bug-task-ref-ids-are-not-unique-to-the-task-1736427966780.md",
-      "bug-task-title-is-shown-twice-when-viewing-task-1736424290021.md",
-      "bug-when-viewing-the-task-the-dialog-is-too-tall-and-i-cannot-scroll-to-see-all-of-the-content-1736430260655.md",
-      "cleanup-orphaned-task-images-1736430500000.md",
-      "enable-sorting-options-in-task-view-1736424875869.md",
-      "enable-the-filtered-view-to-be-saved--1736377850658.md",
-      "enable-the-sorted-order-of-tasks-to-be-saved-between-sessions-1736378007142.md",
-      "enhance-ref-update-button.md",
-      "hot-refresh-the-task-list-when-new-tasks-are-added-1736425116021.md",
-      "implement-toast-system.md",
-      "remove-space-above-task-page-heading-and-create-task-button-1736365899104.md",
-      "show-the-filters-applied-in-the-task-list-1736424963392.md",
-      "implement-toast-and-ref-updates.md",
-      "redesign-the-create-task-dialog-1736593359776.md",
-      "update-task-view-and-edit-dialog-layout-1736595264939.md"
+      "setup-initial-supabase-project.md",
+      "create-supabase-database-schema.md",
+      "configure-environment-system.md",
+      "setup-supabase-core-auth.md",
+      "setup-core-package-configuration.md",
+      "create-template-structure.md",
+      "setup-user-profile-system.md",
+      "implement-basic-file-operations-error-handling.md",
+      "implement-clean-system-structure.md",
+      "implement-file-locking-system.md",
+      "implement-file-recovery-system.md",
+      "implement-global-error-boundary-system.md",
+      "implement-session-management.md"
     ],
     "epic:ui-cleanup": [
       "implement-ref-update-notifications.md",
@@ -63,6 +49,21 @@
       "enable-the-sorted-order-of-tasks-to-be-saved-between-sessions-1736378007142.md",
       "bug-on-persisted-filtered-state-epic-shows-as-all-tasks--1736513425194.md",
       "enable-the-filtered-view-to-be-saved--1736377850658.md"
+    ],
+    "tag:day 1": [
+      "setup-initial-supabase-project.md",
+      "create-supabase-database-schema.md",
+      "configure-environment-system.md",
+      "setup-supabase-core-auth.md",
+      "setup-core-package-configuration.md",
+      "create-template-structure.md",
+      "setup-user-profile-system.md",
+      "implement-basic-file-operations-error-handling.md",
+      "implement-clean-system-structure.md",
+      "implement-file-locking-system.md",
+      "implement-file-recovery-system.md",
+      "implement-global-error-boundary-system.md",
+      "implement-session-management.md"
     ]
   }
 }

@@ -9,6 +9,7 @@ dependencies: []
 tags:
   - progress
   - epics
+  - day 3
 created: '2025-01-09'
 ---
 Currently, there's no way of seeing how close to completing an epic we are

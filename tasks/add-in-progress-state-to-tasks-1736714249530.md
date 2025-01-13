@@ -1,5 +1,6 @@
 ---
 status: done
+ref: TSK-103
 ---
 
 # Add in progress state to tasks (TSK-101)

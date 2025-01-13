@@ -2,6 +2,7 @@
 title: Test authentication flows
 status: todo
 priority: high
+complexity: S
 epic: testing-and-validation
 dependencies:
   - enable-authentication-providers.md
@@ -10,6 +11,7 @@ tags:
   - testing
   - authentication
   - supabase
+  - day 4
 created: '2025-01-10'
 ref: TSK-069
 ---

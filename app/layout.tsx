@@ -6,6 +6,8 @@ import { SideNav } from "@/components/ui/side-nav";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster"
 import { ClientLayout } from "./client-layout"
+import { AuthProvider } from '@/components/providers/auth-provider'
+import { GeistSans } from 'geist/font/sans'
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -30,9 +32,11 @@ export default function RootLayout({
         GeistMono.variable,
         "font-inter h-full bg-zinc-900 text-zinc-50"
       )}>
-        <ClientLayout>
-          {children}
-        </ClientLayout>
+        <AuthProvider>
+          <ClientLayout>
+            {children}
+          </ClientLayout>
+        </AuthProvider>
       </body>
     </html>
   );

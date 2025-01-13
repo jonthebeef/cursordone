@@ -1,23 +1,64 @@
 ---
-title: Implement CLI login command
+title: Implement CLI Login Command
 status: todo
 priority: high
-epic: authentication-integration
+complexity: S
+epic: package-setup
 dependencies:
-  - enable-authentication-providers.md
+  - create-cli-framework.md
+  - setup-supabase-core-auth.md
 tags:
   - cli
-  - authentication
-  - supabase
-created: 2025-01-10T00:00:00.000Z
-ref: TSK-068
+  - day 2
+  - auth
+created: '2024-01-15'
+ref: TSK-112
 ---
-Implement the `cursordone login` CLI command to authenticate users via Supabase. Include the following:
 
-1. Support email/password login.
-2. Redirect users to browser-based OAuth login for GitHub/Google.
-3. Save the session token locally in `~/.cursordone/config.json`.
+# Implement CLI Login Command
 
-Deliverable:
-- A working CLI login command supporting multiple authentication methods.
-- Session data stored locally.
+Create the CLI login command to handle user authentication through Supabase.
+
+## Implementation Notes
+- Remember to change status to "in progress" when starting this task
+- Test thoroughly before marking as done
+- Commit with message "feat: implement cli login command"
+
+## Requirements Checklist
+
+### Command Implementation
+- [ ] Create login command
+- [ ] Add logout command
+- [ ] Implement status check
+- [ ] Add token management
+
+### Authentication Flow
+- [ ] Setup browser launch
+- [ ] Handle auth callback
+- [ ] Store credentials
+- [ ] Manage refresh
+
+### Error Handling
+- [ ] Handle auth failures
+- [ ] Add retry logic
+- [ ] Create error messages
+- [ ] Setup logging
+
+### User Experience
+- [ ] Add progress indicators
+- [ ] Create success messages
+- [ ] Implement help text
+- [ ] Add examples
+
+## Testing Instructions
+1. Test login flow
+2. Verify token storage
+3. Check error handling
+4. Test logout process
+5. Validate help text
+
+## Success Criteria
+- Working login command
+- Secure token storage
+- Clear user feedback
+- Proper error handling

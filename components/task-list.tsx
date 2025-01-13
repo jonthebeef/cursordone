@@ -282,7 +282,7 @@ export function TaskList({
     if (!searchQuery) return true
     const searchLower = searchQuery.toLowerCase()
     return (
-      task.title.toLowerCase().includes(searchLower) ||
+      task.title?.toLowerCase().includes(searchLower) ||
       task.epic?.toLowerCase().includes(searchLower)
     )
   })

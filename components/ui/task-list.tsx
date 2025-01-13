@@ -181,7 +181,7 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
     if (!searchQuery) return initialTasks
     const searchLower = searchQuery.toLowerCase()
     return initialTasks.filter(task => 
-      task.title.toLowerCase().includes(searchLower) ||
+      task.title?.toLowerCase().includes(searchLower) ||
       task.content?.toLowerCase().includes(searchLower) ||
       task.ref?.toLowerCase().includes(searchLower) ||
       task.epic?.toLowerCase().includes(searchLower) ||

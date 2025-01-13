@@ -9,7 +9,8 @@ tags:
   - system
   - cleanup
   - day 1
-created: "2024-01-15"
+created: '2024-01-15'
+ref: TSK-142
 ---
 
 # Separate System from Content

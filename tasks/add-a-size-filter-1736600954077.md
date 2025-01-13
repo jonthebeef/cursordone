@@ -1,7 +1,7 @@
 ---
 ref: TSK-089
 title: Add a size sort dropdown
-status: todo
+status: in-progress
 priority: medium
 complexity: S
 epic: ui-cleanup

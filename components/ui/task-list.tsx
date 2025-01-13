@@ -90,8 +90,8 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
     if (!dependencySearchQuery) return initialTasks
     const query = dependencySearchQuery.toLowerCase()
     return initialTasks.filter(task => 
-      task.title.toLowerCase().includes(query) || 
-      task.ref?.toLowerCase().includes(query)
+      (task.title?.toLowerCase().includes(query) || false) ||
+      (task.ref?.toLowerCase().includes(query) || false)
     )
   }, [initialTasks, dependencySearchQuery])
 
@@ -1067,8 +1067,8 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                   <Search className="w-4 h-4 text-zinc-400 mr-2" />
                   <input
                     type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={dependencySearchQuery}
+                    onChange={(e) => setDependencySearchQuery(e.target.value)}
                     placeholder="Search tasks..."
                     className="flex-1 bg-transparent outline-none text-sm text-zinc-100 placeholder:text-zinc-500"
                   />

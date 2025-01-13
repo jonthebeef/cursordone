@@ -12,6 +12,7 @@ tags:
   - day 3
   - web
 created: '2024-01-15'
+ref: TSK-140
 ---
 
 # Setup Web UI Core

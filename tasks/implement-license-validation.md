@@ -4,12 +4,14 @@ status: todo
 priority: high
 complexity: S
 epic: system-rebuild
-dependencies: ["setup-supabase-core-auth.md"]
+dependencies:
+  - setup-supabase-core-auth.md
 tags:
   - security
   - day 3
   - licensing
 created: '2024-01-15'
+ref: TSK-130
 ---
 
 # Implement License Validation

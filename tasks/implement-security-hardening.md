@@ -12,6 +12,7 @@ tags:
   - day 5
   - production
 created: '2024-01-15'
+ref: TSK-133
 ---
 
 # Implement Security Hardening

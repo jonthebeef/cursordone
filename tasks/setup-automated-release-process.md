@@ -11,6 +11,7 @@ tags:
   - day 4
   - automation
 created: '2024-01-15'
+ref: TSK-138
 ---
 
 # Setup Automated Release Process

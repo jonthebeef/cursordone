@@ -4,12 +4,14 @@ status: todo
 priority: high
 complexity: S
 epic: system-rebuild
-dependencies: ["configure-npm-package-build.md"]
+dependencies:
+  - configure-npm-package-build.md
 tags:
   - security
   - day 3
   - build
 created: '2024-01-15'
+ref: TSK-128
 ---
 
 # Implement Code Obfuscation

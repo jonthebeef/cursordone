@@ -1,12 +1,13 @@
 'use client'
 
 import { cn } from "@/lib/utils"
-import { Menu, X, LayoutList, Layers, ChevronDown, ChevronRight, Hash, RefreshCw, AlertCircle, CheckCircle2, Info, FileText, Star } from "lucide-react"
+import { Menu, X, LayoutList, Layers, ChevronDown, ChevronRight, Hash, RefreshCw, AlertCircle, CheckCircle2, Info, FileText, Star, LogOut } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
 import { Button } from "./button"
 import { useToast } from "./use-toast"
+import { createBrowserClient } from '@supabase/ssr'
 
 interface SideNavProps {
   epics?: { id: string; title: string }[]
@@ -32,7 +33,12 @@ export function SideNav({
   const [starredTags, setStarredTags] = useState<string[]>([])
   const [isLoadingStars, setIsLoadingStars] = useState(true)
   const pathname = usePathname()
+  const router = useRouter()
   const { toast } = useToast()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   // Load starred tags
   useEffect(() => {
@@ -179,6 +185,21 @@ export function SideNav({
       icon: FileText
     }
   ]
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+      router.push('/auth/login')
+    } catch (error) {
+      console.error('Error logging out:', error)
+      toast({
+        title: "Error",
+        description: "Failed to log out. Please try again.",
+        variant: "destructive"
+      })
+    }
+  }
 
   return (
     <>
@@ -359,6 +380,18 @@ export function SideNav({
                 isUpdating && "animate-spin"
               )} />
               {isUpdating ? "Updating..." : "Update Task Refs"}
+            </Button>
+          </div>
+
+          {/* Logout button */}
+          <div className="mt-auto p-4 border-t border-zinc-800">
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-2 text-zinc-300 hover:text-zinc-100"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-5 w-5" />
+              Log Out
             </Button>
           </div>
         </div>

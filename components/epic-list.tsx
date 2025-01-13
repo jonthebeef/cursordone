@@ -1,16 +1,18 @@
 'use client'
 
 import { Epic } from "@/lib/epics"
-import { Card, CardHeader } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
-import { useState, ReactNode } from "react"
-import { Button } from "./ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import ReactMarkdown from 'react-markdown'
-import { Pencil, Trash2 } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { createEpicAction, deleteEpicAction, updateEpicAction } from "@/lib/actions"
-import { TagInput } from "./ui/tag-input"
+import { useState } from "react"
+import type { ReactNode } from "react"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/components/ui/use-toast"
+import { Pencil, Trash2 } from "lucide-react"
+import { TagInput } from "@/components/ui/tag-input"
+import ReactMarkdown from 'react-markdown'
+import { Card, CardHeader } from "@/components/ui/card"
 
 interface EpicListProps {
   initialEpics: Epic[]

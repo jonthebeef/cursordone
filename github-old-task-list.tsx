@@ -2,12 +2,12 @@
 
 import { Task } from "@/lib/tasks"
 import { completeTaskAction, deleteTaskAction, updateTaskAction, createTaskAction } from "@/lib/actions"
-import { TaskCard } from "./ui/task-card"
+import { TaskCard } from "@/components/ui/task-card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
-import { Button } from "./ui/button"
+import { Button } from "@/components/ui/button"
 import { Pencil, Trash2, ImagePlus, X, Search, ListTodo, CheckCircle2 } from "lucide-react"
 import ReactMarkdown from 'react-markdown'
 import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core'
@@ -21,7 +21,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { TagInput } from "./ui/tag-input"
+import { TagInput } from "@/components/ui/tag-input"
 import {
   AlertDialog,
   AlertDialogAction,

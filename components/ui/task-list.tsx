@@ -9,10 +9,10 @@ import { useState, useEffect, useRef, useMemo } from "react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Pencil, Trash2, ImagePlus, X, Search, ListTodo, CheckCircle2, Hash, Folder, ArrowUpDown, Shirt } from "lucide-react"
+import { Pencil, Trash2, ImagePlus, X, Search, ListTodo, CheckCircle2, Hash, Folder, ArrowUpDown, Shirt, Play } from "lucide-react"
 import ReactMarkdown from 'react-markdown'
-import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { DndContext, DragEndEvent, closestCenter, useSensor, useSensors, PointerSensor } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/components/ui/use-toast"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -61,7 +61,7 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeleteAlert, setShowDeleteAlert] = useState(false)
   const [taskOrder, setTaskOrder] = useState<string[]>(initialTasks.map(t => t.filename))
-  const [openSections, setOpenSections] = useState<string[]>(["backlog", "done"])
+  const [openSections, setOpenSections] = useState<string[]>(["in-progress", "backlog", "done"])
   const [isInitialized, setIsInitialized] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
@@ -77,6 +77,14 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
     complexity: 'M'
   })
   const [tagInput, setTagInput] = useState('')
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  )
 
   const filteredDependencyTasks = useMemo(() => {
     if (!dependencySearchQuery) return initialTasks
@@ -185,6 +193,17 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
   const sortedFilteredTasks = useMemo(() => {
     const tasks = [...filteredTasks]
     
+    if (sortOption === 'manual') {
+      // Create a map for faster lookups
+      const orderMap = new Map(taskOrder.map((id, index) => [id, index]))
+      
+      return tasks.sort((a, b) => {
+        const aIndex = orderMap.get(a.filename) ?? Number.MAX_SAFE_INTEGER
+        const bIndex = orderMap.get(b.filename) ?? Number.MAX_SAFE_INTEGER
+        return aIndex - bIndex
+      })
+    }
+    
     switch (sortOption) {
       case 'date-newest':
         return tasks.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())
@@ -201,15 +220,7 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
           return priorityOrder[b.priority] - priorityOrder[a.priority]
         })
       default:
-        // Manual order using taskOrder array
-        return tasks.sort((a, b) => {
-          const aIndex = taskOrder.indexOf(a.filename)
-          const bIndex = taskOrder.indexOf(b.filename)
-          if (aIndex === -1 && bIndex === -1) return 0
-          if (aIndex === -1) return 1
-          if (bIndex === -1) return -1
-          return aIndex - bIndex
-        })
+        return tasks
     }
   }, [filteredTasks, taskOrder, sortOption])
 
@@ -228,24 +239,39 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
     const { active, over } = event
     if (!over || active.id === over.id) return
 
-    const oldIndex = taskOrder.indexOf(active.id as string)
-    const newIndex = taskOrder.indexOf(over.id as string)
+    // Force manual sort mode when dragging
+    if (sortOption !== 'manual') {
+      setSortOption('manual')
+    }
+
+    // Get all visible tasks in current order
+    const visibleTasks = [...sortedBacklogTasks, ...sortedDoneTasks]
+    const visibleTaskIds = visibleTasks.map(t => t.filename)
+
+    // Find indices in the visible tasks array
+    const oldIndex = visibleTaskIds.indexOf(active.id as string)
+    const newIndex = visibleTaskIds.indexOf(over.id as string)
 
     if (oldIndex === -1 || newIndex === -1) return
 
-    const newOrder = [...taskOrder]
-    newOrder.splice(oldIndex, 1)
-    newOrder.splice(newIndex, 0, active.id as string)
+    // Create new order by preserving non-visible tasks and updating visible ones
+    const newVisibleOrder = [...visibleTaskIds]
+    const [movedItem] = newVisibleOrder.splice(oldIndex, 1)
+    newVisibleOrder.splice(newIndex, 0, movedItem)
+
+    // Merge with full task order
+    const newOrder = taskOrder.filter(id => !visibleTaskIds.includes(id))
+    const insertIndex = taskOrder.findIndex(id => visibleTaskIds.includes(id))
+    newOrder.splice(insertIndex >= 0 ? insertIndex : newOrder.length, 0, ...newVisibleOrder)
     
-    // Update local state immediately for responsiveness
+    // Update the order immediately
     setTaskOrder(newOrder)
-    setIsSaving(true)
     
     try {
-      // Save the global order first
+      // Save the global order
       await saveTaskOrderAction('global', newOrder)
       
-      // If we're in a filtered view, save that order too
+      // Only save filtered order if we're in a filtered view
       if (selectedEpic || selectedTags.length > 0) {
         const key = getOrderKey(selectedEpic, selectedTags)
         const filteredOrder = newOrder.filter(filename => 
@@ -253,28 +279,27 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
         )
         await saveTaskOrderAction(key, filteredOrder)
       }
-
-      // Trigger a refresh to ensure server state is updated
-      router.refresh()
     } catch (error) {
       console.error('Failed to save task order:', error)
-      toast({
-        title: "Error",
-        description: "Failed to save task order",
-        variant: "destructive"
-      })
-      
-      // Revert local state on error
-      setTaskOrder(taskOrder)
-    } finally {
-      setIsSaving(false)
     }
   }
 
   const handleComplete = async (filename: string) => {
     if (disabled) return
     try {
-      await completeTaskAction(filename)
+      const task = initialTasks.find(t => t.filename === filename)
+      if (!task) return
+
+      let newStatus: Task['status']
+      if (task.status === 'todo') {
+        newStatus = 'in-progress'
+      } else if (task.status === 'in-progress') {
+        newStatus = 'done'
+      } else {
+        newStatus = 'todo'
+      }
+
+      await updateTaskAction(filename, { ...task, status: newStatus })
       onStateChange?.()
     } catch (error) {
       console.error('Failed to complete task:', error)
@@ -341,9 +366,15 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
     setEditedTask(null)
   }
 
+  // Add section for in-progress tasks
+  const inProgressTasks = sortedFilteredTasks.filter(task => task.status === 'in-progress')
+  const backlogTasks = sortedFilteredTasks.filter(task => task.status === 'todo')
+  const doneTasks = sortedFilteredTasks.filter(task => task.status === 'done')
+
   return (
-    <div className="relative -mt-6">
-      <header className="fixed top-0 right-0 left-0 lg:left-[250px] flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 lg:p-3 bg-[#18181b] z-10">
+    <div className="h-full flex flex-col">
+      {/* Fixed header */}
+      <header className="fixed top-0 right-0 left-0 lg:left-[250px] flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 lg:p-3 bg-[#18181b] z-50">
         <div className="w-full sm:max-w-[40%] lg:max-w-[50%] max-w-[calc(100%-48px)] ml-2.5">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -394,105 +425,122 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
         </div>
       </header>
 
-      <main className="pt-[104px] sm:pt-[52px] px-2">
-        <Accordion 
-          type="multiple" 
-          value={openSections}
-          onValueChange={setOpenSections}
-          className="space-y-4"
-        >
-          <AccordionItem value="backlog" className="border-none">
-            <div className="flex flex-col gap-2">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-2">
-                  <ListTodo className="w-5 h-5" />
-                  <span className="text-xl font-medium tracking-tight text-zinc-100 font-mono">
-                    Backlog ({sortedBacklogTasks.length})
-                  </span>
-                </div>
-              </AccordionTrigger>
+      {/* Filter indicators */}
+      {(selectedEpic || selectedTags.length > 0) && (
+        <div className="flex items-center justify-start gap-2 text-sm px-2 mt-[52px] mb-6">
+          {selectedEpic && (
+            <div className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
+              <Folder className="w-3.5 h-3.5 text-zinc-400" />
+              <span className="text-zinc-300">
+                {selectedEpic === 'none' ? 'No Epic' : 
+                  epics.find(e => e.id === selectedEpic)?.title || selectedEpic}
+              </span>
+            </div>
+          )}
+          {selectedTags.map((tag, i) => (
+            <div key={i} className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
+              <Hash className="w-3.5 h-3.5 text-zinc-400" />
+              <span className="text-zinc-300">{tag}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
-              {/* Filter indicators */}
-              {(selectedEpic || selectedTags.length > 0) && (
-                <div className="flex items-center gap-2 text-sm py-2 pl-10 relative z-50 bg-[#18181b]">
-                  {selectedEpic && (
-                    <div className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
-                      <Folder className="w-3.5 h-3.5 text-zinc-400" />
-                      <span className="text-zinc-300">
-                        {selectedEpic === 'none' ? 'No Epic' : 
-                          epics.find(e => e.id === selectedEpic)?.title || selectedEpic}
+      {/* Main content */}
+      <main className={cn(
+        "flex-1 overflow-auto px-2",
+        (selectedEpic || selectedTags.length > 0) ? "pt-0" : "pt-[52px]"
+      )}>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={taskOrder}
+            strategy={verticalListSortingStrategy}
+          >
+            <Accordion
+              type="multiple"
+              value={openSections}
+              onValueChange={setOpenSections}
+              className="space-y-8"
+            >
+              {/* In Progress Section */}
+              {inProgressTasks.length > 0 && (
+                <AccordionItem value="in-progress" className="border-none mb-8">
+                  <AccordionTrigger className="hover:no-underline py-0">
+                    <div className="flex items-center gap-2">
+                      <Play className="w-5 h-5" />
+                      <span className="text-xl font-medium tracking-tight text-zinc-100 font-mono">
+                        In Progress ({inProgressTasks.length})
                       </span>
                     </div>
-                  )}
-                  {selectedTags.map((tag, i) => (
-                    <div key={i} className="flex items-center gap-1.5 bg-zinc-800/50 px-2 py-1 rounded-md">
-                      <Hash className="w-3.5 h-3.5 text-zinc-400" />
-                      <span className="text-zinc-300">{tag}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <AccordionContent>
-              <div className="pt-4">
-                <DndContext 
-                  collisionDetection={closestCenter} 
-                  onDragEnd={handleDragEnd}
-                >
-                  <SortableContext 
-                    items={sortedBacklogTasks.map(t => t.filename)} 
-                    strategy={verticalListSortingStrategy}
-                  >
-                    <div className="space-y-4">
-                      {sortedBacklogTasks.map((task, index) => (
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="pt-4">
+                      {inProgressTasks.map((task, i) => (
                         <SortableTaskCard
                           key={task.filename}
                           task={task}
-                          number={index + 1}
-                          onComplete={handleComplete}
+                          number={i + 1}
                           onClick={handleTaskClick}
+                          onComplete={handleComplete}
                         />
                       ))}
                     </div>
-                  </SortableContext>
-                </DndContext>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+                  </AccordionContent>
+                </AccordionItem>
+              )}
 
-          {sortedDoneTasks.length > 0 && (
-            <AccordionItem value="done" className="border-none">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span className="text-xl font-medium tracking-tight text-zinc-100 font-mono">
-                    Done ({sortedDoneTasks.length})
-                  </span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="pt-4">
-                  <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                    <SortableContext items={sortedDoneTasks.map(t => t.filename)} strategy={verticalListSortingStrategy}>
-                      <div className="space-y-4">
-                        {sortedDoneTasks.map((task, index) => (
-                          <SortableTaskCard
-                            key={task.filename}
-                            task={task}
-                            number={sortedBacklogTasks.length + index + 1}
-                            onComplete={handleComplete}
-                            onClick={handleTaskClick}
-                          />
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          )}
-        </Accordion>
+              {/* Backlog Section */}
+              <AccordionItem value="backlog" className="border-none mb-8">
+                <AccordionTrigger className="hover:no-underline py-0">
+                  <div className="flex items-center gap-2">
+                    <ListTodo className="w-5 h-5" />
+                    <span className="text-xl font-medium tracking-tight text-zinc-100 font-mono">
+                      Backlog ({backlogTasks.length})
+                    </span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-6 space-y-4">
+                  {backlogTasks.map((task, i) => (
+                    <SortableTaskCard
+                      key={task.filename}
+                      task={task}
+                      number={i + 1}
+                      onClick={handleTaskClick}
+                      onComplete={handleComplete}
+                    />
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Done Section */}
+              <AccordionItem value="done" className="border-none">
+                <AccordionTrigger className="hover:no-underline py-0">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" />
+                    <span className="text-xl font-medium tracking-tight text-zinc-100 font-mono">
+                      Done ({doneTasks.length})
+                    </span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-6 space-y-4">
+                  {doneTasks.map((task, i) => (
+                    <SortableTaskCard
+                      key={task.filename}
+                      task={task}
+                      number={i + 1}
+                      onClick={handleTaskClick}
+                      onComplete={handleComplete}
+                    />
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </SortableContext>
+        </DndContext>
       </main>
 
       <Dialog open={!!selectedTask} onOpenChange={(open) => {
@@ -568,6 +616,23 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                             </button>
                           ))}
                         </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-zinc-400">Status</label>
+                        <Select
+                          value={editedTask?.status || 'todo'}
+                          onValueChange={(value) => setEditedTask(prev => prev ? { ...prev, status: value as Task['status'] } : null)}
+                        >
+                          <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800">
+                            <SelectValue placeholder="Select a status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="todo">Todo</SelectItem>
+                            <SelectItem value="in-progress">In Progress</SelectItem>
+                            <SelectItem value="done">Done</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       <div className="space-y-2">
@@ -916,6 +981,23 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                       </button>
                     ))}
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-zinc-400">Status</label>
+                  <Select
+                    value={newTask.status || 'todo'}
+                    onValueChange={(value) => setNewTask(prev => ({ ...prev, status: value as Task['status'] }))}
+                  >
+                    <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800">
+                      <SelectValue placeholder="Select a status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="todo">Todo</SelectItem>
+                      <SelectItem value="in-progress">In Progress</SelectItem>
+                      <SelectItem value="done">Done</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">

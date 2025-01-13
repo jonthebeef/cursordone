@@ -1,6 +1,6 @@
 ---
 ref: TSK-089
-title: Add a size filter
+title: Add a size sort dropdown
 status: todo
 priority: medium
 complexity: S
@@ -10,7 +10,7 @@ dependencies:
 tags: []
 created: '2025-01-11'
 ---
-We need a separate filter in the top nav next to the search bar, that enables us to filter the tasks by t-shirt size. this would enable us to see the effort required by all tasks, or epics, tags, or epics and tags.
+We need a separate sorter in the top nav next to the search bar, that enables us to filter the tasks by t-shirt size. this would enable us to see the effort required by all tasks, or epics, tags, or epics and tags.
 
 Does this make sense?
 

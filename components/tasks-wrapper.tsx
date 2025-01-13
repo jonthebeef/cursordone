@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useTransition } from "react"
 import { Task } from "@/lib/tasks"
-import { TaskList } from "./ui/task-list"
+import { TaskList } from "@/components/ui/task-list"
 import { TaskFilters } from "./task-filters"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"

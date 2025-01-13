@@ -1,7 +1,7 @@
 ---
 ref: TSK-079
 title: Show the filters applied in the task list
-status: todo
+status: done
 priority: low
 epic: ui-cleanup
 dependencies:

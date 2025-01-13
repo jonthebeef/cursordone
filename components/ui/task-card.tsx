@@ -25,7 +25,7 @@ export function TaskCard({ task, onClick, onComplete }: TaskCardProps) {
   const [isUpdating, setIsUpdating] = useState(false)
 
   const handleStatusChange = async (checked: boolean) => {
-    if (isUpdating || checked === (task.status === 'done')) return
+    if (isUpdating) return
 
     setIsUpdating(true)
     try {
@@ -68,8 +68,8 @@ export function TaskCard({ task, onClick, onComplete }: TaskCardProps) {
       }} />
       <CardHeader className="flex flex-row items-center gap-4 py-4">
         <div 
-          className="checkbox-container" 
-          onClick={e => {
+          className="checkbox-container"
+          onClick={(e) => {
             e.stopPropagation()
           }}
         >
@@ -78,7 +78,7 @@ export function TaskCard({ task, onClick, onComplete }: TaskCardProps) {
             disabled={isUpdating}
             onCheckedChange={handleStatusChange}
             className={cn(
-              "h-5 w-5 border-2 border-zinc-500 data-[state=checked]:bg-zinc-500 data-[state=checked]:border-zinc-500 hover:border-zinc-400 transition-colors",
+              "h-5 w-5 border-2 data-[state=checked]:bg-transparent data-[state=checked]:text-green-500 data-[state=checked]:border-green-500 border-zinc-500 hover:border-zinc-400 transition-colors",
               isUpdating && "opacity-50 cursor-wait"
             )}
           />

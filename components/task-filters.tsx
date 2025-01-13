@@ -1,6 +1,6 @@
 'use client'
 
-import { SideNav } from "./ui/side-nav"
+import { SideNav } from "@/components/ui/side-nav"
 
 interface TaskFiltersProps {
   epics: { id: string; title: string }[]

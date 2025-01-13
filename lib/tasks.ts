@@ -10,7 +10,7 @@ export interface Task {
   ref: string
   filename: string
   title: string
-  status: 'todo' | 'done'
+  status: 'todo' | 'in-progress' | 'done'
   priority: 'low' | 'medium' | 'high'
   complexity?: 'XS' | 'S' | 'M' | 'L' | 'XL'
   epic?: string

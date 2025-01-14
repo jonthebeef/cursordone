@@ -217,7 +217,7 @@ export function TaskListContainer({
           items={sections.map((section) => section.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className="space-y-4">
+          <div className="space-y-2">
             {sections.map((section) => (
               <TaskSection
                 key={section.id}
@@ -253,6 +253,7 @@ export function TaskListContainer({
         open={showCreateDialog}
         onOpenChange={setShowCreateDialog}
         epics={epics}
+        initialTasks={initialTasks}
         onSuccess={() => {
           onStateChange?.();
           router.refresh();

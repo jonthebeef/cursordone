@@ -1,16 +1,19 @@
 ---
+ref: TSK-091
 title: Implement archive search and filtering
 status: todo
 priority: high
 complexity: S
 epic: task-management-enhancement
+dependencies:
+  - TSK-082
+  - TSK-104
 tags:
   - enhancement
   - ui
   - archive
   - day 1
 created: 2024-01-11T00:00:00.000Z
-ref: TSK-091
 ---
 
 Enhance search and filtering capabilities to handle archived tasks.

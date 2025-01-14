@@ -1,11 +1,14 @@
 ---
-title: "Refactor task list into smaller components"
-status: "done"
-priority: "high"
-complexity: "L"
-epic: "task-management-enhancement"
+ref: TSK-155
+title: Refactor task list into smaller components
+status: done
+priority: high
+complexity: L
+epic: task-management-enhancement
+dependencies: []
+tags:
+  - day 1
 created: "2024-01-15"
-ref: "TSK-155"
 ---
 
 # Current Issues

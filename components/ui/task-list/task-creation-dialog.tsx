@@ -28,6 +28,7 @@ interface TaskCreationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onStateChange?: () => void;
+  onSuccess: () => void;
   epics: { id: string; title: string }[];
   initialTasks: Task[];
   disabled?: boolean;
@@ -37,6 +38,7 @@ export function TaskCreationDialog({
   open,
   onOpenChange,
   onStateChange,
+  onSuccess,
   epics,
   initialTasks,
   disabled,
@@ -88,6 +90,7 @@ export function TaskCreationDialog({
         };
       await createTaskAction(taskToCreate);
       onStateChange?.();
+      onSuccess?.();
       onOpenChange(false);
       setNewTask({
         id: "0",

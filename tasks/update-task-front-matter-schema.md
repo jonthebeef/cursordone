@@ -1,16 +1,16 @@
 ---
+ref: TSK-145
 title: Update task front matter schema
 status: todo
 priority: high
 complexity: M
-epic: task-management-enhancement
+epic: task-management
 dependencies: []
 tags:
   - schema
   - front-matter
   - day 1
 created: "2024-01-15"
-ref: TSK-145
 ---
 
 # Update Task Front Matter Schema

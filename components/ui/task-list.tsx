@@ -834,12 +834,20 @@ export function TaskList({ initialTasks, epics, selectedEpic, selectedTags, onSt
                     <div className="space-y-2 pt-4">
                       <label className="text-sm font-medium text-zinc-400">Dependencies</label>
                       <div className="space-y-2">
-                        {selectedTask.dependencies.map(ref => {
-                          const task = initialTasks.find(t => t.ref === ref)
-                          if (!task) return null
+                        {selectedTask.dependencies.map(dep => {
+                          const task = initialTasks.find(t => t.filename === `${dep}.md`)
+                          if (!task) {
+                            return (
+                              <div key={dep} className="p-2 border border-zinc-800 rounded-md bg-red-900/20">
+                                <div className="text-sm text-red-400">
+                                  Missing dependency: {dep}
+                                </div>
+                              </div>
+                            )
+                          }
                           return (
                             <div
-                              key={ref}
+                              key={dep}
                               className="flex items-center gap-3 p-2 border border-zinc-800 rounded-md hover:bg-zinc-800/50 cursor-pointer"
                               onClick={() => {
                                 setSelectedTask(task)

@@ -9,7 +9,7 @@ dependencies:
   - setup-supabase-core-auth.md
 tags:
   - ui
-  - day-3
+  - day 2
   - web
 created: "2024-01-15"
 ref: TSK-140

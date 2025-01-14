@@ -10,8 +10,8 @@ tags:
   - database
   - supabase
   - schema
-  - day 1
-created: '2025-01-10'
+  - day 2
+created: "2025-01-10"
 ref: TSK-060
 ---
 
@@ -20,6 +20,7 @@ ref: TSK-060
 Design and create the database schema for Supabase to support the required functionality.
 
 ## Implementation Notes
+
 - Remember to change status to "in progress" when starting this task
 - Test thoroughly before marking as done
 - Commit with message "feat: create supabase database schema"
@@ -27,6 +28,7 @@ Design and create the database schema for Supabase to support the required funct
 ## Requirements Checklist
 
 ### Users Table
+
 - [x] Create Users table with fields:
   - `id (uuid)` as primary key
   - `email` as unique field
@@ -37,6 +39,7 @@ Design and create the database schema for Supabase to support the required funct
 - [x] Set up row level security
 
 ### Projects Table
+
 - [x] Create Projects table with fields:
   - `id (uuid)` as primary key
   - `user_id (uuid)` as foreign key
@@ -47,12 +50,14 @@ Design and create the database schema for Supabase to support the required funct
 - [x] Configure row level security
 
 ### Migration Management
+
 - [x] Write SQL migration scripts
 - [ ] Test migrations in development
 - [ ] Document rollback procedures
 - [x] Store scripts in version control
 
 ## Testing Instructions
+
 1. Apply migrations to test database
 2. Verify all tables and constraints
 3. Test CRUD operations on Users table
@@ -61,6 +66,7 @@ Design and create the database schema for Supabase to support the required funct
 6. Test row level security policies
 
 ## Success Criteria
+
 - All tables created with correct schema
 - Foreign key constraints working
 - Indexes properly configured

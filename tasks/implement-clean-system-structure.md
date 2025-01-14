@@ -8,8 +8,8 @@ dependencies:
   - separate-system-from-content.md
 tags:
   - cleanup
-  - day 1
   - system
+  - day 3
 created: "2024-01-15"
 ref: TSK-109
 ---

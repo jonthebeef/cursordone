@@ -8,7 +8,7 @@ tags:
   - enhancement
   - ui
   - archive
-  - day-2
+  - day 1
 created: 2024-01-11T00:00:00.000Z
 ref: TSK-091
 ---

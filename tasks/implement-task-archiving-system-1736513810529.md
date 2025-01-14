@@ -13,7 +13,7 @@ dependencies:
 tags:
   - enhancement
   - core
-  - day-2
+  - day 1
 created: "2024-01-10"
 ref: TSK-065
 ---

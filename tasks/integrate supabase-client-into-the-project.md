@@ -8,7 +8,7 @@ tags:
   - supabase
   - environment
   - integration
-  - day-2
+  - day 2
 created: "2025-01-10"
 ref: TSK-061
 ---

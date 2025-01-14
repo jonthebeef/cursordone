@@ -10,8 +10,9 @@ tags:
   - ui
   - performance
   - maintenance
-  - day-1
+  - day 1
 created: "2024-01-15"
+ref: TSK-155
 ---
 
 # Refactor Task List Component

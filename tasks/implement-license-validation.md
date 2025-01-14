@@ -8,7 +8,7 @@ dependencies:
   - setup-supabase-core-auth.md
 tags:
   - security
-  - day-5
+  - day 5
   - licensing
 created: "2024-01-15"
 ref: TSK-130

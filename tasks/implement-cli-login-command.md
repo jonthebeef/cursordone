@@ -9,7 +9,7 @@ dependencies:
   - setup-supabase-core-auth.md
 tags:
   - cli
-  - day-2
+  - day 2
   - auth
 created: "2024-01-15"
 ref: TSK-112

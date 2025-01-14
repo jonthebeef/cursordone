@@ -8,7 +8,7 @@ dependencies:
   - setup-supabase-core-auth.md
 tags:
   - auth
-  - day-3
+  - day 3
   - supabase
 created: "2024-01-15"
 ref: TSK-117

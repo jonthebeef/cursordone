@@ -8,8 +8,8 @@ dependencies: []
 tags:
   - system
   - cleanup
-  - day 1
-created: '2024-01-15'
+  - day 3
+created: "2024-01-15"
 ref: TSK-142
 ---
 

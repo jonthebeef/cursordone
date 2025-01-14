@@ -9,7 +9,7 @@ tags:
   - database
   - supabase
   - testing
-  - day-4
+  - day 4
 created: 2025-01-10T00:00:00.000Z
 ref: TSK-071
 ---

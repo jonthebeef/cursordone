@@ -11,7 +11,7 @@ tags:
   - testing
   - authentication
   - supabase
-  - day-4
+  - day 4
 created: "2025-01-10"
 ref: TSK-069
 ---

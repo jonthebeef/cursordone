@@ -11,10 +11,11 @@ tags:
   - testing
   - authentication
   - supabase
-  - day 4
-created: '2025-01-10'
+  - day-4
+created: "2025-01-10"
 ref: TSK-069
 ---
+
 Test all authentication flows for both CLI and UI. Include the following:
 
 1. Test Google and GitHub OAuth login flows.
@@ -22,5 +23,6 @@ Test all authentication flows for both CLI and UI. Include the following:
 3. Verify session tokens are saved correctly and validated for subsequent operations.
 
 Deliverable:
+
 - Test cases for all authentication flows documented.
 - All tests pass with no regressions.

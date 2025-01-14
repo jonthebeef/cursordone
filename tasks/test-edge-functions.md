@@ -10,9 +10,11 @@ tags:
   - edge-functions
   - testing
   - supabase
+  - day-4
 created: 2025-01-10T00:00:00.000Z
 ref: TSK-070
 ---
+
 Test the Supabase Edge Function for subscription status checking. Include:
 
 1. Simulate valid and invalid requests to the function.
@@ -20,5 +22,6 @@ Test the Supabase Edge Function for subscription status checking. Include:
 3. Ensure the function handles errors gracefully and logs issues for debugging.
 
 Deliverable:
+
 - Fully tested Edge Function with documentation for testing scenarios.
 - No errors or crashes under valid/invalid inputs.

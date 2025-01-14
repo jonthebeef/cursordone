@@ -8,9 +8,9 @@ dependencies:
   - setup-supabase-core-auth.md
 tags:
   - auth
-  - day 1
+  - day-3
   - supabase
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-117
 ---
 
@@ -19,6 +19,7 @@ ref: TSK-117
 Create a robust session management system for handling user sessions and authentication state.
 
 ## Implementation Notes
+
 - Remember to change status to "in progress" when starting this task
 - Test thoroughly before marking as done
 - Commit with message "feat: implement session management"
@@ -26,24 +27,28 @@ Create a robust session management system for handling user sessions and authent
 ## Requirements Checklist
 
 ### Session Handling
+
 - [ ] Implement session storage
 - [ ] Add token refresh
 - [ ] Create session recovery
 - [ ] Setup session timeout
 
 ### State Management
+
 - [ ] Create auth context
 - [ ] Add state persistence
 - [ ] Implement state sync
 - [ ] Setup state recovery
 
 ### Security
+
 - [ ] Add token validation
 - [ ] Implement CSRF protection
 - [ ] Create security headers
 - [ ] Setup secure storage
 
 ## Testing Instructions
+
 1. Test session persistence
 2. Verify token refresh
 3. Check security measures
@@ -51,7 +56,8 @@ Create a robust session management system for handling user sessions and authent
 5. Validate timeout handling
 
 ## Success Criteria
+
 - Reliable session management
 - Secure token handling
 - Proper state persistence
-- Clear session status 
+- Clear session status

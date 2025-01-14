@@ -8,9 +8,11 @@ tags:
   - supabase
   - environment
   - integration
-created: '2025-01-10'
+  - day-2
+created: "2025-01-10"
 ref: TSK-061
 ---
+
 Integrate the Supabase client library to enable communication with the Supabase backend. Ensure the following:
 
 1. Install the `@supabase/supabase-js` package.
@@ -18,5 +20,6 @@ Integrate the Supabase client library to enable communication with the Supabase 
 3. Verify connectivity to the Supabase backend by performing a test query.
 
 Deliverable:
+
 - A functional Supabase client script.
 - Successful test query against the backend.

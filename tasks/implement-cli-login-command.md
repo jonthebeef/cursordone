@@ -9,9 +9,9 @@ dependencies:
   - setup-supabase-core-auth.md
 tags:
   - cli
-  - day 2
+  - day-2
   - auth
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-112
 ---
 
@@ -20,6 +20,7 @@ ref: TSK-112
 Create the CLI login command to handle user authentication through Supabase.
 
 ## Implementation Notes
+
 - Remember to change status to "in progress" when starting this task
 - Test thoroughly before marking as done
 - Commit with message "feat: implement cli login command"
@@ -27,30 +28,35 @@ Create the CLI login command to handle user authentication through Supabase.
 ## Requirements Checklist
 
 ### Command Implementation
+
 - [ ] Create login command
 - [ ] Add logout command
 - [ ] Implement status check
 - [ ] Add token management
 
 ### Authentication Flow
+
 - [ ] Setup browser launch
 - [ ] Handle auth callback
 - [ ] Store credentials
 - [ ] Manage refresh
 
 ### Error Handling
+
 - [ ] Handle auth failures
 - [ ] Add retry logic
 - [ ] Create error messages
 - [ ] Setup logging
 
 ### User Experience
+
 - [ ] Add progress indicators
 - [ ] Create success messages
 - [ ] Implement help text
 - [ ] Add examples
 
 ## Testing Instructions
+
 1. Test login flow
 2. Verify token storage
 3. Check error handling
@@ -58,6 +64,7 @@ Create the CLI login command to handle user authentication through Supabase.
 5. Validate help text
 
 ## Success Criteria
+
 - Working login command
 - Secure token storage
 - Clear user feedback

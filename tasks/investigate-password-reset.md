@@ -9,8 +9,8 @@ dependencies:
 tags:
   - auth
   - bug
-  - day 1
-created: '2024-01-15'
+  - day-1
+created: "2024-01-15"
 ref: TSK-141
 ---
 
@@ -19,6 +19,7 @@ ref: TSK-141
 Investigate why password reset emails are not being delivered.
 
 ## Context
+
 - Password reset functionality was implemented as part of TSK-127
 - Users report not receiving reset emails
 - Need to investigate email delivery and configuration
@@ -26,6 +27,7 @@ Investigate why password reset emails are not being delivered.
 ## Requirements Checklist
 
 ### Investigation
+
 - [ ] Check Supabase email logs
 - [ ] Verify email templates
 - [ ] Check spam filter settings
@@ -33,13 +35,15 @@ Investigate why password reset emails are not being delivered.
 - [ ] Add logging to track reset request flow
 
 ### Implementation
+
 - [ ] Add better error handling and user feedback
 - [ ] Implement email delivery status tracking
 - [ ] Add retry mechanism if needed
 - [ ] Update documentation with findings
 
 ## Success Criteria
+
 - Root cause identified
 - Password reset emails delivered reliably
 - Clear error messages for users
-- Documentation updated with findings 
+- Documentation updated with findings

@@ -10,6 +10,9 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
+  experimental: {
+    typedRoutes: true,
+  },
 }
 
 module.exports = nextConfig

@@ -33,6 +33,7 @@ import {
   ArrowUpDown,
   Shirt,
   Play,
+  Loader2,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -142,6 +143,8 @@ export function TaskList({
     complexity: "M",
   });
   const [tagInput, setTagInput] = useState("");
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [isLoading, setIsLoading] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -472,6 +475,31 @@ export function TaskList({
   const doneTasks = sortedFilteredTasks.filter(
     (task) => task.status === "done",
   );
+
+  // Update tasks when initialTasks changes
+  useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
+
+  // Handle loading state during navigation
+  useEffect(() => {
+    const handleStart = () => setIsLoading(true);
+    const handleComplete = () => setIsLoading(false);
+
+    window.addEventListener("beforeunload", handleStart);
+    return () => {
+      window.removeEventListener("beforeunload", handleStart);
+    };
+  }, []);
+
+  if (isLoading || tasks.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-8 space-y-4">
+        <Loader2 className="w-6 h-6 text-zinc-400 animate-spin" />
+        <div className="text-zinc-400">Loading tasks...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col">

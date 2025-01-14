@@ -4,12 +4,14 @@ status: done
 priority: high
 complexity: M
 epic: task-management-enhancement
-dependencies: ["implement-cursor-system-detection"]
+dependencies:
+  - implement-cursor-system-detection
 tags:
   - onboarding
   - tutorial
   - ux
 created: "2024-01-15"
+ref: TSK-148
 ---
 
 # Create Interactive Tutorial Tasks

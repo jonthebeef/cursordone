@@ -6,10 +6,11 @@ tags:
   - documentation
   - architecture
   - system
-created: '2024-01-11'
-epic: ''
+created: "2024-01-11"
+epic: ""
 dependencies: []
 ---
+
 # System Architecture
 
 This document provides a comprehensive overview of the system architecture, including directory structure, component relationships, file naming conventions, and data schemas.
@@ -45,6 +46,7 @@ cursordone/
 ### Core Components
 
 1. **Task Management**
+
    - `lib/tasks.ts`: Core task management functions
    - `lib/actions.ts`: Server actions for task operations
    - `components/ui/task-list.tsx`: Task list UI component
@@ -52,6 +54,7 @@ cursordone/
    - `components/ui/text-editor.tsx`: Markdown editor for tasks
 
 2. **Epic Management**
+
    - `lib/epics.ts`: Epic management functions
    - `components/ui/epic-list.tsx`: Epic list UI component
    - `components/ui/epic-card.tsx`: Individual epic display
@@ -65,11 +68,13 @@ cursordone/
 ### Data Flow
 
 1. **Task Creation Flow**
+
    ```
    User Input → Task Dialog → Server Action → File System → UI Update
    ```
 
 2. **Task Update Flow**
+
    ```
    Task Edit → Server Action → File System → UI Refresh → State Update
    ```
@@ -82,18 +87,21 @@ cursordone/
 ## File Naming Conventions
 
 1. **Tasks**
+
    - Format: `{description}-{timestamp}.md`
    - Example: `implement-task-archiving-1234567890.md`
    - Timestamp ensures uniqueness
    - Description in kebab-case
 
 2. **Epics**
+
    - Format: `{epic-name}.md`
    - Example: `task-management.md`
    - Simple, descriptive names
    - Kebab-case format
 
 3. **Components**
+
    - Format: `{component-name}.tsx`
    - Example: `task-card.tsx`
    - Descriptive, feature-based names
@@ -108,46 +116,54 @@ cursordone/
 ## Front Matter Schema
 
 ### Tasks
+
 ```yaml
 ---
-title: string           # Task title
-status: todo | done    # Task status
-priority: low | medium | high  # Task priority
-complexity: XS | S | M | L | XL  # Task complexity
-epic: string          # Associated epic
-dependencies: string[]  # List of dependent task filenames
-tags: string[]        # List of tags
-created: string       # Creation timestamp
-ref: string          # Task reference (TSK-XXX)
+ref: string # Task reference (TSK-XXX)
+title: string # Task title
+status: todo | in-progress | done # Task status
+priority: low | medium | high # Task priority
+complexity?: XS | S | M | L | XL # Optional task complexity
+epic?: string # Optional associated epic
+parent?: string # Optional parent task
+dependencies?: string[] # Optional list of dependent tasks
+tags?: string[] # Optional list of tags
+created: string # Creation timestamp
 ---
 ```
 
 ### Epics
+
 ```yaml
 ---
-title: string         # Epic title
-description: string   # Epic description
-status: pending | active | completed  # Epic status
-priority: low | medium | high  # Epic priority
-tags: string[]      # List of tags
-created: string     # Creation timestamp
+title: string # Epic title
+description: string # Epic description
+status: pending | active | completed # Epic status
+priority: low | medium | high # Epic priority
+tags: string[] # List of tags
+created: string # Creation timestamp
+epic: string # Epic ID (derived from lowercase, hyphenated title)
 ---
 ```
 
 ### Documentation
+
 ```yaml
 ---
-title: string       # Document title
+title: string # Document title
 description: string # Document description
-created: string     # Creation timestamp
-type: string       # Document type
-tags: string[]     # List of tags
+type: documentation | architecture | guide | api | delivery | product | business | design | stakeholders | operations # Document type
+tags: string[] # List of tags
+created: string # Creation timestamp
+epic?: string # Optional associated epic
+dependencies?: string[] # Optional list of dependencies
 ---
 ```
 
 ## System Features
 
 1. **Task Management**
+
    - Task creation and editing
    - Status tracking
    - Priority management
@@ -156,12 +172,14 @@ tags: string[]     # List of tags
    - Task archiving
 
 2. **Epic Organization**
+
    - Epic creation and management
    - Task grouping
    - Progress tracking
    - Priority management
 
 3. **UI Features**
+
    - Markdown editing
    - Real-time updates
    - Responsive design
@@ -177,18 +195,21 @@ tags: string[]     # List of tags
 ## Implementation Notes
 
 1. **File System**
+
    - Uses markdown files for content storage
    - Front matter for metadata
    - File-based relationships
    - Timestamp-based uniqueness
 
 2. **State Management**
+
    - Server actions for updates
    - Real-time UI refresh
    - Optimistic updates
    - Error handling
 
 3. **UI/UX**
+
    - Consistent component design
    - Responsive layouts
    - Intuitive navigation

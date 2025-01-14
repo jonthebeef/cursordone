@@ -4,12 +4,15 @@ status: todo
 priority: medium
 complexity: XS
 epic: task-management-enhancement
-dependencies: ["clone-cursor-task-system", "tutorial-1-complete-task"]
+dependencies:
+  - clone-cursor-task-system
+  - tutorial-1-complete-task
 tags:
   - tutorial
   - basics
   - onboarding
 created: "2024-01-15"
+ref: TSK-150
 ---
 
 # Tutorial 2: Reorder tasks using drag and drop

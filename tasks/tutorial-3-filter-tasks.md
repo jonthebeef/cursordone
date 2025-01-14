@@ -4,13 +4,16 @@ status: todo
 priority: medium
 complexity: XS
 epic: task-management-enhancement
-dependencies: ["clone-cursor-task-system", "tutorial-2-reorder-tasks"]
+dependencies:
+  - clone-cursor-task-system
+  - tutorial-2-reorder-tasks
 tags:
   - tutorial
   - basics
   - onboarding
   - filtering-example
 created: "2024-01-15"
+ref: TSK-151
 ---
 
 # Tutorial 3: Filter tasks by tags and epics

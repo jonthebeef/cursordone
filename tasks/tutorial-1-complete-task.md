@@ -4,12 +4,14 @@ status: todo
 priority: medium
 complexity: XS
 epic: task-management-enhancement
-dependencies: ["clone-cursor-task-system"]
+dependencies:
+  - clone-cursor-task-system
 tags:
   - tutorial
   - basics
   - onboarding
 created: "2024-01-15"
+ref: TSK-149
 ---
 
 # Tutorial 1: Mark your first task as done

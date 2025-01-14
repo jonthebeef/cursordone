@@ -4,12 +4,15 @@ status: todo
 priority: medium
 complexity: S
 epic: task-management-enhancement
-dependencies: ["clone-cursor-task-system", "tutorial-3-filter-tasks"]
+dependencies:
+  - clone-cursor-task-system
+  - tutorial-3-filter-tasks
 tags:
   - tutorial
   - basics
   - onboarding
 created: "2024-01-15"
+ref: TSK-152
 ---
 
 # Tutorial 4: Create your first task

@@ -4,13 +4,16 @@ status: todo
 priority: medium
 complexity: M
 epic: task-management-enhancement
-dependencies: ["clone-cursor-task-system", "tutorial-4-create-task"]
+dependencies:
+  - clone-cursor-task-system
+  - tutorial-4-create-task
 tags:
   - tutorial
   - advanced
   - onboarding
   - configuration
 created: "2024-01-15"
+ref: TSK-153
 ---
 
 # Tutorial 5: Configure system behavior with .cursorrules

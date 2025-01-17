@@ -10,7 +10,7 @@ tags:
   - security
   - day 3
   - build
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-128
 owner: AI
 ---
@@ -20,6 +20,7 @@ owner: AI
 Set up code obfuscation for protecting intellectual property in the distributed package.
 
 ## Implementation Notes
+
 - Remember to change status to "in progress" when starting this task
 - Test thoroughly before marking as done
 - Commit with message "feat: implement code obfuscation"
@@ -27,30 +28,35 @@ Set up code obfuscation for protecting intellectual property in the distributed 
 ## Requirements Checklist
 
 ### Build Integration
+
 - [ ] Setup obfuscator tool
 - [ ] Configure build pipeline
 - [ ] Add source maps
 - [ ] Create debug builds
 
 ### Protection Rules
+
 - [ ] Define critical paths
 - [ ] Setup exclusions
 - [ ] Add identifier mangling
 - [ ] Configure string encryption
 
 ### Performance
+
 - [ ] Optimize build time
 - [ ] Minimize output size
 - [ ] Handle source maps
 - [ ] Test load time
 
 ### Validation
+
 - [ ] Test obfuscated code
 - [ ] Verify functionality
 - [ ] Check debugging
 - [ ] Validate protection
 
 ## Testing Instructions
+
 1. Run obfuscation build
 2. Test functionality
 3. Check performance
@@ -58,7 +64,17 @@ Set up code obfuscation for protecting intellectual property in the distributed 
 5. Validate debugging
 
 ## Success Criteria
+
 - Working obfuscation
 - Minimal performance impact
 - Proper protection level
-- Working source maps 
+- Working source maps
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

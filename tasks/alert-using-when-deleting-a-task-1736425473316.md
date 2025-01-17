@@ -9,10 +9,11 @@ tags:
   - delete
   - dialog
   - alert
-created: '2025-01-09'
+created: "2025-01-09"
 owner: AI
 complexity: M
 ---
+
 Deleting a task is very effective, but we need to add some friction to avoid unnecessary deletion of tasks
 
 When the user hits delete on a task, present a dialog box that says:
@@ -37,3 +38,12 @@ Added a delete confirmation dialog using the AlertDialog component:
    - Delete button (red) to confirm
 4. Only proceed with deletion after user confirms
 5. Close both the alert and task dialogs after successful deletion
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

@@ -10,7 +10,7 @@ tags:
   - system
   - initialization
   - cursor
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-147
 owner: AI
 ---
@@ -62,3 +62,12 @@ Create a system to automatically detect and integrate our task management rules 
 - Must preserve file formatting and comments
 - Should handle version conflicts gracefully
 - Must backup existing rules before modification
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

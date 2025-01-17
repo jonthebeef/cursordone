@@ -10,7 +10,7 @@ tags:
   - session-management
   - supabase
   - day 2
-created: '2025-01-10'
+created: "2025-01-10"
 ref: TSK-067
 owner: AI
 complexity: M
@@ -25,3 +25,12 @@ Implement session handling for authenticated users. Ensure the following:
 Deliverable:
 
 - Secure session management with error handling for expired or invalid sessions.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

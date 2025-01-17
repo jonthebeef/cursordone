@@ -12,7 +12,7 @@ tags:
   - authentication
   - supabase
   - day 4
-created: '2025-01-10'
+created: "2025-01-10"
 ref: TSK-069
 owner: AI
 ---
@@ -27,3 +27,12 @@ Deliverable:
 
 - Test cases for all authentication flows documented.
 - All tests pass with no regressions.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

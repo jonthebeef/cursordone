@@ -10,7 +10,7 @@ tags:
   - security
   - day 5
   - licensing
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-130
 owner: AI
 ---
@@ -69,3 +69,12 @@ Create a secure license validation system using Supabase for subscription manage
 - Working offline grace
 - Clear user feedback
 - Smooth renewal process
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

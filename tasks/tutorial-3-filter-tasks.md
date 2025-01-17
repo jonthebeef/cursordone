@@ -1,5 +1,5 @@
 ---
-title: 'Tutorial 3: Filter tasks by tags and epics'
+title: "Tutorial 3: Filter tasks by tags and epics"
 status: todo
 priority: medium
 complexity: XS
@@ -12,7 +12,7 @@ tags:
   - basics
   - onboarding
   - filtering-example
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-151
 owner: AI
 ---
@@ -56,3 +56,12 @@ After mastering task filtering, move on to Tutorial 4 where you'll create your f
 - Filters persist between sessions
 - You can use filters to create focused work views
 - The current filters are always visible in the UI
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

@@ -10,15 +10,17 @@ tags:
   - cli
   - day 2
   - framework
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-106
 owner: AI
 ---
+
 # Create CLI Framework
 
 Create the basic CLI framework with command parsing and execution structure.
 
 ## Implementation Notes
+
 - Remember to change status to "in progress" when starting this task
 - Test thoroughly before marking as done
 - Commit with message "feat: create cli framework"
@@ -26,30 +28,35 @@ Create the basic CLI framework with command parsing and execution structure.
 ## Requirements Checklist
 
 ### Command Structure
+
 - [ ] Setup command parser
 - [ ] Create help system
 - [ ] Add version command
 - [ ] Implement error handling
 
 ### Core Framework
+
 - [ ] Create command registry
 - [ ] Setup argument parsing
 - [ ] Add option handling
 - [ ] Implement logging
 
 ### Development Tools
+
 - [ ] Add development mode
 - [ ] Create debug logging
 - [ ] Setup test helpers
 - [ ] Add command validation
 
 ### Documentation
+
 - [ ] Create help documentation
 - [ ] Add command examples
 - [ ] Document options
 - [ ] Create usage guide
 
 ## Testing Instructions
+
 1. Test command parsing
 2. Verify help system
 3. Check error handling
@@ -57,7 +64,17 @@ Create the basic CLI framework with command parsing and execution structure.
 5. Validate logging
 
 ## Success Criteria
+
 - Working command system
 - Clear help messages
 - Proper error handling
 - Complete documentation
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

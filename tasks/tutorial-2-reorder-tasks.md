@@ -1,5 +1,5 @@
 ---
-title: 'Tutorial 2: Reorder tasks using drag and drop'
+title: "Tutorial 2: Reorder tasks using drag and drop"
 status: todo
 priority: medium
 complexity: XS
@@ -11,7 +11,7 @@ tags:
   - tutorial
   - basics
   - onboarding
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-150
 owner: AI
 ---
@@ -50,3 +50,12 @@ Once you're comfortable with reordering, proceed to Tutorial 3 where you'll lear
 - The order is preserved between sessions
 - Task numbers update automatically
 - You can use this to prioritize your work
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

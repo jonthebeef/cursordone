@@ -10,7 +10,7 @@ tags:
   - ui
   - enhancement
   - day 1
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-170
 owner: AI
 ---
@@ -22,6 +22,7 @@ Now that we've updated the task schema with new fields, we need to implement the
 ## Required Changes
 
 1. Front Matter Logic:
+
    - Update `lib/tasks.ts` to handle new fields in createTask/updateTask
    - Add validation for date formats
    - Implement completion_date setting when status changes to done
@@ -36,6 +37,7 @@ Now that we've updated the task schema with new fields, we need to implement the
      - Set worker to logged-in user when they pick up a task
 
 2. Task Creation Dialog:
+
    - Add due date picker
    - Add owner field (auto-set, read-only)
    - Add worker field (editable)
@@ -44,6 +46,7 @@ Now that we've updated the task schema with new fields, we need to implement the
    - Connect to front matter logic
 
 3. Task Edit Dialog:
+
    - Add due date picker
    - Show owner field (read-only)
    - Add/edit worker field
@@ -53,6 +56,7 @@ Now that we've updated the task schema with new fields, we need to implement the
    - Connect to front matter logic
 
 4. Task View Dialog:
+
    - Display all new fields
    - Format dates appropriately
    - Show owner and worker clearly
@@ -66,6 +70,7 @@ Now that we've updated the task schema with new fields, we need to implement the
 ## Component Updates Required
 
 1. `lib/tasks.ts`:
+
    - Update TaskFrontMatter interface with owner and worker
    - Enhance createTask function to set owner based on creation method
    - Enhance updateTask function to handle worker assignment
@@ -74,10 +79,12 @@ Now that we've updated the task schema with new fields, we need to implement the
    - Add ownership validation rules
 
 2. `.cursorrules`:
+
    - Add rules for setting owner to "AI" for markdown-created tasks
    - Add rules for worker assignment when AI picks up tasks
 
 3. `components/ui/task-list/task-creation-dialog.tsx`:
+
    - Add new form fields
    - Update form state
    - Add validation
@@ -85,6 +92,7 @@ Now that we've updated the task schema with new fields, we need to implement the
    - Auto-set owner based on creation context
 
 4. `components/ui/task-list/task-edit-dialog.tsx`:
+
    - Add new form fields
    - Update form state
    - Handle completion date logic
@@ -92,6 +100,7 @@ Now that we've updated the task schema with new fields, we need to implement the
    - Handle worker assignment
 
 5. `components/ui/task-list/task-view-dialog.tsx`:
+
    - Add new field display
    - Format dates
    - Handle empty states
@@ -121,6 +130,7 @@ Now that we've updated the task schema with new fields, we need to implement the
 ## Testing Checklist
 
 - [ ] Test front matter logic:
+
   - Create task with new fields
   - Update task with new fields
   - Verify completion date on status change
@@ -130,6 +140,7 @@ Now that we've updated the task schema with new fields, we need to implement the
   - Test worker assignment scenarios
 
 - [ ] Test ownership rules:
+
   - Create task via markdown (owner should be AI)
   - Create task via web UI (owner should be logged-in user)
   - AI picks up task (worker should be AI)
@@ -144,4 +155,13 @@ Now that we've updated the task schema with new fields, we need to implement the
   - Verify completion date logic
   - Test responsive layout
   - Validate form submissions
-  - Verify owner/worker display 
+  - Verify owner/worker display
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

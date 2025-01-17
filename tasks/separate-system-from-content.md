@@ -9,7 +9,7 @@ tags:
   - system
   - cleanup
   - day 3
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-142
 owner: AI
 ---
@@ -75,3 +75,12 @@ We need to separate the core task management system from the actual task content
 - Document all integration points
 - Create clear rollback procedures
 - Maintain content integrity
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

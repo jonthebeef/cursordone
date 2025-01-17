@@ -11,7 +11,7 @@ tags:
   - cli
   - day 2
   - auth
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-112
 owner: AI
 ---
@@ -70,3 +70,12 @@ Create the CLI login command to handle user authentication through Supabase.
 - Secure token storage
 - Clear user feedback
 - Proper error handling
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

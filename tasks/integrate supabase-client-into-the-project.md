@@ -9,7 +9,7 @@ tags:
   - environment
   - integration
   - day 2
-created: '2025-01-10'
+created: "2025-01-10"
 ref: TSK-061
 owner: AI
 complexity: M
@@ -25,3 +25,12 @@ Deliverable:
 
 - A functional Supabase client script.
 - Successful test query against the backend.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

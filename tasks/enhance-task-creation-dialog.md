@@ -10,7 +10,7 @@ tags:
   - ui
   - ux
   - task-creation
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-143
 owner: AI
 ---
@@ -46,3 +46,12 @@ Redesign the task creation dialog to incorporate new front matter fields while m
 - [ ] Mobile-responsive design
 - [ ] User testing completed
 - [ ] Performance impact assessed
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

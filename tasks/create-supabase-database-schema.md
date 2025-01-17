@@ -11,7 +11,7 @@ tags:
   - supabase
   - schema
   - day 2
-created: '2025-01-10'
+created: "2025-01-10"
 ref: TSK-060
 owner: AI
 ---
@@ -74,3 +74,12 @@ Design and create the database schema for Supabase to support the required funct
 - Row level security implemented
 - Migration scripts stored in version control
 - Rollback procedures documented
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

@@ -1,5 +1,5 @@
 ---
-title: 'Tutorial 4: Create your first task'
+title: "Tutorial 4: Create your first task"
 status: todo
 priority: medium
 complexity: S
@@ -11,7 +11,7 @@ tags:
   - tutorial
   - basics
   - onboarding
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-152
 owner: AI
 ---
@@ -62,3 +62,12 @@ Once you've created your first task, move on to Tutorial 5 where you'll learn ab
 - You can edit tasks after creation
 - Use clear, descriptive titles
 - Add enough detail in the description for future reference
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

@@ -10,7 +10,7 @@ tags:
   - auth
   - day 3
   - supabase
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-117
 owner: AI
 ---
@@ -62,3 +62,12 @@ Create a robust session management system for handling user sessions and authent
 - Secure token handling
 - Proper state persistence
 - Clear session status
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

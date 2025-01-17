@@ -8,7 +8,7 @@ epic: ui-cleanup
 dependencies: []
 tags:
   - day 1
-created: '2024-01-15'
+created: "2024-01-15"
 owner: AI
 ---
 
@@ -77,3 +77,12 @@ owner: AI
 5. Created comprehensive documentation in docs/task-list-architecture.md
 6. Added tests for TaskSection component with Vitest and React Testing Library
 7. All success criteria met - task ready for review
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

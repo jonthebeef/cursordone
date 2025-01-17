@@ -11,7 +11,7 @@ tags:
   - security
   - day 5
   - production
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-133
 owner: AI
 ---
@@ -21,6 +21,7 @@ owner: AI
 Implement final security measures and hardening for production deployment.
 
 ## Implementation Notes
+
 - Remember to change status to "in progress" when starting this task
 - Test thoroughly before marking as done
 - Commit with message "feat: implement security hardening"
@@ -28,30 +29,35 @@ Implement final security measures and hardening for production deployment.
 ## Requirements Checklist
 
 ### Security Audit
+
 - [ ] Run security scan
 - [ ] Check dependencies
 - [ ] Review permissions
 - [ ] Audit API endpoints
 
 ### Data Protection
+
 - [ ] Review encryption
 - [ ] Check data storage
 - [ ] Verify backups
 - [ ] Test recovery
 
 ### Access Control
+
 - [ ] Review auth flows
 - [ ] Check rate limits
 - [ ] Verify CORS
 - [ ] Test permissions
 
 ### Production Hardening
+
 - [ ] Set security headers
 - [ ] Configure CSP
 - [ ] Enable HTTPS
 - [ ] Review logging
 
 ## Testing Instructions
+
 1. Run security tests
 2. Test protections
 3. Verify access
@@ -59,7 +65,17 @@ Implement final security measures and hardening for production deployment.
 5. Validate security
 
 ## Success Criteria
+
 - No critical vulnerabilities
 - Secure data handling
 - Protected endpoints
-- Proper access control 
+- Proper access control
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

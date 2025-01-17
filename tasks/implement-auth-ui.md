@@ -10,7 +10,7 @@ tags:
   - auth
   - ui
   - day 2
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-127
 owner: AI
 ---
@@ -94,3 +94,12 @@ Create a clean, minimal authentication UI for user login, signup, and password r
 2. Gather user feedback
 3. Investigate password reset issues
 4. Consider adding social auth providers
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

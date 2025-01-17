@@ -7,16 +7,20 @@ complexity: L
 epic: task-management
 dependencies: []
 tags: []
-created: '2025-01-11'
+created: "2025-01-11"
 owner: AI
 ---
+
 We need to be able to add important docs to the project, such as PRDs, architecture docs, and other things. All in the name if giving you, the robot, greater context about the project.
 
 ## Implementation
+
 Created a full documentation management system with the following features:
 
 ### Document Structure
+
 Documents are stored as markdown files with front matter containing:
+
 - title: Document title
 - description: Brief summary
 - type: Category of document (documentation, architecture, guide, api, delivery, product, business, design, stakeholders, operations)
@@ -26,13 +30,16 @@ Documents are stored as markdown files with front matter containing:
 - created: Creation timestamp
 
 ### Features Implemented
+
 1. Document List View
+
    - Grid layout showing all documents
    - Type badges with distinct colors
    - Search functionality across title/description/type
    - Creation date display
 
 2. Document Creation
+
    - Markdown editor with preview
    - Type selection
    - Tag management
@@ -40,6 +47,7 @@ Documents are stored as markdown files with front matter containing:
    - Image and file upload support
 
 3. Document Management
+
    - Full-screen document viewer
    - Edit capability
    - Delete with confirmation dialog
@@ -51,4 +59,13 @@ Documents are stored as markdown files with front matter containing:
    - Markdown preview support
    - Modern dialog interfaces
 
-The documentation system is now fully integrated with the existing task and epic management features, providing a complete project management solution. 
+The documentation system is now fully integrated with the existing task and epic management features, providing a complete project management solution.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

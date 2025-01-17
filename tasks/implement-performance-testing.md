@@ -10,7 +10,7 @@ tags:
   - testing
   - day 4
   - performance
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-132
 owner: AI
 ---
@@ -20,6 +20,7 @@ owner: AI
 Set up performance testing suite to measure and optimize system performance.
 
 ## Implementation Notes
+
 - Remember to change status to "in progress" when starting this task
 - Test thoroughly before marking as done
 - Commit with message "feat: implement performance testing"
@@ -27,30 +28,35 @@ Set up performance testing suite to measure and optimize system performance.
 ## Requirements Checklist
 
 ### Load Testing
+
 - [ ] Setup k6 test suite
 - [ ] Create load scenarios
 - [ ] Add stress tests
 - [ ] Implement benchmarks
 
 ### Performance Metrics
+
 - [ ] Add response timing
 - [ ] Measure memory usage
 - [ ] Track CPU utilization
 - [ ] Monitor file operations
 
 ### Optimization
+
 - [ ] Profile hot paths
 - [ ] Identify bottlenecks
 - [ ] Add performance budgets
 - [ ] Implement caching
 
 ### Reporting
+
 - [ ] Create dashboards
 - [ ] Setup alerts
 - [ ] Add trend analysis
 - [ ] Generate reports
 
 ## Testing Instructions
+
 1. Run load tests
 2. Verify metrics
 3. Check optimizations
@@ -58,7 +64,17 @@ Set up performance testing suite to measure and optimize system performance.
 5. Validate reports
 
 ## Success Criteria
+
 - Performance baselines established
 - Load tests passing
 - Clear metrics tracking
-- Optimization targets met 
+- Optimization targets met
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

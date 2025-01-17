@@ -1,5 +1,5 @@
 ---
-title: 'Tutorial 5: Configure system behavior with .cursorrules'
+title: "Tutorial 5: Configure system behavior with .cursorrules"
 status: todo
 priority: medium
 complexity: M
@@ -12,7 +12,7 @@ tags:
   - advanced
   - onboarding
   - configuration
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-153
 owner: AI
 ---
@@ -63,3 +63,12 @@ Congratulations! You've completed all the tutorial tasks. You now know how to:
 - Rules can be updated as needed
 - Some rules are enforced automatically
 - Others serve as guidelines for the AI
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

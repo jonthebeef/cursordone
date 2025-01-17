@@ -26,3 +26,12 @@ Deliverable:
 
 - Successful migration and validation of the database schema.
 - Test cases for CRUD operations documented.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

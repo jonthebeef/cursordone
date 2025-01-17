@@ -10,7 +10,7 @@ tags:
   - onboarding
   - tutorial
   - ux
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-148
 owner: AI
 ---
@@ -113,3 +113,12 @@ Progress:
 - Need to handle task completion appropriately
 - Should preserve tutorial tasks on system reset
 - Must work with task filtering system
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

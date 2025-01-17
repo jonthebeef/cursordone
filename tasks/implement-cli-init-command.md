@@ -11,7 +11,7 @@ tags:
   - cli
   - day 2
   - init
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-111
 owner: AI
 ---
@@ -21,6 +21,7 @@ owner: AI
 Create the CLI command for initializing new projects with proper structure and configuration.
 
 ## Implementation Notes
+
 - Remember to change status to "in progress" when starting this task
 - Test thoroughly before marking as done
 - Commit with message "feat: implement cli init command"
@@ -28,30 +29,35 @@ Create the CLI command for initializing new projects with proper structure and c
 ## Requirements Checklist
 
 ### Command Structure
+
 - [ ] Create init command
 - [ ] Add options parsing
 - [ ] Implement directory checks
 - [ ] Setup validation
 
 ### Template System
+
 - [ ] Copy template files
 - [ ] Setup configuration
 - [ ] Create gitignore
 - [ ] Add README
 
 ### Configuration
+
 - [ ] Generate default config
 - [ ] Add environment setup
 - [ ] Create local settings
 - [ ] Setup paths
 
 ### User Experience
+
 - [ ] Add progress display
 - [ ] Create success messages
 - [ ] Implement validation
 - [ ] Add help text
 
 ## Testing Instructions
+
 1. Test initialization
 2. Verify file structure
 3. Check configurations
@@ -59,7 +65,17 @@ Create the CLI command for initializing new projects with proper structure and c
 5. Validate in existing project
 
 ## Success Criteria
+
 - Clean project initialization
 - Proper file structure
 - Working configuration
-- Clear user feedback 
+- Clear user feedback
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

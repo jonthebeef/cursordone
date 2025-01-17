@@ -1,19 +1,20 @@
 ---
 ref: TSK-057
-title: 'BUG: There are repeated task id refs'
+title: "BUG: There are repeated task id refs"
 status: done
 priority: high
 epic: ui-cleanup
 dependencies: []
 tags:
   - task refs
-created: '2025-01-10'
+created: "2025-01-10"
 owner: AI
 complexity: M
 ---
+
 I looked at the used refs from the json file, and found that several have been repeated (eg, there's 2 tasks with IDs of TSK-019)
 
-I did a quick comparison in a spreadsheet. 
+I did a quick comparison in a spreadsheet.
 
 TSK-17 18 19 20 24 26 27 28 46 are all duplicates
 
@@ -26,6 +27,7 @@ is this a legacy issue, or an ongoing problem
 Created two scripts to handle duplicate task references:
 
 1. `fix-duplicate-refs.ts`: One-time fix script that:
+
    - Identifies duplicate refs across all task files
    - Retains the oldest task's ref for each duplicate
    - Assigns new unique refs to newer duplicates
@@ -40,3 +42,12 @@ Created two scripts to handle duplicate task references:
    - Returns non-zero exit code for CI integration
 
 Both scripts were run successfully, resolving all duplicate refs and ensuring the integrity of the task reference system.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

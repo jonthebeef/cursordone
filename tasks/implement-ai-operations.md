@@ -19,6 +19,7 @@ complexity: M
 # Implement AI Operations
 
 ## Objectives
+
 1. Implement task creation patterns
 2. Create update operations
 3. Implement status management
@@ -26,6 +27,7 @@ complexity: M
 5. Implement error handling
 
 ## Success Criteria
+
 - [ ] Task creation working
 - [ ] Update operations tested
 - [ ] Status management verified
@@ -33,4 +35,14 @@ complexity: M
 - [ ] Error handling implemented
 
 ## Notes
-AI operations should be robust and handle edge cases gracefully. 
+
+AI operations should be robust and handle edge cases gracefully.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

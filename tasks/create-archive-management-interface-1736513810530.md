@@ -6,7 +6,7 @@ epic: task-management-enhancement
 tags:
   - enhancement
   - ui
-created: '2024-01-10'
+created: "2024-01-10"
 ref: TSK-062
 owner: AI
 complexity: M
@@ -17,6 +17,7 @@ Create a dedicated interface for managing archived tasks and tags, providing eas
 ## Requirements
 
 ### Core Functionality
+
 - Create new "Archives" section in sidebar
 - Show separate subsections for archived tasks and tags
 - Enable viewing and managing archived items
@@ -24,6 +25,7 @@ Create a dedicated interface for managing archived tasks and tags, providing eas
 - Implement search and filter for archived items
 
 ### UI/UX
+
 - Add Archives section below existing sidebar sections
 - Create expandable subsections for Tasks and Tags
 - Design clean and intuitive archive browsing interface
@@ -32,6 +34,7 @@ Create a dedicated interface for managing archived tasks and tags, providing eas
 - Implement proper loading states and transitions
 
 ### Archive List Features
+
 - Sort archived items by various criteria
 - Filter by archive date, type, epic, etc.
 - Search within archived items
@@ -40,6 +43,7 @@ Create a dedicated interface for managing archived tasks and tags, providing eas
 - Preview archived item details
 
 ### Data Integration
+
 - Integrate with task archive system
 - Integrate with tag archive system
 - Handle restoration conflicts
@@ -47,9 +51,19 @@ Create a dedicated interface for managing archived tasks and tags, providing eas
 - Update related components on changes
 
 ### Implementation Notes
+
 - Create new sidebar section component
 - Add archive management routes
 - Implement archive list components
 - Add proper error handling
 - Consider pagination for large archives
-- Ensure responsive design works well 
+- Ensure responsive design works well
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

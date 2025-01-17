@@ -1,5 +1,5 @@
 ---
-title: 'Tutorial 1: Mark your first task as done'
+title: "Tutorial 1: Mark your first task as done"
 status: todo
 priority: medium
 complexity: XS
@@ -10,7 +10,7 @@ tags:
   - tutorial
   - basics
   - onboarding
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-149
 owner: AI
 ---
@@ -47,3 +47,12 @@ After completing this task, move on to Tutorial 2 where you'll learn about reord
 - Tasks can only be marked as done when all success criteria are met
 - The system will ask for confirmation before marking tasks as done
 - You can always reopen a task if needed
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

@@ -10,9 +10,19 @@ tags:
   - enhancement
   - ui
   - day 1
-created: '2024-01-09'
+created: "2024-01-09"
 owner: AI
 ---
+
 Currently, there's no way of seeing how close to completing an epic we are
 
 Can you add a feature to the epic, which shows which tasks are part of it, and percentage completeness of that epic?
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

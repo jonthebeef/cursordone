@@ -56,3 +56,12 @@ Enhance search and filtering capabilities to handle archived tasks.
 - [ ] Results clearly show archive status
 - [ ] Performance remains good with large archives
 - [ ] User preferences are preserved
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

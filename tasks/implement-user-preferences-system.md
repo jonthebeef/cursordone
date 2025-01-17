@@ -11,7 +11,7 @@ tags:
   - preferences
   - ui
   - day 4
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-137
 owner: AI
 ---
@@ -70,3 +70,12 @@ Create a comprehensive user preferences system for customizing the application e
 - Reliable storage
 - Synced settings
 - Clear UI options
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

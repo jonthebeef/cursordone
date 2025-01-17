@@ -10,7 +10,7 @@ tags:
   - testing
   - day 4
   - beta
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-123
 owner: AI
 ---
@@ -20,6 +20,7 @@ owner: AI
 Develop a comprehensive beta testing strategy to validate the system with real users.
 
 ## Implementation Notes
+
 - Remember to change status to "in progress" when starting this task
 - Test thoroughly before marking as done
 - Commit with message "feat: create beta testing plan"
@@ -27,30 +28,35 @@ Develop a comprehensive beta testing strategy to validate the system with real u
 ## Requirements Checklist
 
 ### Test Planning
+
 - [ ] Define test objectives
 - [ ] Create test scenarios
 - [ ] Setup test environments
 - [ ] Define success criteria
 
 ### User Management
+
 - [ ] Create user selection criteria
 - [ ] Setup onboarding process
 - [ ] Create feedback channels
 - [ ] Plan user support
 
 ### Feedback System
+
 - [ ] Setup feedback forms
 - [ ] Create issue templates
 - [ ] Add analytics tracking
 - [ ] Plan user interviews
 
 ### Documentation
+
 - [ ] Create test guides
 - [ ] Write onboarding docs
 - [ ] Add troubleshooting
 - [ ] Document known issues
 
 ## Testing Instructions
+
 1. Review test plan
 2. Verify scenarios
 3. Check documentation
@@ -58,7 +64,17 @@ Develop a comprehensive beta testing strategy to validate the system with real u
 5. Validate analytics
 
 ## Success Criteria
+
 - Complete test plan
 - Clear user guidelines
 - Working feedback system
-- Defined success metrics 
+- Defined success metrics
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

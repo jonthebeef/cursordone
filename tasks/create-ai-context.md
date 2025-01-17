@@ -19,6 +19,7 @@ complexity: M
 # Create AI Context
 
 ## Objectives
+
 1. Create system overview documentation
 2. Define AI operation guidelines
 3. Create task templates for AI
@@ -26,6 +27,7 @@ complexity: M
 5. Create example interactions
 
 ## Success Criteria
+
 - [ ] System overview documented
 - [ ] Operation guidelines defined
 - [ ] Task templates created
@@ -33,4 +35,14 @@ complexity: M
 - [ ] Example interactions tested
 
 ## Notes
-AI context should be clear and comprehensive enough for AI to understand and work with the system effectively. 
+
+AI context should be clear and comprehensive enough for AI to understand and work with the system effectively.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

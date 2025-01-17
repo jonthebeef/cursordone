@@ -19,6 +19,7 @@ complexity: M
 # Create Configuration System
 
 ## Objectives
+
 1. Design configuration schema
 2. Implement configuration validation
 3. Create default configurations
@@ -26,6 +27,7 @@ complexity: M
 5. Create configuration documentation
 
 ## Success Criteria
+
 - [ ] Configuration schema defined
 - [ ] Validation system working
 - [ ] Default configurations created
@@ -33,4 +35,14 @@ complexity: M
 - [ ] Documentation complete
 
 ## Notes
-Configuration system should be flexible enough to handle different deployment scenarios while maintaining strict validation. 
+
+Configuration system should be flexible enough to handle different deployment scenarios while maintaining strict validation.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

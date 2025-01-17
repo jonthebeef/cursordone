@@ -10,7 +10,7 @@ tags:
   - documentation
   - system
   - day 5
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-124
 owner: AI
 ---
@@ -69,3 +69,12 @@ Create detailed documentation covering installation, usage, development, and API
 - Working examples
 - Clear instructions
 - Proper formatting
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

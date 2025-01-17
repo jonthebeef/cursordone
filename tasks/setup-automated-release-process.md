@@ -10,7 +10,7 @@ tags:
   - automation
   - release
   - day 5
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-138
 owner: AI
 ---
@@ -69,3 +69,12 @@ Create an automated release process with semantic versioning and changelog gener
 - Proper versioning
 - Complete changelog
 - Working publishing
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

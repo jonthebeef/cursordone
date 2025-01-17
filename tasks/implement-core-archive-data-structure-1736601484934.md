@@ -18,18 +18,21 @@ Implement the core data structure and storage system for task archiving function
 ## Requirements
 
 ### Data Structure
+
 - Add archive status to task metadata
 - Implement archive date tracking
 - Store archive reason (optional field)
 - Preserve all existing task relationships
 
 ### Storage System
+
 - Create storage mechanism for archive data
 - Ensure data persistence across sessions
 - Handle file system operations efficiently
 - Maintain data integrity during operations
 
 ### API Layer
+
 - Create API endpoints for archive operations:
   - Archive single task
   - Restore single task
@@ -39,14 +42,25 @@ Implement the core data structure and storage system for task archiving function
 - Add validation for archive operations
 
 ### Data Migration
+
 - Handle existing tasks gracefully
 - Ensure backward compatibility
 - Add migration utilities if needed
 - Preserve existing task data
 
 ## Success Criteria
+
 - [ ] Archive status can be added to tasks
 - [ ] Archive data is properly stored and persisted
 - [ ] API endpoints are functional and validated
 - [ ] Existing tasks are handled correctly
-- [ ] All operations maintain data integrity 
+- [ ] All operations maintain data integrity
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

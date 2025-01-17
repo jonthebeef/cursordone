@@ -11,7 +11,7 @@ tags:
   - ui
   - day 2
   - web
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-140
 owner: AI
 ---
@@ -70,3 +70,12 @@ Set up the core web UI functionality including routing, layouts, and base compon
 - Responsive layouts
 - Functional components
 - Proper state management
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

@@ -1,13 +1,13 @@
 ---
 ref: TSK-081
-title: 'BUG: Can only add one tag in a new task in web'
+title: "BUG: Can only add one tag in a new task in web"
 status: done
 priority: high
 epic: ui-cleanup
 dependencies: []
 tags:
   - tagging-problem
-created: '2024-01-09'
+created: "2024-01-09"
 owner: AI
 complexity: M
 ---
@@ -28,3 +28,12 @@ Fixed the tag input functionality across all dialogs (create task, edit task, cr
    - Removed the complex state updates that were trying to maintain array format
 
 This approach is more straightforward and matches how users naturally input tags (typing with commas).
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

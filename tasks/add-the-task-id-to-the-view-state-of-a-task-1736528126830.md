@@ -7,10 +7,11 @@ epic: ui-cleanup
 dependencies: []
 tags:
   - task ref
-created: '2025-01-10'
+created: "2025-01-10"
 owner: AI
 complexity: M
 ---
+
 When I open a task from the task list, it only shows the title of the task, with no mention of the task ref. The task ref has become a primary way of us communicating about tasks
 
 can you add the task ref to the view state of a task please?
@@ -27,3 +28,12 @@ Added task ref to the task view dialog:
 3. Made ref display conditional on ref existence
 4. Maintained existing layout and styling of the dialog
 5. Kept accessibility with screen reader support
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

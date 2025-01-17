@@ -7,10 +7,11 @@ epic: ui-cleanup
 dependencies: []
 tags:
   - ui
-created: '2025-01-08'
+created: "2025-01-08"
 owner: AI
 complexity: M
 ---
+
 There is too much space above the heading on the task list screen. Lets remove this to pull the heading and button top aligned with the app name in the sidebar
 
 Can you also fix the search and create task button in a fixed area at the top of the task view so these features are always accessible to the user no matter how far they've scrolled down the tasks.
@@ -28,3 +29,12 @@ Can you also fix the search and create task button in a fixed area at the top of
    - Reduced margin between task list and navigation (from mt-6 to mt-2)
    - Attempted to fix Create Task button responsive margin
    - Created bug ticket TSK-050 to track remaining button margin issue
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

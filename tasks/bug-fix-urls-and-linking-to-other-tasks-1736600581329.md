@@ -1,6 +1,6 @@
 ---
 ref: TSK-088
-title: 'BUG: Fix URLs and linking to other tasks'
+title: "BUG: Fix URLs and linking to other tasks"
 status: todo
 priority: high
 complexity: L
@@ -8,9 +8,10 @@ epic: ui-cleanup
 dependencies: []
 tags:
   - links
-created: '2025-01-11'
+created: "2025-01-11"
 owner: AI
 ---
+
 The system can't handle clicking links to other tasks or epics.
 
 Right now, when I click a related task (either on a task, or within an epic), the page reloads on the all tasks view.
@@ -21,10 +22,19 @@ We need an elegant solution for this. I don't think that opening a dialog on top
 
 We need to get the behaviour right here
 
-EDIT: Hmmm, this seems to be working correctly when viewing a task. 
+EDIT: Hmmm, this seems to be working correctly when viewing a task.
 
 Before you code, discuss the options we have so we can get to the right thing. We don't need to build the world's best project management tool, just a feature that makes sense to the user and is simple to implement.
 
 Feel free to also discussing breaking this into smaller tasks if appropriate. And if you're tackling this in its entirety, advise me to add this as context to the composer, and add a checklist of activity to this task that you constantly tick off as items are completed.
 
 remember to test before marking as done and committing to git.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

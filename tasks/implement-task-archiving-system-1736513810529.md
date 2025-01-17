@@ -15,8 +15,9 @@ tags:
   - enhancement
   - core
   - day 1
-created: '2024-01-10'
+created: "2024-01-10"
 ---
+
 Implement a system for archiving tasks that are no longer relevant or needed in the active task list, while preserving all task data and relationships. This helps maintain a focused task list while retaining historical information.
 
 This task has been broken down into smaller, more manageable subtasks:
@@ -79,3 +80,12 @@ The original requirements have been distributed across these subtasks. This task
 - Update task list component for archive handling
 - Implement proper error handling
 - Consider performance implications for large archives
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

@@ -9,7 +9,7 @@ tags:
   - error-handling
   - system
   - day 3
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-108
 owner: AI
 ---
@@ -61,3 +61,12 @@ Implement core error handling for basic file system operations including read, w
 - Clear error messages for users
 - Proper error logging
 - Working retry mechanisms
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

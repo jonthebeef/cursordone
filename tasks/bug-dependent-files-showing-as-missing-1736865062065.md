@@ -1,6 +1,6 @@
 ---
 ref: TSK-158
-title: 'BUG: Dependent files showing as missing'
+title: "BUG: Dependent files showing as missing"
 status: done
 priority: medium
 complexity: M
@@ -9,11 +9,21 @@ dependencies: []
 tags:
   - bug
   - day 1
-created: '2025-01-14'
+created: "2025-01-14"
 owner: AI
 ---
+
 What's the problem here? Yesterday, you fixed it as the dependencies were only looking up TSK refs on the view task dialog. Now it's not working at all. Plz fix
 
 ![Screenshot 2025-01-14 at 14.28.32.png](/task-images/1736864960891-Screenshot-2025-01-14-at-14.28.32.png)
 
 ![Screenshot 2025-01-14 at 14.29.39.png](/task-images/1736864993392-Screenshot-2025-01-14-at-14.29.39.png)
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

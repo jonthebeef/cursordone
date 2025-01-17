@@ -28,3 +28,12 @@ Match the new create task dialog layout and improve content display.
   - Added click-through navigation between dependent tasks
 
 The task view and edit dialog now provides a more consistent and polished experience that matches the create task dialog.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

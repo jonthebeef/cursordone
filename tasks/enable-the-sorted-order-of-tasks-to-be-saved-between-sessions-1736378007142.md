@@ -8,10 +8,11 @@ dependencies:
   - enable-the-filtered-view-to-be-saved--1736377850658.md
 tags:
   - 10 jan
-created: '2025-01-08'
+created: "2025-01-08"
 owner: AI
 complexity: M
 ---
+
 # Enable the sorted order of tasks to be saved between sessions
 
 status: done
@@ -20,6 +21,7 @@ tags: [10 jan]
 ## Implementation Notes
 
 Successfully implemented task order persistence with the following features:
+
 - Task order is now saved between sessions using a JSON file storage system
 - Implemented a new API route `/api/task-order` to handle order persistence
 - Added order loading on component mount and filter changes
@@ -35,3 +37,12 @@ Successfully implemented task order persistence with the following features:
 - Drag and drop functionality works seamlessly with order persistence
 
 The feature is now complete and working as expected, with proper error handling and fallbacks in place.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

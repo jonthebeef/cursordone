@@ -27,3 +27,12 @@ Deliverable:
 
 - Fully tested Edge Function with documentation for testing scenarios.
 - No errors or crashes under valid/invalid inputs.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

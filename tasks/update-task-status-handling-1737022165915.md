@@ -10,8 +10,9 @@ tags:
   - ui
   - enhancement
   - lifecycle
-created: '2024-01-16'
+created: "2024-01-16"
 owner: AI
+ref: TSK-191
 ---
 
 # Update Task Status Handling in UI
@@ -19,6 +20,7 @@ owner: AI
 The current UI only handles a simple toggle between todo/done states and doesn't properly track task lifecycle dates.
 
 ## Current Issues
+
 1. UI only toggles between todo/done states
 2. Not using `updateTask` function for status changes
 3. Not tracking started_date and completion_date properly
@@ -27,12 +29,14 @@ The current UI only handles a simple toggle between todo/done states and doesn't
 ## Required Changes
 
 1. Task Card Component:
+
    - Update checkbox to handle three states (todo → in-progress → done)
    - Use `updateTask` instead of `completeTask`
    - Add visual indicator for in-progress state
    - Show started_date and completion_date when available
 
 2. Status Change Logic:
+
    - Implement proper state cycling
    - Ensure dates are tracked correctly
    - Handle worker assignment on status changes
@@ -47,6 +51,7 @@ The current UI only handles a simple toggle between todo/done states and doesn't
 ## Implementation Details
 
 1. Update `components/ui/task-card.tsx`:
+
    ```tsx
    // Replace simple checkbox with tri-state control
    // Add proper status tracking
@@ -57,15 +62,16 @@ The current UI only handles a simple toggle between todo/done states and doesn't
 2. Update status change handler:
    ```tsx
    const handleStatusChange = async () => {
-     const nextStatus = getNextStatus(task.status)
+     const nextStatus = getNextStatus(task.status);
      await updateTask(task.filename, {
        ...task,
-       status: nextStatus
-     })
-   }
+       status: nextStatus,
+     });
+   };
    ```
 
 ## Success Criteria
+
 - [ ] Task status cycles correctly through all states
 - [ ] started_date is set when moving to in-progress
 - [ ] completion_date is set when moving to done
@@ -75,9 +81,19 @@ The current UI only handles a simple toggle between todo/done states and doesn't
 - [ ] Worker assignment is handled properly
 
 ## Testing Instructions
+
 1. Create new task
 2. Cycle through all states
 3. Verify dates are set correctly
 4. Check worker assignment
 5. Verify UI updates
-6. Test keyboard accessibility 
+6. Test keyboard accessibility
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

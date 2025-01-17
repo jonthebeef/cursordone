@@ -11,9 +11,10 @@ tags:
   - layout
   - worker
   - day 2
-created: '2025-01-16'
+created: "2025-01-16"
 owner: user
 ---
+
 You've added 2 labels to the front of the task to communicate:
 
 - owner
@@ -28,3 +29,12 @@ please can you
 here's a drawing
 
 ![IMG_7461.jpeg](/task-images/1737028134925-IMG_7461.jpeg)
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

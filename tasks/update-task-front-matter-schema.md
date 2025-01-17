@@ -5,7 +5,7 @@ status: done
 priority: high
 complexity: M
 epic: task-management
-owner: AI
+owner: user
 dependencies: []
 tags:
   - schema
@@ -14,7 +14,7 @@ tags:
 created: "2024-01-15"
 started_date: "2024-01-17"
 completion_date: "2024-01-17"
-worker: user
+worker: AI
 ---
 
 # Update Task Front Matter Schema

@@ -10,7 +10,7 @@ tags:
   - error-handling
   - day 2
   - cli
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-110
 owner: AI
 ---
@@ -20,6 +20,7 @@ owner: AI
 Create a comprehensive error handling system for CLI operations with clear user feedback.
 
 ## Implementation Notes
+
 - Remember to change status to "in progress" when starting this task
 - Test thoroughly before marking as done
 - Commit with message "feat: implement cli error handling"
@@ -27,30 +28,35 @@ Create a comprehensive error handling system for CLI operations with clear user 
 ## Requirements Checklist
 
 ### Error System
+
 - [ ] Create error types
 - [ ] Implement error factory
 - [ ] Add error codes
 - [ ] Setup error hierarchy
 
 ### User Feedback
+
 - [ ] Design error messages
 - [ ] Add color coding
 - [ ] Create help suggestions
 - [ ] Implement verbose mode
 
 ### Error Recovery
+
 - [ ] Add retry mechanisms
 - [ ] Implement fallbacks
 - [ ] Create recovery steps
 - [ ] Setup auto-recovery
 
 ### Logging
+
 - [ ] Setup error logging
 - [ ] Add debug information
 - [ ] Create log rotation
 - [ ] Implement log levels
 
 ## Testing Instructions
+
 1. Test all error scenarios
 2. Verify error messages
 3. Check recovery mechanisms
@@ -58,7 +64,17 @@ Create a comprehensive error handling system for CLI operations with clear user 
 5. Validate user feedback
 
 ## Success Criteria
+
 - Clear error messages
 - Working recovery system
 - Proper logging
-- Helpful user feedback 
+- Helpful user feedback
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

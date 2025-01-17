@@ -9,7 +9,7 @@ tags:
   - error-handling
   - network
   - day 4
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-131
 owner: AI
 ---
@@ -68,3 +68,12 @@ Create a comprehensive network error handling system with offline support and re
 - Working retry system
 - Clear error messages
 - Smooth recovery process
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

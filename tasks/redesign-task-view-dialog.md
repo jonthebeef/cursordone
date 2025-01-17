@@ -11,7 +11,7 @@ tags:
   - ui
   - ux
   - task-view
-created: '2024-01-15'
+created: "2024-01-15"
 ref: TSK-144
 owner: AI
 ---
@@ -55,3 +55,12 @@ Enhance the task view dialog to display new metadata fields and improve informat
 - [ ] Mobile responsiveness verified
 - [ ] Performance benchmarks met
 - [ ] Accessibility requirements satisfied
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

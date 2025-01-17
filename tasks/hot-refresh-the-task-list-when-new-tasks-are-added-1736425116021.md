@@ -8,10 +8,11 @@ dependencies: []
 tags:
   - refresh
   - task list
-created: '2025-01-09'
+created: "2025-01-09"
 owner: AI
 complexity: M
 ---
+
 Currently, I need to refresh the page to see new tasks that have been added.
 
 The system should hot refresh (maybe with a toast) to tell the user new tasks have been added to the task list
@@ -34,3 +35,12 @@ Added automatic task list refresh functionality:
    - Uses React useTransition for smooth updates
    - Prevents unnecessary re-renders
    - Cleans up interval on component unmount
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

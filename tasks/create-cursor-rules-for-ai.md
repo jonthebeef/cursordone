@@ -11,7 +11,7 @@ tags:
   - ai
   - automation
   - standards
-created: '2024-01-15'
+created: "2024-01-15"
 owner: AI
 ---
 
@@ -80,3 +80,12 @@ Create a `.cursorrules` configuration file to ensure consistent AI assistant beh
 | -------------------------------------------- | ----------------------------------------------------- |
 | `.cursorrules`                               | Created new file with comprehensive AI behavior rules |
 | `tasks/implement-cursor-system-detection.md` | Created follow-up task for auto-integration feature   |
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

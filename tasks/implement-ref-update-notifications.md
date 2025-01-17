@@ -21,6 +21,7 @@ complexity: M
 # Implement Ref Update Notifications
 
 ## Objectives
+
 1. Create success notification template
 2. Implement error notification handling
 3. Add warning messages for gaps/duplicates
@@ -28,6 +29,7 @@ complexity: M
 5. Add retry functionality for failed updates
 
 ## Success Criteria
+
 - [ ] Success notifications show update count
 - [ ] Error messages are clear and actionable
 - [ ] Warning messages for sequence issues
@@ -35,4 +37,14 @@ complexity: M
 - [ ] Retry mechanism working
 
 ## Notes
-Ensure notifications are informative but not overwhelming, with clear next steps for any issues. 
+
+Ensure notifications are informative but not overwhelming, with clear next steps for any issues.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

@@ -19,6 +19,7 @@ complexity: M
 # Implement Metadata System
 
 ## Objectives
+
 1. Define metadata schema
 2. Implement front matter validation
 3. Create relationship tracking
@@ -26,6 +27,7 @@ complexity: M
 5. Implement tagging system
 
 ## Success Criteria
+
 - [ ] Metadata schema documented
 - [ ] Front matter validation working
 - [ ] Relationship tracking implemented
@@ -33,4 +35,14 @@ complexity: M
 - [ ] Tagging system working
 
 ## Notes
-Metadata system should be extensible while maintaining backward compatibility. 
+
+Metadata system should be extensible while maintaining backward compatibility.
+
+---
+
+## Guidelines
+
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

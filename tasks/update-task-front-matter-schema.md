@@ -10,9 +10,9 @@ tags:
   - schema
   - front-matter
   - day 1
-created: "2024-01-15"
+created: '2024-01-15'
+owner: AI
 ---
-
 # Update Task Front Matter Schema
 
 Update the front matter schema to include new fields for better task tracking and RAG capabilities.

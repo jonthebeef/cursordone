@@ -8,6 +8,8 @@ dependencies: []
 tags:
   - ui
 created: '2024-01-08'
+owner: AI
+complexity: M
 ---
 We have an instance of there being an epic which is centre aligned in the sidebar, while the others are left aligned. Please force the UI to always have the epics left aligned in the sidebar.
 

@@ -10,6 +10,7 @@ tags:
   - archive
 created: 2024-01-11T00:00:00.000Z
 ref: TSK-094
+owner: AI
 ---
 
 Implement the core data structure and storage system for task archiving functionality.

@@ -8,9 +8,12 @@ epic: task-management
 tags:
   - metadata
   - schema
-created: 2024-01-08
+created: 2024-01-08T00:00:00.000Z
 assignee: user
-depends_on: ["create-configuration-system"]
+depends_on:
+  - create-configuration-system
+owner: AI
+complexity: M
 ---
 
 # Implement Metadata System

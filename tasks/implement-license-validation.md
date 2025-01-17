@@ -10,8 +10,9 @@ tags:
   - security
   - day 5
   - licensing
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-130
+owner: AI
 ---
 
 # Implement License Validation

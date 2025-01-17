@@ -10,6 +10,7 @@ tags:
   - archive
 created: 2024-01-11T00:00:00.000Z
 ref: TSK-093
+owner: AI
 ---
 
 Implement functionality for batch archiving and restoring tasks.

@@ -9,8 +9,9 @@ tags:
   - setup
   - day 1
   - system
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-118
+owner: AI
 ---
 
 # Setup Core Package Configuration

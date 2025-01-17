@@ -9,8 +9,10 @@ tags:
   - environment
   - integration
   - day 2
-created: "2025-01-10"
+created: '2025-01-10'
 ref: TSK-061
+owner: AI
+complexity: M
 ---
 
 Integrate the Supabase client library to enable communication with the Supabase backend. Ensure the following:

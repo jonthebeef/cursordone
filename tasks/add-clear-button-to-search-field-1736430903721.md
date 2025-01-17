@@ -9,6 +9,8 @@ tags:
   - search
   - clear
 created: '2025-01-09'
+owner: AI
+complexity: M
 ---
 Right now, if I use our rather excellent search, there isn't a way for me to quickly clear it. I have to delete the content in there instead.
 

@@ -10,6 +10,8 @@ tags:
   - dialog
   - alert
 created: '2025-01-09'
+owner: AI
+complexity: M
 ---
 Deleting a task is very effective, but we need to add some friction to avoid unnecessary deletion of tasks
 

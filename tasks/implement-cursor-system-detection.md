@@ -10,8 +10,9 @@ tags:
   - system
   - initialization
   - cursor
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-147
+owner: AI
 ---
 
 # Implement .cursorrules Auto-integration

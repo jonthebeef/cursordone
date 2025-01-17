@@ -11,8 +11,9 @@ tags:
   - cli
   - day 2
   - auth
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-112
+owner: AI
 ---
 
 # Implement CLI Login Command

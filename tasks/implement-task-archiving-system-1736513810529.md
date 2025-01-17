@@ -1,4 +1,5 @@
 ---
+ref: TSK-065
 title: Implement task archiving system
 status: todo
 priority: high
@@ -14,10 +15,8 @@ tags:
   - enhancement
   - core
   - day 1
-created: "2024-01-10"
-ref: TSK-065
+created: '2024-01-10'
 ---
-
 Implement a system for archiving tasks that are no longer relevant or needed in the active task list, while preserving all task data and relationships. This helps maintain a focused task list while retaining historical information.
 
 This task has been broken down into smaller, more manageable subtasks:

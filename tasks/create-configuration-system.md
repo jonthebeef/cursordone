@@ -8,9 +8,12 @@ epic: package-setup
 tags:
   - configuration
   - validation
-created: 2024-01-08
+created: 2024-01-08T00:00:00.000Z
 assignee: user
-depends_on: ["setup-package-structure"]
+depends_on:
+  - setup-package-structure
+owner: AI
+complexity: M
 ---
 
 # Create Configuration System

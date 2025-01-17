@@ -12,6 +12,7 @@ tags:
   - npm
 created: '2024-01-15'
 ref: TSK-105
+owner: AI
 ---
 
 # Configure NPM Package Build

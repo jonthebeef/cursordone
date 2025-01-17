@@ -1,6 +1,6 @@
 ---
 ref: TSK-046
-title: 'Cleanup orphaned task images'
+title: Cleanup orphaned task images
 status: done
 priority: medium
 epic: ui-cleanup
@@ -9,6 +9,8 @@ tags:
   - cleanup
   - images
 created: '2024-01-09'
+owner: AI
+complexity: M
 ---
 Currently, when a task containing images is deleted, the image files remain in the `public/task-images` directory. This leads to:
 

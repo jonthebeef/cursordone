@@ -1,7 +1,7 @@
 ---
 ref: TSK-158
-title: "BUG: Dependent files showing as missing"
-status: todo
+title: 'BUG: Dependent files showing as missing'
+status: done
 priority: medium
 complexity: M
 epic: ui-cleanup
@@ -9,9 +9,9 @@ dependencies: []
 tags:
   - bug
   - day 1
-created: "2025-01-14"
+created: '2025-01-14'
+owner: AI
 ---
-
 What's the problem here? Yesterday, you fixed it as the dependencies were only looking up TSK refs on the view task dialog. Now it's not working at all. Plz fix
 
 ![Screenshot 2025-01-14 at 14.28.32.png](/task-images/1736864960891-Screenshot-2025-01-14-at-14.28.32.png)

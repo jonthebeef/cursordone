@@ -9,6 +9,8 @@ dependencies:
 tags:
   - 10 jan
 created: '2025-01-08'
+owner: AI
+complexity: M
 ---
 # Enable the sorted order of tasks to be saved between sessions
 

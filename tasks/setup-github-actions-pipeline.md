@@ -12,6 +12,7 @@ tags:
   - github
 created: '2024-01-15'
 ref: TSK-139
+owner: AI
 ---
 
 # Setup GitHub Actions Pipeline

@@ -10,6 +10,7 @@ tags:
   - redesign
   - dialog
 created: '2025-01-11'
+owner: AI
 ---
 The current layout for the create task dialog is a little cramped, without enough focus on the content area which is the most important for setting context
 

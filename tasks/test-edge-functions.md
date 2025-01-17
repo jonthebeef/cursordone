@@ -13,6 +13,8 @@ tags:
   - day 4
 created: 2025-01-10T00:00:00.000Z
 ref: TSK-070
+owner: AI
+complexity: M
 ---
 
 Test the Supabase Edge Function for subscription status checking. Include:

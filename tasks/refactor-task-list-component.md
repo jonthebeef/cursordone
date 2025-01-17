@@ -4,11 +4,12 @@ title: Refactor task list into smaller components
 status: done
 priority: high
 complexity: L
-epic: task-management-enhancement
+epic: ui-cleanup
 dependencies: []
 tags:
   - day 1
-created: "2024-01-15"
+created: '2024-01-15'
+owner: AI
 ---
 
 # Current Issues

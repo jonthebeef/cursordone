@@ -9,8 +9,9 @@ tags:
   - error-handling
   - system
   - day 3
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-108
+owner: AI
 ---
 
 # Implement Basic File Operations Error Handling

@@ -8,9 +8,12 @@ epic: ai-integration
 tags:
   - ai
   - documentation
-created: 2024-01-08
+created: 2024-01-08T00:00:00.000Z
 assignee: user
-depends_on: ["implement-metadata-system"]
+depends_on:
+  - implement-metadata-system
+owner: AI
+complexity: M
 ---
 
 # Create AI Context

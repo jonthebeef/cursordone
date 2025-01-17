@@ -9,6 +9,8 @@ tags:
   - refresh
   - task list
 created: '2025-01-09'
+owner: AI
+complexity: M
 ---
 Currently, I need to refresh the page to see new tasks that have been added.
 

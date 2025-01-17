@@ -9,6 +9,7 @@ dependencies: []
 tags:
   - links
 created: '2025-01-11'
+owner: AI
 ---
 The system can't handle clicking links to other tasks or epics.
 

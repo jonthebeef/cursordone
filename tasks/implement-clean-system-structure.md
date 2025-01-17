@@ -10,8 +10,9 @@ tags:
   - cleanup
   - system
   - day 3
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-109
+owner: AI
 ---
 
 # Implement Clean System Structure

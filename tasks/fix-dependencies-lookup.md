@@ -3,7 +3,7 @@ title: Fix dependencies lookup in task view dialog
 status: done
 priority: high
 complexity: S
-epic: task-management-enhancement
+epic: ui-cleanup
 dependencies:
   - create-cursor-rules-for-ai
 tags:
@@ -12,6 +12,7 @@ tags:
   - dependencies
 created: '2024-01-15'
 ref: TSK-154
+owner: AI
 ---
 
 # Fix Dependencies Lookup in Task View Dialog

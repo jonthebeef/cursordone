@@ -1,14 +1,39 @@
 ---
 ref: TSK-160
-title: Fix task dialog layout issues
+title: 'BUG: Fix task details sheet spacing'
 status: done
 priority: high
 complexity: XL
 epic: ui-cleanup
 dependencies: []
-tags: [ui, bug]
-created: "2024-01-14"
+tags:
+  - bug
+  - ui
+  - day 1
+created: '2024-01-15'
+owner: AI
 ---
+# Task Details Sheet Spacing Issue
+
+The task details sheet has inconsistent spacing at the bottom when scrolling through content.
+
+## Current Issues
+
+1. Excessive spacing appears at the bottom of the sheet when scrolling
+2. Content layout is not properly constrained within the sheet
+3. Mixed layout approaches (flexbox + fixed heights) causing inconsistencies
+
+## Required Changes
+
+1. Implement consistent flexbox layout:
+   - Proper flex container setup in SheetContent
+   - Correct flex child constraints
+   - Remove conflicting height calculations
+
+2. Fix scroll container:
+   - Ensure proper overflow handling
+   - Remove redundant padding/margins
+   - Fix content height constraints
 
 # Success Criteria
 

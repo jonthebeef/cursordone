@@ -10,6 +10,8 @@ tags:
   - documentation
   - 10 jan
 created: 2024-01-08T00:00:00.000Z
+owner: AI
+complexity: M
 ---
 # Clean System Structure
 

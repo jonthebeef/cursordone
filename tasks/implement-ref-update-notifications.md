@@ -9,9 +9,13 @@ tags:
   - ui
   - notifications
   - error-handling
-created: 2024-01-08
+created: 2024-01-08T00:00:00.000Z
 assignee: user
-depends_on: ["implement-toast-system", "enhance-ref-update-button"]
+depends_on:
+  - implement-toast-system
+  - enhance-ref-update-button
+owner: AI
+complexity: M
 ---
 
 # Implement Ref Update Notifications

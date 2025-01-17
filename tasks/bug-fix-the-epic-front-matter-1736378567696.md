@@ -8,6 +8,8 @@ dependencies: []
 tags:
   - front-matter
 created: '2025-01-08'
+owner: AI
+complexity: M
 ---
 Currently, the system is sending to front matter the correct epics, meaning that unless the front matter is changed in the md file, it won't show under it's intended epic in web
 

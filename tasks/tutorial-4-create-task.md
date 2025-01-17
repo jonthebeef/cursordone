@@ -1,5 +1,5 @@
 ---
-title: "Tutorial 4: Create your first task"
+title: 'Tutorial 4: Create your first task'
 status: todo
 priority: medium
 complexity: S
@@ -11,8 +11,9 @@ tags:
   - tutorial
   - basics
   - onboarding
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-152
+owner: AI
 ---
 
 # Tutorial 4: Create your first task

@@ -13,6 +13,7 @@ tags:
   - production
 created: '2024-01-15'
 ref: TSK-133
+owner: AI
 ---
 
 # Implement Security Hardening

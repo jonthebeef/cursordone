@@ -8,6 +8,8 @@ tags:
   - ui
 created: '2024-01-10'
 ref: TSK-064
+owner: AI
+complexity: M
 ---
 
 Enable users to archive tags that are no longer actively used, removing them from the main UI while preserving them in task files. This helps maintain a clean and focused tag list while retaining all data.

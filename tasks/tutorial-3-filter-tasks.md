@@ -1,5 +1,5 @@
 ---
-title: "Tutorial 3: Filter tasks by tags and epics"
+title: 'Tutorial 3: Filter tasks by tags and epics'
 status: todo
 priority: medium
 complexity: XS
@@ -12,8 +12,9 @@ tags:
   - basics
   - onboarding
   - filtering-example
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-151
+owner: AI
 ---
 
 # Tutorial 3: Filter tasks by tags and epics

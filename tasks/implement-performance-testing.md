@@ -12,6 +12,7 @@ tags:
   - performance
 created: '2024-01-15'
 ref: TSK-132
+owner: AI
 ---
 
 # Implement Performance Testing

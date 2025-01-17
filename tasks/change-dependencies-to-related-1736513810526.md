@@ -5,5 +5,7 @@ status: todo
 priority: medium
 epic: system-rebuild
 complexity: M
+owner: AI
+tags: []
 ---
 // ... existing code ...

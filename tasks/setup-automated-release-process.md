@@ -10,8 +10,9 @@ tags:
   - automation
   - release
   - day 5
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-138
+owner: AI
 ---
 
 # Setup Automated Release Process

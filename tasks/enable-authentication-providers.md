@@ -11,6 +11,8 @@ tags:
   - supabase
   - day 4
 created: 2025-01-10T00:00:00.000Z
+owner: AI
+complexity: M
 ---
 
 Enable Google and GitHub OAuth authentication in Supabase. Perform the following steps:

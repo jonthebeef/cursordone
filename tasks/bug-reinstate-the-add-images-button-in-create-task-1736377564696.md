@@ -8,6 +8,8 @@ dependencies: []
 tags:
   - images
 created: '2025-01-08'
+owner: AI
+complexity: M
 ---
 We had a "add image" button which would enable
 

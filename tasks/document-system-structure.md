@@ -1,7 +1,9 @@
 ---
 ref: TSK-016
 title: Document System Structure
-description: Create comprehensive documentation of the current system architecture and components
+description: >-
+  Create comprehensive documentation of the current system architecture and
+  components
 status: done
 priority: high
 epic: system-rebuild
@@ -9,9 +11,12 @@ tags:
   - documentation
   - architecture
   - 10 jan
-created: 2024-01-08
+created: 2024-01-08T00:00:00.000Z
 assignee: user
-depends_on: ["clean-system-structure"]
+depends_on:
+  - clean-system-structure
+owner: AI
+complexity: M
 ---
 
 # Document System Structure

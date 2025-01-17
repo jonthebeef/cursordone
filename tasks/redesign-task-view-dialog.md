@@ -3,7 +3,7 @@ title: Redesign task view dialog with enhanced metadata
 status: todo
 priority: high
 complexity: L
-epic: task-management-enhancement
+epic: ui-cleanup
 dependencies:
   - update-task-front-matter-schema
   - enhance-task-creation-dialog
@@ -11,8 +11,9 @@ tags:
   - ui
   - ux
   - task-view
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-144
+owner: AI
 ---
 
 # Redesign Task View Dialog

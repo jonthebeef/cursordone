@@ -9,6 +9,8 @@ tags:
   - sorting
   - priority
 created: '2025-01-09'
+owner: AI
+complexity: M
 ---
 When viewing the tasks, it maybe be preferential to sort all by
 

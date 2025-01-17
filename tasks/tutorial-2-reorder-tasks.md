@@ -1,5 +1,5 @@
 ---
-title: "Tutorial 2: Reorder tasks using drag and drop"
+title: 'Tutorial 2: Reorder tasks using drag and drop'
 status: todo
 priority: medium
 complexity: XS
@@ -11,8 +11,9 @@ tags:
   - tutorial
   - basics
   - onboarding
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-150
+owner: AI
 ---
 
 # Tutorial 2: Reorder tasks using drag and drop

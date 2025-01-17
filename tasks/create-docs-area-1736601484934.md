@@ -8,6 +8,7 @@ epic: task-management
 dependencies: []
 tags: []
 created: '2025-01-11'
+owner: AI
 ---
 We need to be able to add important docs to the project, such as PRDs, architecture docs, and other things. All in the name if giving you, the robot, greater context about the project.
 

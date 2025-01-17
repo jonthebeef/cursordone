@@ -10,8 +10,10 @@ tags:
   - session-management
   - supabase
   - day 2
-created: "2025-01-10"
+created: '2025-01-10'
 ref: TSK-067
+owner: AI
+complexity: M
 ---
 
 Implement session handling for authenticated users. Ensure the following:

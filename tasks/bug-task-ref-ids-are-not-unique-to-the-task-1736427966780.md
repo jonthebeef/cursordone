@@ -9,6 +9,8 @@ tags:
   - task id
   - ref
 created: '2025-01-09'
+owner: AI
+complexity: M
 ---
 I've just noticed that task IDs are either getting re-used, or reassigned to new tasks
 

@@ -12,6 +12,7 @@ tags:
   - ui
 created: '2024-01-15'
 ref: TSK-126
+owner: AI
 ---
 
 # Implement Analytics Dashboard

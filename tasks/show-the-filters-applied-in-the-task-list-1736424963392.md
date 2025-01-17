@@ -9,6 +9,8 @@ dependencies:
 tags:
   - filters
 created: '2025-01-09'
+owner: AI
+complexity: M
 ---
 When the task list is filtered by epics and/or tags, please show the tags at the top of the screen next to backlog title so the user can clearly see what has been applied.
 

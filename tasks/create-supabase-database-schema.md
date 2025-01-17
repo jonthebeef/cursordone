@@ -11,8 +11,9 @@ tags:
   - supabase
   - schema
   - day 2
-created: "2025-01-10"
+created: '2025-01-10'
 ref: TSK-060
+owner: AI
 ---
 
 # Create Supabase Database Schema

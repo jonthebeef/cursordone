@@ -12,6 +12,7 @@ tags:
   - ui
   - filter
 created: '2025-01-11'
+owner: AI
 ---
 We need a separate sorter in the top nav next to the search bar, that enables us to filter the tasks by t-shirt size. this would enable us to see the effort required by all tasks, or epics, tags, or epics and tags.
 

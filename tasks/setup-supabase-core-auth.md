@@ -11,8 +11,9 @@ tags:
   - auth
   - supabase
   - day 2
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-119
+owner: AI
 ---
 
 # Setup Supabase Core Auth

@@ -9,6 +9,7 @@ tags:
   - ui
 created: '2024-01-10'
 ref: TSK-063
+owner: AI
 ---
 
 Add the ability to star/pin important tags so they always appear at the top of the tag list in the sidebar, improving organization and quick access to frequently used tags.

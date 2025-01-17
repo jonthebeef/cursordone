@@ -9,8 +9,9 @@ tags:
   - setup
   - supabase
   - day 2
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-121
+owner: AI
 ---
 
 # Setup Initial Supabase Project

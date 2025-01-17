@@ -11,7 +11,8 @@ tags:
   - ai
   - automation
   - standards
-created: "2024-01-15"
+created: '2024-01-15'
+owner: AI
 ---
 
 # Create .cursorrules for Consistent AI Behavior

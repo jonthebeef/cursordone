@@ -8,9 +8,12 @@ epic: ai-integration
 tags:
   - ai
   - operations
-created: 2024-01-08
+created: 2024-01-08T00:00:00.000Z
 assignee: user
-depends_on: ["create-ai-context"]
+depends_on:
+  - create-ai-context
+owner: AI
+complexity: M
 ---
 
 # Implement AI Operations

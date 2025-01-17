@@ -5,6 +5,8 @@ status: done
 priority: medium
 epic: ui-cleanup
 complexity: M
+owner: AI
+tags: []
 ---
 
 # Update task view and edit dialog layout

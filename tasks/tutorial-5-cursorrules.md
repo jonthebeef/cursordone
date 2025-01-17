@@ -1,5 +1,5 @@
 ---
-title: "Tutorial 5: Configure system behavior with .cursorrules"
+title: 'Tutorial 5: Configure system behavior with .cursorrules'
 status: todo
 priority: medium
 complexity: M
@@ -12,8 +12,9 @@ tags:
   - advanced
   - onboarding
   - configuration
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-153
+owner: AI
 ---
 
 # Tutorial 5: Configure system behavior with .cursorrules

@@ -1,6 +1,10 @@
 ---
 status: done
 ref: TSK-103
+owner: AI
+tags: []
+complexity: M
+epic: task-management
 ---
 
 # Add in progress state to tasks (TSK-101)

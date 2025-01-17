@@ -1,16 +1,13 @@
 ---
 ref: TSK-018
 title: Setup Package Structure
-description: Set up core package structure and dependencies
 status: pending
 priority: high
 epic: package-setup
 tags:
   - packaging
   - setup
-created: 2024-01-08
-assignee: user
-depends_on: ["create-template-structure"]
+created: 2024-01-08T00:00:00.000Z
 ---
 
 # Setup Package Structure

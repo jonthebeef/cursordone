@@ -11,8 +11,9 @@ tags:
   - ui
   - day 2
   - web
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-140
+owner: AI
 ---
 
 # Setup Web UI Core

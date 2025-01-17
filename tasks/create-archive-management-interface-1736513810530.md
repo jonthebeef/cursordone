@@ -8,6 +8,8 @@ tags:
   - ui
 created: '2024-01-10'
 ref: TSK-062
+owner: AI
+complexity: M
 ---
 
 Create a dedicated interface for managing archived tasks and tags, providing easy access to archived items and restoration capabilities. This interface will be integrated into the sidebar as a new section.

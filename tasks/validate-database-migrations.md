@@ -12,6 +12,8 @@ tags:
   - day 4
 created: 2025-01-10T00:00:00.000Z
 ref: TSK-071
+owner: AI
+complexity: M
 ---
 
 Validate Supabase database migrations to ensure schema integrity. Steps include:

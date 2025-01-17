@@ -12,6 +12,7 @@ tags:
   - beta
 created: '2024-01-15'
 ref: TSK-123
+owner: AI
 ---
 
 # Create Beta Testing Plan

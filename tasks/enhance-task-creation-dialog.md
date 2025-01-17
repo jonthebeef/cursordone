@@ -3,15 +3,16 @@ title: Enhance task creation dialog with new fields
 status: todo
 priority: high
 complexity: L
-epic: task-management-enhancement
+epic: ui-cleanup
 dependencies:
   - update-task-front-matter-schema
 tags:
   - ui
   - ux
   - task-creation
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-143
+owner: AI
 ---
 
 # Enhance Task Creation Dialog

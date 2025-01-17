@@ -10,8 +10,9 @@ tags:
   - auth
   - ui
   - day 2
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-127
+owner: AI
 ---
 
 # Implement Auth UI

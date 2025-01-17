@@ -8,6 +8,8 @@ dependencies: []
 tags:
   - complexity
 created: '2025-01-10'
+owner: AI
+complexity: M
 ---
 When adding or review a task, a user might want to add a complexity score in the form of "t-shirt" size. This would enable greater understanding and prioritisation of tasks. 
 

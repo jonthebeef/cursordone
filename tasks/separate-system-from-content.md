@@ -9,8 +9,9 @@ tags:
   - system
   - cleanup
   - day 3
-created: "2024-01-15"
+created: '2024-01-15'
 ref: TSK-142
+owner: AI
 ---
 
 # Separate System from Content

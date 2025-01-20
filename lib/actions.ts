@@ -1,9 +1,23 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { Task, completeTask, createTask, deleteTask, updateTask } from './tasks'
+import { Task, completeTask, createTask, deleteTask, updateTask, updateTaskStatus } from './tasks'
 import { Epic, createEpic, deleteEpic, updateEpic } from './epics'
 import { saveTaskOrder } from './task-order-actions'
+import { getServerSession } from 'next-auth'
+import { getDependencyFilename, normalizeDependencyFilename } from './utils/dependencies'
+
+export async function updateTaskStatusAction(filename: string, newStatus: Task['status']) {
+  try {
+    const session = await getServerSession()
+    const worker = session?.user?.email || 'user'
+    await updateTaskStatus(filename, newStatus, worker)
+    revalidatePath('/', 'layout')
+  } catch (error) {
+    console.error('Failed to update task status:', error)
+    throw error
+  }
+}
 
 export async function completeTaskAction(filename: string) {
   try {
@@ -15,24 +29,34 @@ export async function completeTaskAction(filename: string) {
   }
 }
 
-export async function createTaskAction(task: Omit<Task, 'filename' | 'ref'> & { content: string }) {
+export async function createTaskAction(task: Omit<Task, 'filename' | 'content' | 'ref'> & { content: string }): Promise<string> {
   try {
-    const filename = await createTask(task)
-    revalidatePath('/', 'layout')
-    return filename
+    // Normalize dependencies before creating task
+    const normalizedTask = {
+      ...task,
+      dependencies: (task.dependencies || []).map(d => normalizeDependencyFilename(d))
+    };
+    const filename = await createTask(normalizedTask);
+    revalidatePath('/', 'layout');
+    return filename;
   } catch (error) {
-    console.error('Failed to create task:', error)
-    throw error
+    console.error('Failed to create task:', error);
+    throw error;
   }
 }
 
 export async function updateTaskAction(filename: string, task: Omit<Task, 'filename'>) {
   try {
-    await updateTask(filename, task)
-    revalidatePath('/', 'layout')
+    // Normalize dependencies before updating task
+    const normalizedTask = {
+      ...task,
+      dependencies: (task.dependencies || []).map(d => normalizeDependencyFilename(d))
+    };
+    await updateTask(filename, normalizedTask);
+    revalidatePath('/', 'layout');
   } catch (error) {
-    console.error('Failed to update task:', error)
-    throw error
+    console.error('Failed to update task:', error);
+    throw error;
   }
 }
 

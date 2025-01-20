@@ -14,6 +14,10 @@ export interface Task {
   priority: 'low' | 'medium' | 'high'
   complexity?: 'XS' | 'S' | 'M' | 'L' | 'XL'
   epic?: string
+  owner: string
+  worker?: string
+  started_date?: string
+  completion_date?: string
   parent?: string
   dependencies?: string[]
   tags?: string[]
@@ -28,6 +32,10 @@ interface TaskFrontmatter {
   priority: Task['priority']
   complexity?: Task['complexity']
   epic?: string
+  owner: string
+  worker?: string
+  started_date?: string
+  completion_date?: string
   parent?: string
   dependencies?: string[]
   tags?: string[]
@@ -37,6 +45,8 @@ interface TaskFrontmatter {
 const TASKS_DIR = path.join(process.cwd(), 'tasks')
 
 export async function getAllTasks(): Promise<Task[]> {
+  console.log('\n=== Loading Tasks ===');
+  
   // Ensure directory exists
   if (!fs.existsSync(TASKS_DIR)) {
     fs.mkdirSync(TASKS_DIR, { recursive: true })
@@ -45,6 +55,8 @@ export async function getAllTasks(): Promise<Task[]> {
   // Get all markdown files
   const files = fs.readdirSync(TASKS_DIR)
     .filter(file => file.endsWith('.md'))
+  
+  console.log('Found files:', files.length);
 
   // Parse all tasks
   const tasks: Task[] = []
@@ -52,12 +64,21 @@ export async function getAllTasks(): Promise<Task[]> {
   for (const file of files) {
     const content = fs.readFileSync(path.join(TASKS_DIR, file), 'utf8')
     const { data, content: markdown } = matter(content)
+    
+    if (data.dependencies?.length > 0) {
+      console.log(`Task ${file} has dependencies:`, data.dependencies);
+    }
+    
     tasks.push({
       filename: file,
       ...data,
       content: markdown.trim()
     } as Task)
   }
+
+  console.log('Loaded tasks:', tasks.length);
+  console.log('Tasks with dependencies:', tasks.filter(t => t.dependencies && t.dependencies.length > 0).length);
+  console.log('=== End Loading Tasks ===\n');
 
   return tasks
 }
@@ -66,15 +87,60 @@ export async function completeTask(filename: string): Promise<void> {
   const task = await getTask(filename)
   if (!task) throw new Error(`Task not found: ${filename}`)
 
-  // Toggle the status
+  // Handle status change
   task.status = task.status === 'done' ? 'todo' : 'done'
+  
+  // If moving to todo, clear started_date and worker
+  if (task.status === 'todo') {
+    task.started_date = undefined
+    task.worker = undefined
+  }
   
   // Update the file
   const filePath = path.join(TASKS_DIR, filename)
   await fs.promises.writeFile(filePath, await serializeTask(task))
 }
 
+export async function updateTaskStatus(filename: string, newStatus: Task['status'], worker?: string): Promise<void> {
+  const task = await getTask(filename)
+  if (!task) throw new Error(`Task not found: ${filename}`)
+
+  // Handle status change
+  const oldStatus = task.status
+  task.status = newStatus
+
+  // If moving to in-progress, set started_date and worker
+  if (newStatus === 'in-progress' && oldStatus !== 'in-progress') {
+    task.started_date = new Date().toISOString().split('T')[0]
+    task.worker = worker || 'user'
+  }
+
+  // If moving to done, set completion_date
+  if (newStatus === 'done' && oldStatus !== 'done') {
+    task.completion_date = new Date().toISOString().split('T')[0]
+  }
+
+  // If moving back to todo, clear all tracking dates and worker
+  if (newStatus === 'todo') {
+    task.started_date = undefined
+    task.completion_date = undefined
+    task.worker = undefined
+  }
+
+  // Update the file
+  const filePath = path.join(TASKS_DIR, filename)
+  await fs.promises.writeFile(filePath, await serializeTask(task))
+}
+
 export async function createTask(task: Omit<Task, 'filename' | 'content' | 'ref'> & { content: string }): Promise<string> {
+  // Validate required fields
+  const requiredFields = ['title', 'status', 'priority', 'owner', 'created'] as const
+  for (const field of requiredFields) {
+    if (!task[field]) {
+      throw new Error(`Missing required field: ${field}`)
+    }
+  }
+
   const filename = `${task.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}.md`
   const filePath = path.join(TASKS_DIR, filename)
   
@@ -84,7 +150,8 @@ export async function createTask(task: Omit<Task, 'filename' | 'content' | 'ref'
     status: task.status,
     priority: task.priority,
     complexity: task.complexity,
-    epic: task.epic ? task.epic.toLowerCase().replace(/[^a-z0-9]+/g, '-') : undefined,
+    epic: task.epic?.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    owner: task.owner,
     parent: task.parent,
     dependencies: task.dependencies || [],
     tags: task.tags || [],
@@ -113,7 +180,8 @@ export async function updateTask(filename: string, task: Omit<Task, 'filename'>)
     status: task.status,
     priority: task.priority,
     complexity: task.complexity,
-    epic: task.epic ? task.epic.toLowerCase().replace(/[^a-z0-9]+/g, '-') : undefined,
+    epic: task.epic,
+    owner: task.owner,
     parent: task.parent,
     dependencies: task.dependencies || [],
     tags: task.tags || [],
@@ -189,5 +257,14 @@ async function getTask(filename: string): Promise<Task | null> {
 async function serializeTask(task: Task): Promise<string> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { content, filename, ...frontMatter } = task
+
+  // Remove undefined values to prevent YAML errors
+  Object.keys(frontMatter).forEach(key => {
+    const k = key as keyof typeof frontMatter
+    if (frontMatter[k] === undefined) {
+      delete frontMatter[k]
+    }
+  })
+
   return matter.stringify(content || '', frontMatter)
 } 

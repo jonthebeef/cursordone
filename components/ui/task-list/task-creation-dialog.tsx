@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Task } from "@/lib/tasks";
+import { getDependencyFilename, normalizeDependencyFilename } from "@/lib/utils/dependencies";
 import { createTaskAction } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
@@ -9,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { TagInput } from "@/components/ui/tag-input";
 import { SearchInput } from "@/components/ui/search-input";
 import { TextEditor } from "@/components/ui/text-editor";
+import { useSession } from "next-auth/react";
 import {
   Dialog,
   DialogContent,
@@ -43,7 +45,9 @@ export function TaskCreationDialog({
   initialTasks,
   disabled,
 }: TaskCreationDialogProps) {
+  const { data: session } = useSession();
   const [isCreating, setIsCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [dependencySearchQuery, setDependencySearchQuery] = useState("");
   const [tagInput, setTagInput] = useState("");
   const [newTask, setNewTask] = useState<
@@ -57,41 +61,98 @@ export function TaskCreationDialog({
     created: "",
     dependencies: [],
     complexity: "M",
+    epic: "",
+    owner: "user",
   });
 
-  // Filter tasks for dependencies
-  const filteredDependencyTasks = initialTasks.filter((task) => {
-    if (!dependencySearchQuery) return true;
-    const searchLower = dependencySearchQuery.toLowerCase();
-    return (
-      task.title?.toLowerCase().includes(searchLower) ||
-      task.epic?.toLowerCase().includes(searchLower)
-    );
-  });
+  // Update owner when session changes
+  useEffect(() => {
+    const email = session?.user?.email;
+    if (email && typeof email === 'string') {
+      setNewTask(prev => ({
+        ...prev,
+        owner: email,
+      }));
+    }
+  }, [session]);
+
+  const updateDependencies = (filename: string, checked: boolean) => {
+    if (isCreating) return;
+    setNewTask(prev => ({
+      ...prev,
+      dependencies: checked
+        ? [...(prev.dependencies || []), normalizeDependencyFilename(filename)]
+        : (prev.dependencies || []).filter(d => d !== normalizeDependencyFilename(filename))
+    }));
+  };
+
+  // Use tasks from props for filtering
+  const filteredDependencyTasks = useMemo(() => {
+    return initialTasks
+      .filter((t: Task) => {
+        const searchLower = dependencySearchQuery.toLowerCase();
+        return (
+          !dependencySearchQuery ||
+          (t.title || "").toLowerCase().includes(searchLower) ||
+          (t.ref || "").toLowerCase().includes(searchLower) ||
+          (t.content || "").toLowerCase().includes(searchLower)
+        );
+      })
+      .sort((a: Task, b: Task) => {
+        if (a.ref && b.ref) return a.ref.localeCompare(b.ref);
+        if (a.ref) return -1;
+        if (b.ref) return 1;
+        return (a.title || "").localeCompare(b.title || "");
+      });
+  }, [initialTasks, dependencySearchQuery]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isCreating || disabled) return;
+    
     setIsCreating(true);
+    setError(null);
+
     try {
-      const taskToCreate: Omit<Task, "ref" | "filename"> & { content: string } =
-        {
-          ...newTask,
-          tags: tagInput
-            ? tagInput
-                .split(",")
-                .map((t) => t.trim())
-                .filter(Boolean)
-            : [],
-          dependencies: newTask.dependencies || [],
-          id: Date.now().toString(),
-          created: new Date().toISOString().split("T")[0],
-          content: newTask.content || "",
-        };
-      await createTaskAction(taskToCreate);
+      // Get owner from session or use default
+      const owner = session?.user?.email || 'user';
+
+      // Add guidelines at save time
+      const guidelines = `
+
+---
+
+## Guidelines
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer 
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis`;
+
+      // Use the existing state with owner
+      const taskToCreate = {
+        ...newTask,
+        owner,  // Ensure owner is set
+        content: (newTask.content || '') + guidelines, // Append guidelines at save time, ensure content exists
+        created: new Date().toISOString().split("T")[0],
+        tags: tagInput
+          ? tagInput
+              .split(",")
+              .map((t) => t.trim())
+              .filter(Boolean)
+          : [],
+      };
+
+      // Debug logging
+      console.log('Task being created:', JSON.stringify(taskToCreate, null, 2));
+      
+      const result = await createTaskAction(taskToCreate);
+      console.log('Task creation result:', result);
+      
       onStateChange?.();
       onSuccess?.();
       onOpenChange(false);
+      
+      // Reset form without guidelines in the content
       setNewTask({
         id: "0",
         title: "",
@@ -101,10 +162,13 @@ export function TaskCreationDialog({
         created: "",
         dependencies: [],
         complexity: "M",
+        epic: "",
+        owner
       });
       setTagInput("");
     } catch (error) {
-      console.error("Failed to create task:", error);
+      console.error("Failed to create task. Full error:", error);
+      setError(error instanceof Error ? error.message : "Failed to create task");
     } finally {
       setIsCreating(false);
     }
@@ -115,6 +179,11 @@ export function TaskCreationDialog({
       <DialogContent className="max-w-4xl">
         <DialogHeader className="pb-4">
           <DialogTitle>Create New Task</DialogTitle>
+          {error && (
+            <div className="mt-2 text-sm text-red-500">
+              {error}
+            </div>
+          )}
         </DialogHeader>
         <form onSubmit={handleCreate} className="space-y-4">
           <div className="grid grid-cols-3 gap-4">
@@ -286,11 +355,11 @@ export function TaskCreationDialog({
                   Epic (optional)
                 </label>
                 <Select
-                  value={newTask.epic || ""}
-                  onValueChange={(value) =>
+                  value={newTask.epic}
+                  onValueChange={(value: string) =>
                     setNewTask((prev) => ({
                       ...prev,
-                      epic: value || undefined,
+                      epic: value,
                     }))
                   }
                 >
@@ -310,6 +379,11 @@ export function TaskCreationDialog({
                   </SelectContent>
                 </Select>
               </div>
+
+              <input
+                type="hidden"
+                value={newTask.owner}
+              />
 
               <div className="space-y-2">
                 <TagInput value={tagInput} onChange={setTagInput} />
@@ -346,17 +420,8 @@ export function TaskCreationDialog({
                     >
                       <Checkbox
                         id={`dep-${task.filename}`}
-                        checked={newTask.dependencies?.includes(task.filename)}
-                        onCheckedChange={(checked) => {
-                          setNewTask((prev) => ({
-                            ...prev,
-                            dependencies: checked
-                              ? [...(prev.dependencies || []), task.filename]
-                              : (prev.dependencies || []).filter(
-                                  (d) => d !== task.filename,
-                                ),
-                          }));
-                        }}
+                        checked={newTask.dependencies?.includes(normalizeDependencyFilename(task.filename))}
+                        onCheckedChange={(checked) => updateDependencies(task.filename, !!checked)}
                         className="border-zinc-700 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
                       />
                       <label

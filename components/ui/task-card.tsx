@@ -7,11 +7,11 @@ import { cn } from "@/lib/utils"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Link2, Calendar, Shirt } from "lucide-react"
+import { updateTaskStatusAction } from "@/lib/actions"
 
 interface TaskCardProps {
   task: Task
   onClick: (task: Task) => void
-  onComplete: (filename: string) => Promise<void>
 }
 
 const priorityColors = {
@@ -20,7 +20,7 @@ const priorityColors = {
   high: "bg-amber-400"
 }
 
-export function TaskCard({ task, onClick, onComplete }: TaskCardProps) {
+export function TaskCard({ task, onClick }: TaskCardProps) {
   const router = useRouter()
   const [isUpdating, setIsUpdating] = useState(false)
 
@@ -29,8 +29,27 @@ export function TaskCard({ task, onClick, onComplete }: TaskCardProps) {
 
     setIsUpdating(true)
     try {
-      await onComplete(task.filename)
+      let newStatus: Task['status']
+      if (task.status === 'todo' && checked) {
+        newStatus = 'in-progress'
+      }
+      else if (task.status === 'in-progress' && checked) {
+        newStatus = 'done'
+      }
+      else if (task.status === 'done' && !checked) {
+        newStatus = 'todo'
+      }
+      else if (task.status === 'in-progress' && !checked) {
+        newStatus = 'todo'
+      }
+      else {
+        newStatus = task.status
+      }
+      
+      await updateTaskStatusAction(task.filename, newStatus)
       router.refresh()
+    } catch (error) {
+      console.error('Failed to change status:', error)
     } finally {
       setIsUpdating(false)
     }

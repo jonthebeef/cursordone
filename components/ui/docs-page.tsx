@@ -58,11 +58,11 @@ export function DocsPage({ initialDocs }: DocsPageProps) {
 
   const filteredItems = [
     ...tasks.filter(task => 
-      (task.ref?.toLowerCase().includes(dependencySearchQuery.toLowerCase()) || false) ||
-      (task.title?.toLowerCase().includes(dependencySearchQuery.toLowerCase()) || false)
+      task.ref?.toLowerCase().includes(dependencySearchQuery.toLowerCase()) ||
+      task.title?.toLowerCase().includes(dependencySearchQuery.toLowerCase())
     ),
     ...epics.filter(epic => 
-      epic.title?.toLowerCase().includes(dependencySearchQuery.toLowerCase()) || false
+      epic.title && epic.title.toLowerCase().includes(dependencySearchQuery.toLowerCase())
     ).map(epic => ({
       ref: 'Epic',
       title: epic.title,

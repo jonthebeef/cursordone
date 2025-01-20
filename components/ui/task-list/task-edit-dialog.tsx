@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Task } from "@/lib/tasks";
+import { getDependencyFilename, normalizeDependencyFilename } from "@/lib/utils/dependencies";
 import { updateTaskAction } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
@@ -326,16 +327,17 @@ export function TaskEditDialog({
                   >
                     <Checkbox
                       checked={
-                        editedTask.dependencies?.includes(t.ref) || false
+                        editedTask.dependencies?.includes(normalizeDependencyFilename(t.filename)) || false
                       }
                       onCheckedChange={(checked) => {
                         setEditedTask((prev) => {
                           if (!prev) return null;
                           const deps = new Set(prev.dependencies || []);
+                          const normalizedFilename = normalizeDependencyFilename(t.filename);
                           if (checked) {
-                            deps.add(t.ref);
+                            deps.add(normalizedFilename);
                           } else {
-                            deps.delete(t.ref);
+                            deps.delete(normalizedFilename);
                           }
                           return {
                             ...prev,

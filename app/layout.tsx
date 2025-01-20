@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { GeistMono } from 'geist/font/mono';
 import "./globals.css";
-import { SideNav } from "@/components/ui/side-nav";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster"
-import { ClientLayout } from "./client-layout"
 import { AuthProvider } from '@/components/providers/auth-provider'
 import { GeistSans } from 'geist/font/sans'
 
@@ -30,13 +28,13 @@ export default function RootLayout({
       <body className={cn(
         inter.variable,
         GeistMono.variable,
+        GeistSans.variable,
         "font-inter h-full bg-zinc-900 text-zinc-50"
       )}>
         <AuthProvider>
-          <ClientLayout>
-            {children}
-          </ClientLayout>
+          {children}
         </AuthProvider>
+        <Toaster />
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
 ---
-title: "Fix dependency lookup inconsistency"
+title: Fix dependency lookup inconsistency
 status: todo
 priority: high
 complexity: S
@@ -10,7 +10,8 @@ tags:
   - bug
   - dependencies
   - enhancement
-created: "2025-01-17"
+created: '2025-01-17'
+ref: TSK-207
 ---
 
 There is an inconsistency in how task dependencies are being handled between different components. The task edit dialog is checking dependencies using task refs while the rest of the system uses filenames.

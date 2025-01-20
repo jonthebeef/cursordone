@@ -13,12 +13,18 @@ content_rules:
         - status: enum[todo, in-progress, done]
         - priority: enum[low, medium, high]
         - created: string
-      optional:
+        - owner: string  # Who wrote the task
         - complexity: enum[XS, S, M, L, XL]
         - epic: string
-        - dependencies: string[]
         - tags: string[]
+      optional:
+        - dependencies: string[]
         - ref: string  # System managed, do not generate
+        - worker: string  # Who is delivering the task
+        - due_date: string  # YYYY-MM-DD
+        - started_date: string  # YYYY-MM-DD, auto-set when status -> in-progress
+        - completion_date: string  # YYYY-MM-DD, auto-set when status -> done
+        - comments: string  # Quick status notes/blockers
     
     # Epic Schema
     epic:
@@ -50,11 +56,33 @@ task_rules:
     - Always include Implementation Details when applicable
     - Dependencies should use task filenames without extension
     - Descriptions must include clear objectives and context
+    - Always append these guidelines at the end of every task:
+      format: |
+        ---
+        
+        ## Guidelines
+        - The fewer lines of code, the better
+        - Proceed like a Senior Developer // 10x engineer 
+        - DO NOT STOP WORKING until task is complete
+        - Start reasoning paragraphs with uncertainty, then build confidence through analysis
+    - Set owner field:
+      - Set to "AI" when creating tasks via markdown files
+      - Set to logged-in user when creating via web UI
+    - Worker assignment:
+      - Set to "AI" when AI picks up a task or sets status to in-progress in markdown
+      - Set to logged-in user when they pick up a task in web UI
+      - Worker field indicates who is delivering/delivered the task
     - Update refs management:
       - Single task creation: Run update-refs immediately after creating the task
       - Multiple tasks creation: Run update-refs once after all tasks are created
       - Only run for tasks created directly as .md files in tasks/ directory
       - Not needed for task edits or other file operations
+    - Task updates must use lib/tasks.ts functions:
+      - Use createTask for new tasks
+      - Use updateTask for modifying tasks
+      - Use completeTask for status changes
+      - Never modify task files directly
+      - This ensures proper date tracking and front matter updates
   
   implementation_notes:
     - Always add Implementation Notes section when making changes
@@ -81,6 +109,10 @@ task_rules:
       - When making substantive changes to the task
       - When actively debugging or investigating
       - Update task file immediately when work begins
+      - Set started_date to current date
+      - Set worker based on context:
+        - Set to "AI" if status changed in markdown
+        - Set to logged-in user if changed via web UI
     
     done:
       - Never mark as done without explicit user approval
@@ -90,6 +122,13 @@ task_rules:
       - User acceptance testing (UAT) completed
       - Related documentation updated
       - Tests completed if applicable
+      - Set completion_date to current date
+      - Keep existing worker assignment
+      
+    todo:
+      - Clear started_date and completion_date when moving back to todo
+      - Keep owner and worker fields unchanged
+      - Document reason for moving back to todo in comments
   
   checklist_management:
     - Check off items individually as completed
@@ -165,6 +204,7 @@ git_rules:
 
   process:
     - Never commit without explicit user approval
+    - Only search for tasks that are marked as todo unless otherwise told
     - Never push without explicit user approval
     - Wait for UAT completion before any git operations
     - Include all related changes in single commit
@@ -187,7 +227,7 @@ ai_behavior:
     - Focus on actions and results, not internal processes
   
   task_understanding:
-    - When moving to in-progress:
+    - When moving to in-progress YOU MUST:
       - Explain understanding of the task
       - Outline planned approach
       - Request permission before starting work
@@ -215,6 +255,10 @@ ai_behavior:
     - Clearly explain errors and their context
     - Suggest potential solutions
     - Ask for clarification when needed
+    - Start by writing 3 reasoning paragraphs analysing what the error might be
+    - DO NOT JUMP TO CONCLUSIONS
+    - Quiet the ego
+    - Constantly question your assumptions
     
   documentation:
     - Update relevant documentation when making changes
@@ -242,3 +286,19 @@ pipeline:
 
 # Date Formats
 date_format: "YYYY-MM-DD"  # ISO 8601 format 
+
+# Ownership Rules
+ownership_rules:
+  owner:
+    - Represents who created/wrote the task
+    - Set to "AI" when task is created via markdown file
+    - Set to logged-in user when task is created in web UI
+    - Never changes after creation
+  
+  worker:
+    - Represents who is delivering/delivered the task
+    - Set when task moves to in-progress
+    - Set to "AI" when status changed in markdown
+    - Set to logged-in user when status changed in web UI
+    - Preserved when task is completed
+    - Used for tracking task delivery and cycle time 

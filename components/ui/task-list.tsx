@@ -80,6 +80,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TextEditor } from "@/components/ui/text-editor";
+import { getDependencyFilename, normalizeDependencyFilename } from "@/lib/utils/dependencies";
+import { TaskViewDialog } from "./task-list/task-view-dialog";
 
 const sortOptions = [
   { value: "manual", label: "Default Order" },
@@ -93,6 +95,7 @@ type SortOption = (typeof sortOptions)[number]["value"];
 
 interface TaskListProps {
   initialTasks: Task[];
+  allTasks: Task[];
   epics: { id: string; title: string }[];
   selectedEpic: string | null;
   selectedTags: string[];
@@ -102,6 +105,7 @@ interface TaskListProps {
 
 export function TaskList({
   initialTasks,
+  allTasks,
   epics,
   selectedEpic,
   selectedTags,
@@ -132,16 +136,19 @@ export function TaskList({
   const [isCreating, setIsCreating] = useState(false);
   const [sortOption, setSortOption] = useState<SortOption>("manual");
   const [newTask, setNewTask] = useState<
-    Omit<Task, "ref" | "filename"> & { content: string }
+    Omit<Task, 'ref' | 'filename'> & { content: string }
   >({
-    id: "0",
-    title: "",
-    priority: "medium",
-    status: "todo",
-    content: "",
-    created: "",
+    id: '0',
+    title: '',
+    priority: 'medium',
+    status: 'todo',
+    content: '',
+    created: '',
+    owner: 'user',
+    complexity: 'M',
+    epic: '',
     dependencies: [],
-    complexity: "M",
+    tags: []
   });
   const [tagInput, setTagInput] = useState("");
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
@@ -156,16 +163,16 @@ export function TaskList({
   );
 
   const filteredDependencyTasks = useMemo(() => {
-    if (!dependencySearchQuery) return initialTasks;
+    if (!dependencySearchQuery) return allTasks;
     const query = dependencySearchQuery.toLowerCase();
-    return initialTasks.filter(
+    return allTasks.filter(
       (task) =>
         task.title?.toLowerCase().includes(query) ||
         false ||
         task.ref?.toLowerCase().includes(query) ||
         false,
     );
-  }, [initialTasks, dependencySearchQuery]);
+  }, [allTasks, dependencySearchQuery]);
 
   const handleStartEditing = () => {
     if (!selectedTask) return;
@@ -203,28 +210,23 @@ export function TaskList({
     }
   };
 
-  const handleDelete = async () => {
-    if (!selectedTask || isDeleting || disabled) return;
-    setIsDeleting(true);
+  const handleDelete = async (filename: string) => {
+    if (disabled) return;
     try {
-      await deleteTaskAction(selectedTask.filename);
-      onStateChange?.();
+      await deleteTaskAction(filename);
       setSelectedTask(null);
-      setShowDeleteAlert(false);
+      onStateChange?.();
       toast({
-        title: `🗑️ Task "${selectedTask.title}" deleted`,
-        description: "The task has been permanently removed",
-        variant: "default",
+        title: "Task deleted",
+        description: "The task has been successfully deleted.",
       });
     } catch (error) {
       console.error("Failed to delete task:", error);
       toast({
-        title: "❌ Error",
-        description: `Failed to delete task "${selectedTask?.title}"`,
+        title: "Error",
+        description: "Failed to delete task. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsDeleting(false);
     }
   };
 
@@ -420,40 +422,47 @@ export function TaskList({
     if (isCreating || disabled) return;
     setIsCreating(true);
     try {
-      const taskToCreate: Omit<Task, "ref" | "filename"> & { content: string } =
-        {
-          ...newTask,
-          tags: tagInput
-            ? tagInput
-                .split(",")
-                .map((t) => t.trim())
-                .filter(Boolean)
-            : [],
-          dependencies: newTask.dependencies || [],
-          id: Date.now().toString(),
-          created: new Date().toISOString().split("T")[0],
-          content: newTask.content || "",
-        };
+      // Add guidelines
+      const guidelines = `
+
+---
+
+## Guidelines
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer 
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis`;
+
+      const taskToCreate = {
+        ...newTask,
+        tags: tagInput ? tagInput.split(',').map(t => t.trim()).filter(Boolean) : [],
+        dependencies: (newTask.dependencies || []).map(d => normalizeDependencyFilename(d)),
+        id: Date.now().toString(),
+        content: (newTask.content || '') + guidelines,
+        created: new Date().toISOString().split('T')[0]
+      }
       const filename = await createTaskAction(taskToCreate);
       if (filename) {
-        setTaskOrder((prev) => [...prev, filename]);
+        setTaskOrder(prev => [...prev, filename]);
       }
       onStateChange?.();
       setShowCreateDialog(false);
       setNewTask({
-        id: "0",
-        title: "",
-        priority: "medium",
-        status: "todo",
-        content: "",
-        created: "",
+        id: '0',
+        title: '',
+        priority: 'medium',
+        status: 'todo',
+        content: '',
+        created: '',
+        owner: 'user',
+        complexity: 'M',
+        epic: '',
         dependencies: [],
-        complexity: "M",
+        tags: []
       });
-      setTagInput("");
-      setSearchQuery("");
+      setTagInput('');
     } catch (error) {
-      console.error("Failed to create task:", error);
+      console.error('Failed to create task:', error);
     } finally {
       setIsCreating(false);
     }
@@ -495,6 +504,15 @@ export function TaskList({
       window.removeEventListener("beforeunload", handleStart);
     };
   }, []);
+
+  // Initialize newTask with current date on mount
+  useEffect(() => {
+    setNewTask(prev => ({
+      ...prev,
+      id: Date.now().toString(),
+      created: new Date().toISOString().split('T')[0]
+    }))
+  }, [])
 
   if (isLoading || tasks.length === 0) {
     return (
@@ -688,165 +706,20 @@ export function TaskList({
       </main>
 
       {/* View Dialog */}
-      <Dialog
-        open={!!selectedTask && !isEditing}
-        onOpenChange={(open) => {
-          if (!open) {
-            setSelectedTask(null);
-          }
-        }}
-      >
-        <DialogContent className="max-w-4xl h-[85vh] !p-0 flex flex-col">
-          {selectedTask && (
-            <>
-              <DialogHeader className="flex-none p-6 border-b border-zinc-800">
-                <DialogTitle>
-                  {selectedTask.ref && (
-                    <span className="font-mono text-zinc-400 mr-2">
-                      {selectedTask.ref}
-                    </span>
-                  )}
-                  <span className="font-medium">{selectedTask.title}</span>
-                </DialogTitle>
-              </DialogHeader>
-
-              <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6">
-                {/* Metadata Grid */}
-                <div className="grid grid-cols-3 gap-4">
-                  {/* Complexity */}
-                  <div className="space-y-1">
-                    <span className="text-sm font-medium text-zinc-400">
-                      Complexity
-                    </span>
-                    <div className="px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100">
-                      {selectedTask.complexity || "Not set"}
-                    </div>
-                  </div>
-
-                  {/* Priority */}
-                  <div className="space-y-1">
-                    <span className="text-sm font-medium text-zinc-400">
-                      Priority
-                    </span>
-                    <div className="px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100">
-                      {selectedTask.priority || "Not set"}
-                    </div>
-                  </div>
-
-                  {/* Status */}
-                  <div className="space-y-1">
-                    <span className="text-sm font-medium text-zinc-400">
-                      Status
-                    </span>
-                    <div className="px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100">
-                      {selectedTask.status || "Not set"}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Epic and Tags Row */}
-                {(selectedTask.epic ||
-                  (selectedTask.tags && selectedTask.tags.length > 0)) && (
-                  <div className="flex gap-4">
-                    {/* Epic */}
-                    {selectedTask.epic && (
-                      <div className="space-y-1 w-64 flex-none">
-                        <span className="text-sm font-medium text-zinc-400">
-                          Epic
-                        </span>
-                        <div className="px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100">
-                          {selectedTask.epic}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Tags */}
-                    {selectedTask.tags && selectedTask.tags.length > 0 && (
-                      <div className="space-y-1 flex-1">
-                        <span className="text-sm font-medium text-zinc-400">
-                          Tags
-                        </span>
-                        <div className="flex flex-wrap gap-2">
-                          {selectedTask.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="px-2 py-1 bg-zinc-900/50 border border-zinc-800 rounded-md text-sm text-zinc-100"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Content */}
-                <div className="space-y-4 pt-4">
-                  <span className="text-sm font-medium text-zinc-400">
-                    Content
-                  </span>
-                  <div className="prose prose-invert prose-zinc max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {selectedTask.content || ""}
-                    </ReactMarkdown>
-                  </div>
-                </div>
-
-                {/* Dependencies */}
-                {selectedTask.dependencies &&
-                  selectedTask.dependencies.length > 0 && (
-                    <div className="space-y-2 pt-6 border-t border-zinc-800">
-                      <span className="text-sm font-medium text-zinc-400">
-                        Dependencies
-                      </span>
-                      <div className="space-y-2">
-                        {selectedTask.dependencies.map((dep) => {
-                          const task = initialTasks.find(
-                            (t) => t.filename === dep,
-                          );
-                          if (!task) return null;
-                          return (
-                            <div
-                              key={dep}
-                              className="flex items-center gap-2 px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-md text-zinc-100"
-                            >
-                              {task.ref && (
-                                <span className="font-mono text-zinc-400">
-                                  {task.ref}
-                                </span>
-                              )}
-                              <span className="font-medium">{task.title}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-              </div>
-
-              <div className="flex-none p-4 border-t border-zinc-800 flex justify-end gap-3">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowDeleteAlert(true)}
-                  className="bg-zinc-900/50 border-zinc-800 text-red-400 hover:text-red-300 hover:bg-zinc-800/50"
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Delete
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={handleStartEditing}
-                  className="bg-zinc-900/50 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50"
-                >
-                  <Pencil className="w-4 h-4 mr-2" />
-                  Edit
-                </Button>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+      {selectedTask && (
+        <TaskViewDialog
+          task={selectedTask}
+          initialTasks={initialTasks}
+          allTasks={allTasks}
+          open={!isEditing}
+          onOpenChange={(open) => {
+            if (!open) setSelectedTask(null);
+          }}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          setSelectedTask={setSelectedTask}
+        />
+      )}
 
       {/* Edit Dialog */}
       <TaskEditDialogTest
@@ -1227,7 +1100,10 @@ export function TaskList({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleDelete}
+              onClick={() => {
+                setShowDeleteAlert(false);
+                handleDelete(selectedTask?.filename || "");
+              }}
               className="bg-red-600 text-white hover:bg-red-700"
             >
               Delete task

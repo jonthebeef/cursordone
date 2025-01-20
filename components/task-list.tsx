@@ -1,7 +1,7 @@
 'use client'
 
 import { Task } from "@/lib/tasks"
-import { completeTaskAction, deleteTaskAction, updateTaskAction, createTaskAction, saveTaskOrderAction } from "@/lib/actions"
+import { completeTaskAction, deleteTaskAction, updateTaskAction, createTaskAction, saveTaskOrderAction, updateTaskStatusAction } from "@/lib/actions"
 import { TaskCard } from "@/components/ui/task-card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useState, useEffect, useMemo } from "react"
@@ -44,7 +44,11 @@ interface TaskListProps {
 }
 
 // Add SortableTaskCard component
-function SortableTaskCard({ task, number, ...props }: { task: Task; number: number } & Omit<React.ComponentProps<typeof TaskCard>, 'task'>) {
+function SortableTaskCard({ task, number, onClick }: { 
+  task: Task; 
+  number: number;
+  onClick: (task: Task) => void;
+}) {
   const {
     attributes,
     listeners,
@@ -70,8 +74,11 @@ function SortableTaskCard({ task, number, ...props }: { task: Task; number: numb
       >
         {number}
       </div>
-      <div className="flex-1" onClick={(e) => e.stopPropagation()}>
-        <TaskCard task={task} {...props} />
+      <div className="flex-1">
+        <TaskCard 
+          task={task} 
+          onClick={onClick}
+        />
       </div>
     </div>
   )
@@ -144,7 +151,8 @@ export function TaskList({
     priority: 'medium',
     status: 'todo',
     content: '',
-    created: ''
+    created: '',
+    owner: 'user',
   })
   const [isCreating, setIsCreating] = useState(false)
   const [openSections, setOpenSections] = useState<string[]>(["backlog", "done"])
@@ -177,11 +185,7 @@ export function TaskList({
   const handleComplete = async (filename: string) => {
     if (disabled) return
     try {
-      const task = initialTasks.find(t => t.filename === filename)
-      if (!task) return
-
-      const newStatus = task.status === 'done' ? 'todo' : 'done'
-      await updateTaskAction(filename, { ...task, status: newStatus })
+      await completeTaskAction(filename)
       onStateChange?.()
     } catch (error) {
       console.error('Failed to complete task:', error)
@@ -260,7 +264,12 @@ export function TaskList({
         priority: 'medium',
         status: 'todo',
         content: '',
-        created: ''
+        created: '',
+        owner: 'user',
+        complexity: 'M',
+        epic: '',
+        dependencies: [],
+        tags: []
       })
       setTagInput('')
     } catch (error) {
@@ -333,24 +342,6 @@ export function TaskList({
 
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task)
-  }
-
-  const handleStatusChange = async (task: Task) => {
-    if (disabled) return
-    try {
-      let newStatus: Task['status']
-      if (task.status === 'done') {
-        newStatus = 'todo'
-      } else if (task.status === 'in-progress') {
-        newStatus = 'done'
-      } else {
-        newStatus = 'in-progress'
-      }
-      await updateTaskAction(task.filename, { ...task, status: newStatus })
-      onStateChange?.()
-    } catch (error) {
-      console.error('Failed to update task status:', error)
-    }
   }
 
   return (
@@ -620,13 +611,17 @@ export function TaskList({
                   </AccordionTrigger>
                   <AccordionContent className="pt-6 space-y-4">
                     {sortedTasks.filter(t => t.status === 'in-progress').map((task, i) => (
-                      <SortableTaskCard
-                        key={task.filename}
-                        task={task}
-                        number={i + 1}
-                        onClick={handleTaskClick}
-                        onComplete={handleComplete}
-                      />
+                      <div key={task.filename} className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-6 h-6 rounded-full bg-zinc-800/50 text-zinc-600 text-sm font-medium">
+                          {i + 1}
+                        </div>
+                        <div className="flex-1">
+                          <TaskCard 
+                            task={task} 
+                            onClick={handleTaskClick}
+                          />
+                        </div>
+                      </div>
                     ))}
                   </AccordionContent>
                 </AccordionItem>
@@ -646,8 +641,7 @@ export function TaskList({
                             key={task.filename}
                             task={task}
                             number={index + 1}
-                            onComplete={handleComplete}
-                            onClick={setSelectedTask}
+                            onClick={handleTaskClick}
                           />
                         ))}
                       </div>
@@ -671,8 +665,7 @@ export function TaskList({
                               key={task.filename}
                               task={task}
                               number={backlogTasks.length + index + 1}
-                              onComplete={handleComplete}
-                              onClick={setSelectedTask}
+                              onClick={handleTaskClick}
                             />
                           ))}
                         </div>

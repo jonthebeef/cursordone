@@ -76,10 +76,10 @@ export function DocList({ docs, searchQuery }: DocListProps) {
   const filteredDocs = docs.filter(doc => {
     const searchLower = searchQuery.toLowerCase()
     return (
-      doc.title.toLowerCase().includes(searchLower) ||
-      doc.description?.toLowerCase().includes(searchLower) ||
-      doc.type.toLowerCase().includes(searchLower) ||
-      doc.tags?.some(tag => tag.toLowerCase().includes(searchLower))
+      (doc.title && doc.title.toLowerCase().includes(searchLower)) ||
+      (doc.description && doc.description.toLowerCase().includes(searchLower)) ||
+      (doc.type && doc.type.toLowerCase().includes(searchLower)) ||
+      doc.tags?.some(tag => tag && tag.toLowerCase().includes(searchLower))
     )
   })
 

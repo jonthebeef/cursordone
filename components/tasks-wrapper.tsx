@@ -152,6 +152,7 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
       <div className="mt-1">
         <TaskList
           initialTasks={filteredTasks}
+          allTasks={currentTasks}
           epics={epics}
           selectedEpic={selectedEpic}
           selectedTags={selectedTags}

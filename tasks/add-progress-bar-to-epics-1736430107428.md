@@ -1,19 +1,18 @@
 ---
 ref: TSK-082
 title: Add progress bar to epics
-status: done
+status: todo
 priority: medium
 complexity: S
 epic: ui-cleanup
+owner: AI
 dependencies: []
 tags:
   - enhancement
   - ui
   - day 1
-created: "2024-01-09"
-owner: AI
+created: '2024-01-09'
 ---
-
 Currently, there's no way of seeing how close to completing an epic we are
 
 Can you add a feature to the epic, which shows which tasks are part of it, and percentage completeness of that epic?

@@ -180,9 +180,15 @@ export function TaskDetails({
                 </div>
                 <div>
                   <TagInput
-                    value={tagInput}
-                    onChange={setTagInput}
-                    placeholder="Add tags (comma-separated)..."
+                    selectedTags={
+                      tagInput
+                        ? tagInput
+                            .split(",")
+                            .map((t) => t.trim())
+                            .filter(Boolean)
+                        : []
+                    }
+                    onTagsChange={(tags) => setTagInput(tags.join(", "))}
                   />
                 </div>
                 <div className="h-[300px]">

@@ -1,0 +1,1144 @@
+{
+  "tags": {
+    "day 3": {
+      "name": "day 3",
+      "usageCount": 10,
+      "lastUsed": "2025-01-20T21:11:32.951Z",
+      "tasks": [
+        "add-a-size-filter-1736600954077.md",
+        "implement-basic-file-operations-error-handling.md",
+        "implement-clean-system-structure.md",
+        "implement-code-obfuscation.md",
+        "implement-file-locking-system.md",
+        "implement-file-recovery-system.md",
+        "implement-global-error-boundary-system.md",
+        "implement-session-management.md",
+        "separate-system-from-content.md",
+        "setup-user-profile-system.md"
+      ]
+    },
+    "ui": {
+      "name": "ui",
+      "usageCount": 29,
+      "lastUsed": "2025-01-20T21:11:32.951Z",
+      "tasks": [
+        "add-a-size-filter-1736600954077.md",
+        "add-progress-bar-to-epics-1736430107428.md",
+        "bug-align-all-epics-in-the-sidebar-to-the-left-1736366445922.md",
+        "bug-task-title-is-shown-twice-when-viewing-task-1736424290021.md",
+        "create-archive-management-interface-1736513810530.md",
+        "design-structured-tag-input-system.md",
+        "enable-tag-starring-for-improved-organization-1736513810527.md",
+        "enhance-ref-update-button.md",
+        "enhance-task-creation-dialog.md",
+        "fix-dependencies-lookup.md",
+        "fix-task-card-width-responsiveness.md",
+        "fix-task-details-sheet-spacing-1736865062065.md",
+        "implement-analytics-dashboard.md",
+        "implement-archive-search-and-filtering-1736601484937.md",
+        "implement-archive-ui-components-1736601484935.md",
+        "implement-auth-ui.md",
+        "implement-global-error-boundary-system.md",
+        "implement-ref-update-notifications.md",
+        "implement-simplified-tag-and-category-system.md",
+        "implement-tag-archiving-functionality-1736513810528.md",
+        "implement-toast-and-ref-updates.md",
+        "implement-toast-system.md",
+        "implement-ui-for-new-task-fields.md",
+        "implement-ui-polish-and-refinements.md",
+        "implement-user-preferences-system.md",
+        "redesign-task-view-dialog.md",
+        "remove-space-above-task-page-heading-and-create-task-button-1736365899104.md",
+        "setup-web-ui-core.md",
+        "update-task-status-handling-1737022165915.md"
+      ]
+    },
+    "filter": {
+      "name": "filter",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.951Z",
+      "tasks": ["add-a-size-filter-1736600954077.md"]
+    },
+    "search": {
+      "name": "search",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.951Z",
+      "tasks": ["add-clear-button-to-search-field-1736430903721.md"]
+    },
+    "clear": {
+      "name": "clear",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.951Z",
+      "tasks": ["add-clear-button-to-search-field-1736430903721.md"]
+    },
+    "enhancement": {
+      "name": "enhancement",
+      "usageCount": 21,
+      "lastUsed": "2025-01-20T21:11:32.952Z",
+      "tasks": [
+        "add-command-pattern-support-to-cursorrules 2.md",
+        "add-command-pattern-support-to-cursorrules.md",
+        "add-dynamic-ref-updates-for-manual-tasks-1736602124934.md",
+        "add-progress-bar-to-epics-1736430107428.md",
+        "analyze-current-tag-usage-patterns.md",
+        "create-archive-management-interface-1736513810530.md",
+        "design-structured-tag-input-system.md",
+        "develop-tag-migration-strategy.md",
+        "enable-tag-starring-for-improved-organization-1736513810527.md",
+        "fix-dependency-lookup-inconsistency.md",
+        "implement-archive-search-and-filtering-1736601484937.md",
+        "implement-archive-ui-components-1736601484935.md",
+        "implement-batch-archive-operations-1736601484936.md",
+        "implement-core-archive-data-structure-1736601484934.md",
+        "implement-epic-archive-integration-1736601484938.md",
+        "implement-simplified-tag-and-category-system.md",
+        "implement-tag-archiving-functionality-1736513810528.md",
+        "implement-task-archiving-system-1736513810529.md",
+        "implement-ui-for-new-task-fields.md",
+        "plan-tag-system-implementation.md",
+        "update-task-status-handling-1737022165915.md"
+      ]
+    },
+    "cursor": {
+      "name": "cursor",
+      "usageCount": 3,
+      "lastUsed": "2025-01-20T21:11:32.952Z",
+      "tasks": [
+        "add-command-pattern-support-to-cursorrules 2.md",
+        "add-command-pattern-support-to-cursorrules.md",
+        "implement-cursor-system-detection.md"
+      ]
+    },
+    "day 2": {
+      "name": "day 2",
+      "usageCount": 17,
+      "lastUsed": "2025-01-21T10:21:30.753Z",
+      "tasks": [
+        "add-command-pattern-support-to-cursorrules 2.md",
+        "add-command-pattern-support-to-cursorrules.md",
+        "configure-npm-package-build.md",
+        "create-cli-framework.md",
+        "create-supabase-database-schema.md",
+        "handle-user-sessions.md",
+        "implement-auth-ui.md",
+        "implement-cli-error-handling.md",
+        "implement-cli-init-command.md",
+        "implement-cli-login-command.md",
+        "implement-cli-web-launcher.md",
+        "integrate supabase-client-into-the-project.md",
+        "setup-initial-supabase-project.md",
+        "setup-supabase-core-auth.md",
+        "setup-web-ui-core.md",
+        "new"
+      ]
+    },
+    "complexity": {
+      "name": "complexity",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.952Z",
+      "tasks": ["add-complexity-to-tasks-and-front-matter-1736514231655.md"]
+    },
+    "task refs": {
+      "name": "task refs",
+      "usageCount": 4,
+      "lastUsed": "2025-01-21T09:39:21.308Z",
+      "tasks": [
+        "add-dynamic-ref-updates-for-manual-tasks-1736602124934.md",
+        "bug-there-are-repeated-task-id-refs-1736513810527.md",
+        "bulletproof-tsk-refs-1736865605011.md",
+        "new"
+      ]
+    },
+    "day 1": {
+      "name": "day 1",
+      "usageCount": 17,
+      "lastUsed": "2025-01-21T10:21:59.443Z",
+      "tasks": [
+        "add-progress-bar-to-epics-1736430107428.md",
+        "append-these-guidelines-when-a-task-is-created-1737133250550.md",
+        "bug-can-t-select-the-epic-when-in-the-task-edit-dialog-drop-down--1737133384094.md",
+        "bug-dependent-files-showing-as-missing-1736865062065.md",
+        "configure-environment-system.md",
+        "create-template-structure.md",
+        "fix-task-details-sheet-spacing-1736865062065.md",
+        "implement-archive-search-and-filtering-1736601484937.md",
+        "implement-task-archiving-system-1736513810529.md",
+        "implement-ui-for-new-task-fields.md",
+        "investigate-password-reset.md",
+        "refactor-task-list-component.md",
+        "setup-core-package-configuration.md",
+        "update-task-front-matter-schema.md",
+        "new"
+      ]
+    },
+    "task ref": {
+      "name": "task ref",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.953Z",
+      "tasks": ["add-the-task-id-to-the-view-state-of-a-task-1736528126830.md"]
+    },
+    "delete": {
+      "name": "delete",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.953Z",
+      "tasks": ["alert-using-when-deleting-a-task-1736425473316.md"]
+    },
+    "dialog": {
+      "name": "dialog",
+      "usageCount": 4,
+      "lastUsed": "2025-01-20T22:05:04.485Z",
+      "tasks": [
+        "alert-using-when-deleting-a-task-1736425473316.md",
+        "bug-when-viewing-the-task-the-dialog-is-too-tall-and-i-cannot-scroll-to-see-all-of-the-content-1736430260655.md",
+        "redesign-the-create-task-dialog-1736593359776.md",
+        "new"
+      ]
+    },
+    "alert": {
+      "name": "alert",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.953Z",
+      "tasks": ["alert-using-when-deleting-a-task-1736425473316.md"]
+    },
+    "reports": {
+      "name": "reports",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.953Z",
+      "tasks": ["analytics-and-reporting-1736692630605.md"]
+    },
+    "analytics": {
+      "name": "analytics",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.953Z",
+      "tasks": [
+        "analytics-and-reporting-1736692630605.md",
+        "implement-analytics-dashboard.md"
+      ]
+    },
+    "data": {
+      "name": "data",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.953Z",
+      "tasks": [
+        "analytics-and-reporting-1736692630605.md",
+        "develop-tag-migration-strategy.md"
+      ]
+    },
+    "charts": {
+      "name": "charts",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.953Z",
+      "tasks": ["analytics-and-reporting-1736692630605.md"]
+    },
+    "tags": {
+      "name": "tags",
+      "usageCount": 6,
+      "lastUsed": "2025-01-20T21:11:32.954Z",
+      "tasks": [
+        "analyze-current-tag-usage-patterns.md",
+        "bug-pressing-star-next-to-tag-in-sidebar-not-bringing-it-to-the-top-of-the-tag-list-1737159020756 2.md",
+        "design-structured-tag-input-system.md",
+        "develop-tag-migration-strategy.md",
+        "implement-simplified-tag-and-category-system.md",
+        "plan-tag-system-implementation.md"
+      ]
+    },
+    "analysis": {
+      "name": "analysis",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.954Z",
+      "tasks": ["analyze-current-tag-usage-patterns.md"]
+    },
+    "prompt": {
+      "name": "prompt",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.954Z",
+      "tasks": [
+        "append-these-guidelines-when-a-task-is-created-1737133250550.md"
+      ]
+    },
+    "task creation": {
+      "name": "task creation",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.954Z",
+      "tasks": [
+        "append-these-guidelines-when-a-task-is-created-1737133250550.md"
+      ]
+    },
+    "tagging-problem": {
+      "name": "tagging-problem",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.954Z",
+      "tasks": ["bug-can-only-add-one-tag-in-a-new-task-1736377742466.md"]
+    },
+    "edit task": {
+      "name": "edit task",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.955Z",
+      "tasks": [
+        "bug-can-t-select-the-epic-when-in-the-task-edit-dialog-drop-down--1737133384094.md"
+      ]
+    },
+    "epics": {
+      "name": "epics",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.955Z",
+      "tasks": [
+        "bug-can-t-select-the-epic-when-in-the-task-edit-dialog-drop-down--1737133384094.md"
+      ]
+    },
+    "bug": {
+      "name": "bug",
+      "usageCount": 7,
+      "lastUsed": "2025-01-20T21:11:32.955Z",
+      "tasks": [
+        "bug-dependent-files-showing-as-missing-1736865062065.md",
+        "fix-dependencies-lookup.md",
+        "fix-dependency-lookup-inconsistency.md",
+        "fix-owner-not-showing-email-in-front-matter-1737039479000.md",
+        "fix-task-card-width-responsiveness.md",
+        "fix-task-details-sheet-spacing-1736865062065.md",
+        "investigate-password-reset.md"
+      ]
+    },
+    "front-matter": {
+      "name": "front-matter",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.955Z",
+      "tasks": [
+        "bug-fix-the-epic-front-matter-1736378567696.md",
+        "update-task-front-matter-schema.md"
+      ]
+    },
+    "links": {
+      "name": "links",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.955Z",
+      "tasks": ["bug-fix-urls-and-linking-to-other-tasks-1736600581329.md"]
+    },
+    "star": {
+      "name": "star",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.956Z",
+      "tasks": [
+        "bug-pressing-star-next-to-tag-in-sidebar-not-bringing-it-to-the-top-of-the-tag-list-1737159020756 2.md"
+      ]
+    },
+    "images": {
+      "name": "images",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.956Z",
+      "tasks": [
+        "bug-reinstate-the-add-images-button-in-create-task-1736377564696.md",
+        "cleanup-orphaned-task-images-1736430500000.md"
+      ]
+    },
+    "task cards": {
+      "name": "task cards",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.956Z",
+      "tasks": [
+        "bug-sort-out-card-layout-of-in-progress-tasks-1737027518598.md"
+      ]
+    },
+    "layout": {
+      "name": "layout",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.956Z",
+      "tasks": [
+        "bug-sort-out-card-layout-of-in-progress-tasks-1737027518598.md"
+      ]
+    },
+    "space": {
+      "name": "space",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.956Z",
+      "tasks": [
+        "bug-sort-out-card-layout-of-in-progress-tasks-1737027518598.md"
+      ]
+    },
+    "task id": {
+      "name": "task id",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.956Z",
+      "tasks": ["bug-task-ref-ids-are-not-unique-to-the-task-1736427966780.md"]
+    },
+    "ref": {
+      "name": "ref",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.956Z",
+      "tasks": ["bug-task-ref-ids-are-not-unique-to-the-task-1736427966780.md"]
+    },
+    "view task": {
+      "name": "view task",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.956Z",
+      "tasks": [
+        "bug-task-title-is-shown-twice-when-viewing-task-1736424290021.md"
+      ]
+    },
+    "update": {
+      "name": "update",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.957Z",
+      "tasks": [
+        "bug-when-a-task-is-updated-it-doesn-t-update-with-the-details-1736964028679.md"
+      ]
+    },
+    "related tasks": {
+      "name": "related tasks",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.957Z",
+      "tasks": ["change-dependencies-to-related--1736444158468.md"]
+    },
+    "logs": {
+      "name": "logs",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.957Z",
+      "tasks": ["chore-reduce-the-logging-noise-1737369296873.md"]
+    },
+    "cleanup": {
+      "name": "cleanup",
+      "usageCount": 4,
+      "lastUsed": "2025-01-20T21:11:32.958Z",
+      "tasks": [
+        "clean-system-structure.md",
+        "cleanup-orphaned-task-images-1736430500000.md",
+        "implement-clean-system-structure.md",
+        "separate-system-from-content.md"
+      ]
+    },
+    "documentation": {
+      "name": "documentation",
+      "usageCount": 5,
+      "lastUsed": "2025-01-20T21:11:32.958Z",
+      "tasks": [
+        "clean-system-structure.md",
+        "create-ai-context.md",
+        "create-comprehensive-documentation.md",
+        "create-production-deployment-guide.md",
+        "document-system-structure.md"
+      ]
+    },
+    "10 jan": {
+      "name": "10 jan",
+      "usageCount": 4,
+      "lastUsed": "2025-01-20T21:11:32.958Z",
+      "tasks": [
+        "clean-system-structure.md",
+        "document-system-structure.md",
+        "enable-the-filtered-view-to-be-saved--1736377850658.md",
+        "enable-the-sorted-order-of-tasks-to-be-saved-between-sessions-1736378007142.md"
+      ]
+    },
+    "setup": {
+      "name": "setup",
+      "usageCount": 5,
+      "lastUsed": "2025-01-20T21:11:32.958Z",
+      "tasks": [
+        "configure-environment-system.md",
+        "setup-core-package-configuration.md",
+        "setup-initial-supabase-project.md",
+        "setup-package-structure 2.md",
+        "setup-package-structure.md"
+      ]
+    },
+    "system": {
+      "name": "system",
+      "usageCount": 11,
+      "lastUsed": "2025-01-20T21:11:32.958Z",
+      "tasks": [
+        "configure-environment-system.md",
+        "create-comprehensive-documentation.md",
+        "create-template-structure.md",
+        "implement-basic-file-operations-error-handling.md",
+        "implement-clean-system-structure.md",
+        "implement-cursor-system-detection.md",
+        "implement-file-locking-system.md",
+        "implement-file-recovery-system.md",
+        "implement-system-monitoring.md",
+        "separate-system-from-content.md",
+        "setup-core-package-configuration.md"
+      ]
+    },
+    "build": {
+      "name": "build",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.958Z",
+      "tasks": [
+        "configure-npm-package-build.md",
+        "implement-code-obfuscation.md"
+      ]
+    },
+    "npm": {
+      "name": "npm",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.958Z",
+      "tasks": ["configure-npm-package-build.md"]
+    },
+    "ai": {
+      "name": "ai",
+      "usageCount": 3,
+      "lastUsed": "2025-01-20T21:11:32.958Z",
+      "tasks": [
+        "create-ai-context.md",
+        "create-cursor-rules-for-ai.md",
+        "implement-ai-operations.md"
+      ]
+    },
+    "testing": {
+      "name": "testing",
+      "usageCount": 7,
+      "lastUsed": "2025-01-20T21:11:32.959Z",
+      "tasks": [
+        "create-beta-testing-plan.md",
+        "implement-end-to-end-testing.md",
+        "implement-performance-testing.md",
+        "implement-security-testing.md",
+        "test-authentication-flows.md",
+        "test-edge-functions.md",
+        "validate-database-migrations.md"
+      ]
+    },
+    "day 4": {
+      "name": "day 4",
+      "usageCount": 10,
+      "lastUsed": "2025-01-20T21:11:32.959Z",
+      "tasks": [
+        "create-beta-testing-plan.md",
+        "enable-authentication-providers.md",
+        "implement-end-to-end-testing.md",
+        "implement-network-error-handling.md",
+        "implement-performance-testing.md",
+        "implement-user-preferences-system.md",
+        "setup-github-actions-pipeline.md",
+        "test-authentication-flows.md",
+        "test-edge-functions.md",
+        "validate-database-migrations.md"
+      ]
+    },
+    "beta": {
+      "name": "beta",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.959Z",
+      "tasks": ["create-beta-testing-plan.md"]
+    },
+    "cli": {
+      "name": "cli",
+      "usageCount": 6,
+      "lastUsed": "2025-01-20T21:11:32.959Z",
+      "tasks": [
+        "create-cli-framework.md",
+        "handle-user-sessions.md",
+        "implement-cli-error-handling.md",
+        "implement-cli-init-command.md",
+        "implement-cli-login-command.md",
+        "implement-cli-web-launcher.md"
+      ]
+    },
+    "framework": {
+      "name": "framework",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.959Z",
+      "tasks": ["create-cli-framework.md"]
+    },
+    "day 5": {
+      "name": "day 5",
+      "usageCount": 9,
+      "lastUsed": "2025-01-20T21:11:32.959Z",
+      "tasks": [
+        "create-comprehensive-documentation.md",
+        "create-production-deployment-guide.md",
+        "implement-analytics-dashboard.md",
+        "implement-license-validation.md",
+        "implement-security-hardening.md",
+        "implement-security-testing.md",
+        "implement-system-monitoring.md",
+        "implement-ui-polish-and-refinements.md",
+        "setup-automated-release-process.md"
+      ]
+    },
+    "configuration": {
+      "name": "configuration",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.959Z",
+      "tasks": ["create-configuration-system.md", "tutorial-5-cursorrules.md"]
+    },
+    "validation": {
+      "name": "validation",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.959Z",
+      "tasks": ["create-configuration-system.md"]
+    },
+    "automation": {
+      "name": "automation",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.959Z",
+      "tasks": [
+        "create-cursor-rules-for-ai.md",
+        "setup-automated-release-process.md"
+      ]
+    },
+    "standards": {
+      "name": "standards",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.959Z",
+      "tasks": ["create-cursor-rules-for-ai.md"]
+    },
+    "deployment": {
+      "name": "deployment",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.960Z",
+      "tasks": ["create-production-deployment-guide.md"]
+    },
+    "database": {
+      "name": "database",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.960Z",
+      "tasks": [
+        "create-supabase-database-schema.md",
+        "validate-database-migrations.md"
+      ]
+    },
+    "supabase": {
+      "name": "supabase",
+      "usageCount": 11,
+      "lastUsed": "2025-01-20T21:11:32.960Z",
+      "tasks": [
+        "create-supabase-database-schema.md",
+        "enable-authentication-providers.md",
+        "handle-user-sessions.md",
+        "implement-session-management.md",
+        "integrate supabase-client-into-the-project.md",
+        "setup-initial-supabase-project.md",
+        "setup-supabase-core-auth.md",
+        "setup-user-profile-system.md",
+        "test-authentication-flows.md",
+        "test-edge-functions.md",
+        "validate-database-migrations.md"
+      ]
+    },
+    "schema": {
+      "name": "schema",
+      "usageCount": 3,
+      "lastUsed": "2025-01-20T21:11:32.960Z",
+      "tasks": [
+        "create-supabase-database-schema.md",
+        "implement-metadata-system.md",
+        "update-task-front-matter-schema.md"
+      ]
+    },
+    "templates": {
+      "name": "templates",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.960Z",
+      "tasks": ["create-template-structure.md"]
+    },
+    "onboarding": {
+      "name": "onboarding",
+      "usageCount": 6,
+      "lastUsed": "2025-01-20T21:11:32.960Z",
+      "tasks": [
+        "create-tutorial-tasks.md",
+        "tutorial-1-complete-task.md",
+        "tutorial-2-reorder-tasks.md",
+        "tutorial-3-filter-tasks.md",
+        "tutorial-4-create-task.md",
+        "tutorial-5-cursorrules.md"
+      ]
+    },
+    "tutorial": {
+      "name": "tutorial",
+      "usageCount": 6,
+      "lastUsed": "2025-01-20T21:11:32.960Z",
+      "tasks": [
+        "create-tutorial-tasks.md",
+        "tutorial-1-complete-task.md",
+        "tutorial-2-reorder-tasks.md",
+        "tutorial-3-filter-tasks.md",
+        "tutorial-4-create-task.md",
+        "tutorial-5-cursorrules.md"
+      ]
+    },
+    "ux": {
+      "name": "ux",
+      "usageCount": 4,
+      "lastUsed": "2025-01-21T10:49:28.943Z",
+      "tasks": [
+        "create-tutorial-tasks.md",
+        "enhance-task-creation-dialog.md",
+        "redesign-task-view-dialog.md",
+        "new"
+      ]
+    },
+    "rules": {
+      "name": "rules",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.960Z",
+      "tasks": ["create-windsurf-rules-condensed-version-1737039711000.md"]
+    },
+    "windsurf": {
+      "name": "windsurf",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.960Z",
+      "tasks": ["create-windsurf-rules-condensed-version-1737039711000.md"]
+    },
+    "optimization": {
+      "name": "optimization",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.960Z",
+      "tasks": ["create-windsurf-rules-condensed-version-1737039711000.md"]
+    },
+    "design": {
+      "name": "design",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.961Z",
+      "tasks": ["design-structured-tag-input-system.md"]
+    },
+    "migration": {
+      "name": "migration",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.961Z",
+      "tasks": ["develop-tag-migration-strategy.md"]
+    },
+    "architecture": {
+      "name": "architecture",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.961Z",
+      "tasks": ["document-system-structure.md"]
+    },
+    "authentication": {
+      "name": "authentication",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.961Z",
+      "tasks": [
+        "enable-authentication-providers.md",
+        "test-authentication-flows.md"
+      ]
+    },
+    "oauth": {
+      "name": "oauth",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.961Z",
+      "tasks": ["enable-authentication-providers.md"]
+    },
+    "sorting": {
+      "name": "sorting",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.961Z",
+      "tasks": ["enable-sorting-options-in-task-view-1736424875869.md"]
+    },
+    "priority": {
+      "name": "priority",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.961Z",
+      "tasks": ["enable-sorting-options-in-task-view-1736424875869.md"]
+    },
+    "filters": {
+      "name": "filters",
+      "usageCount": 4,
+      "lastUsed": "2025-01-21T11:02:11.681Z",
+      "tasks": [
+        "enable-the-filtered-view-to-be-saved--1736377850658.md",
+        "show-the-filters-applied-in-the-task-list-1736424963392.md",
+        "new"
+      ]
+    },
+    "button": {
+      "name": "button",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.962Z",
+      "tasks": ["enhance-ref-update-button.md"]
+    },
+    "interaction": {
+      "name": "interaction",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.962Z",
+      "tasks": ["enhance-ref-update-button.md"]
+    },
+    "task-creation": {
+      "name": "task-creation",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.964Z",
+      "tasks": ["enhance-task-creation-dialog.md"]
+    },
+    "dependencies": {
+      "name": "dependencies",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.964Z",
+      "tasks": [
+        "fix-dependencies-lookup.md",
+        "fix-dependency-lookup-inconsistency.md"
+      ]
+    },
+    "front matter": {
+      "name": "front matter",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.965Z",
+      "tasks": ["fix-owner-not-showing-email-in-front-matter-1737039479000.md"]
+    },
+    "owner": {
+      "name": "owner",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.965Z",
+      "tasks": ["fix-owner-not-showing-email-in-front-matter-1737039479000.md"]
+    },
+    "responsive": {
+      "name": "responsive",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.965Z",
+      "tasks": ["fix-task-card-width-responsiveness.md"]
+    },
+    "session-management": {
+      "name": "session-management",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.965Z",
+      "tasks": ["handle-user-sessions.md"]
+    },
+    "refresh": {
+      "name": "refresh",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.966Z",
+      "tasks": [
+        "hot-refresh-the-task-list-when-new-tasks-are-added-1736425116021.md"
+      ]
+    },
+    "task list": {
+      "name": "task list",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.966Z",
+      "tasks": [
+        "hot-refresh-the-task-list-when-new-tasks-are-added-1736425116021.md"
+      ]
+    },
+    "operations": {
+      "name": "operations",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.966Z",
+      "tasks": ["implement-ai-operations.md"]
+    },
+    "archive": {
+      "name": "archive",
+      "usageCount": 5,
+      "lastUsed": "2025-01-20T21:11:32.966Z",
+      "tasks": [
+        "implement-archive-search-and-filtering-1736601484937.md",
+        "implement-archive-ui-components-1736601484935.md",
+        "implement-batch-archive-operations-1736601484936.md",
+        "implement-core-archive-data-structure-1736601484934.md",
+        "implement-epic-archive-integration-1736601484938.md"
+      ]
+    },
+    "auth": {
+      "name": "auth",
+      "usageCount": 8,
+      "lastUsed": "2025-01-21T09:39:42.613Z",
+      "tasks": [
+        "implement-auth-ui.md",
+        "implement-cli-login-command.md",
+        "implement-session-management.md",
+        "investigate-password-reset.md",
+        "setup-supabase-core-auth.md",
+        "setup-user-profile-system.md",
+        "new"
+      ]
+    },
+    "error-handling": {
+      "name": "error-handling",
+      "usageCount": 8,
+      "lastUsed": "2025-01-21T10:49:21.472Z",
+      "tasks": [
+        "implement-basic-file-operations-error-handling.md",
+        "implement-cli-error-handling.md",
+        "implement-file-locking-system.md",
+        "implement-file-recovery-system.md",
+        "implement-global-error-boundary-system.md",
+        "implement-network-error-handling.md",
+        "implement-ref-update-notifications.md",
+        "new"
+      ]
+    },
+    "core": {
+      "name": "core",
+      "usageCount": 3,
+      "lastUsed": "2025-01-20T21:11:32.966Z",
+      "tasks": [
+        "implement-batch-archive-operations-1736601484936.md",
+        "implement-core-archive-data-structure-1736601484934.md",
+        "implement-task-archiving-system-1736513810529.md"
+      ]
+    },
+    "init": {
+      "name": "init",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.967Z",
+      "tasks": ["implement-cli-init-command.md"]
+    },
+    "web": {
+      "name": "web",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.967Z",
+      "tasks": ["implement-cli-web-launcher.md", "setup-web-ui-core.md"]
+    },
+    "security": {
+      "name": "security",
+      "usageCount": 4,
+      "lastUsed": "2025-01-20T21:11:32.967Z",
+      "tasks": [
+        "implement-code-obfuscation.md",
+        "implement-license-validation.md",
+        "implement-security-hardening.md",
+        "implement-security-testing.md"
+      ]
+    },
+    "initialization": {
+      "name": "initialization",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.968Z",
+      "tasks": ["implement-cursor-system-detection.md"]
+    },
+    "e2e": {
+      "name": "e2e",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.968Z",
+      "tasks": ["implement-end-to-end-testing.md"]
+    },
+    "epic": {
+      "name": "epic",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.968Z",
+      "tasks": ["implement-epic-archive-integration-1736601484938.md"]
+    },
+    "licensing": {
+      "name": "licensing",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.968Z",
+      "tasks": ["implement-license-validation.md"]
+    },
+    "metadata": {
+      "name": "metadata",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.969Z",
+      "tasks": ["implement-metadata-system.md"]
+    },
+    "network": {
+      "name": "network",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.969Z",
+      "tasks": ["implement-network-error-handling.md"]
+    },
+    "performance": {
+      "name": "performance",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.969Z",
+      "tasks": ["implement-performance-testing.md"]
+    },
+    "notifications": {
+      "name": "notifications",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.969Z",
+      "tasks": [
+        "implement-ref-update-notifications.md",
+        "implement-toast-and-ref-updates.md"
+      ]
+    },
+    "production": {
+      "name": "production",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.969Z",
+      "tasks": ["implement-security-hardening.md"]
+    },
+    "categories": {
+      "name": "categories",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.969Z",
+      "tasks": ["implement-simplified-tag-and-category-system.md"]
+    },
+    "monitoring": {
+      "name": "monitoring",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.970Z",
+      "tasks": ["implement-system-monitoring.md"]
+    },
+    "toast": {
+      "name": "toast",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.970Z",
+      "tasks": [
+        "implement-toast-and-ref-updates.md",
+        "implement-toast-system.md"
+      ]
+    },
+    "components": {
+      "name": "components",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.970Z",
+      "tasks": ["implement-toast-system.md"]
+    },
+    "polish": {
+      "name": "polish",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.971Z",
+      "tasks": ["implement-ui-polish-and-refinements.md"]
+    },
+    "preferences": {
+      "name": "preferences",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.971Z",
+      "tasks": ["implement-user-preferences-system.md"]
+    },
+    "environment": {
+      "name": "environment",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.971Z",
+      "tasks": ["integrate supabase-client-into-the-project.md"]
+    },
+    "integration": {
+      "name": "integration",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.971Z",
+      "tasks": ["integrate supabase-client-into-the-project.md"]
+    },
+    "blockers": {
+      "name": "blockers",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.971Z",
+      "tasks": [
+        "need-to-be-able-to-flag-blockers-and-what-depends-on-them-1736963883110.md"
+      ]
+    },
+    "planning": {
+      "name": "planning",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.972Z",
+      "tasks": ["plan-tag-system-implementation.md"]
+    },
+    "technical": {
+      "name": "technical",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.972Z",
+      "tasks": ["plan-tag-system-implementation.md"]
+    },
+    "task-view": {
+      "name": "task-view",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.973Z",
+      "tasks": ["redesign-task-view-dialog.md"]
+    },
+    "redesign": {
+      "name": "redesign",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.973Z",
+      "tasks": ["redesign-the-create-task-dialog-1736593359776.md"]
+    },
+    "release": {
+      "name": "release",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.973Z",
+      "tasks": ["setup-automated-release-process.md"]
+    },
+    "ci-cd": {
+      "name": "ci-cd",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.974Z",
+      "tasks": ["setup-github-actions-pipeline.md"]
+    },
+    "github": {
+      "name": "github",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.974Z",
+      "tasks": ["setup-github-actions-pipeline.md"]
+    },
+    "packaging": {
+      "name": "packaging",
+      "usageCount": 2,
+      "lastUsed": "2025-01-20T21:11:32.974Z",
+      "tasks": ["setup-package-structure 2.md", "setup-package-structure.md"]
+    },
+    "edge-functions": {
+      "name": "edge-functions",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.975Z",
+      "tasks": ["test-edge-functions.md"]
+    },
+    "basics": {
+      "name": "basics",
+      "usageCount": 4,
+      "lastUsed": "2025-01-20T21:11:32.975Z",
+      "tasks": [
+        "tutorial-1-complete-task.md",
+        "tutorial-2-reorder-tasks.md",
+        "tutorial-3-filter-tasks.md",
+        "tutorial-4-create-task.md"
+      ]
+    },
+    "filtering-example": {
+      "name": "filtering-example",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.975Z",
+      "tasks": ["tutorial-3-filter-tasks.md"]
+    },
+    "advanced": {
+      "name": "advanced",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.976Z",
+      "tasks": ["tutorial-5-cursorrules.md"]
+    },
+    "lifecycle": {
+      "name": "lifecycle",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.976Z",
+      "tasks": ["update-task-status-handling-1737022165915.md"]
+    },
+    "bugs": {
+      "name": "bugs",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.977Z",
+      "tasks": ["we-need-an-ability-to-flag-and-track-bugs-1736963826657.md"]
+    },
+    "tracking": {
+      "name": "tracking",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:32.977Z",
+      "tasks": ["we-need-an-ability-to-flag-and-track-bugs-1736963826657.md"]
+    },
+    "category": {
+      "name": "category",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:11:41.357Z",
+      "tasks": ["new"]
+    },
+    "when": {
+      "name": "when",
+      "usageCount": 1,
+      "lastUsed": "2025-01-20T21:46:36.342Z",
+      "tasks": ["new"]
+    }
+  },
+  "quickAccess": {
+    "mostUsed": [
+      "ui",
+      "enhancement",
+      "day 2",
+      "day 1",
+      "system",
+      "supabase",
+      "day 3",
+      "day 4",
+      "day 5",
+      "auth"
+    ],
+    "recentlyUsed": [
+      "filters",
+      "ux",
+      "error-handling",
+      "day 1",
+      "day 2",
+      "auth",
+      "task refs",
+      "dialog",
+      "when",
+      "category"
+    ]
+  }
+}

@@ -10,6 +10,7 @@ tags:
   - security
   - day 5
   - licensing
+  - supabase
 created: "2024-01-15"
 ref: TSK-130
 owner: AI

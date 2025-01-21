@@ -9,6 +9,7 @@ tags:
   - cli
   - session-management
   - supabase
+  - auth
   - day 2
 created: "2025-01-10"
 ref: TSK-067

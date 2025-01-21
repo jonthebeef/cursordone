@@ -1,7 +1,7 @@
 ---
 ref: TSK-162
 title: We need an ability to flag and track bugs
-status: todo
+status: done
 priority: high
 complexity: M
 epic: someday-
@@ -11,6 +11,9 @@ tags:
   - tracking
 created: "2025-01-15"
 owner: AI
+started_date: "2025-01-21"
+worker: user
+completion_date: "2025-01-21"
 ---
 
 Needs to reflect in the front matter too

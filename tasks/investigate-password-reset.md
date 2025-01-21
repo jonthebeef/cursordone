@@ -10,6 +10,7 @@ tags:
   - auth
   - bug
   - day 1
+  - supabase
 created: "2024-01-15"
 ref: TSK-141
 owner: AI

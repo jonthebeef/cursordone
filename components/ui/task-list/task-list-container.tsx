@@ -3,7 +3,6 @@
 import { Task } from "@/lib/tasks";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { completeTaskAction } from "@/lib/actions";
 import { useToast } from "@/components/ui/use-toast";
 import {
   DndContext,
@@ -21,7 +20,8 @@ import {
 import { TaskListHeader } from "./task-list-header";
 import { TaskSection } from "./task-section";
 import { TaskDetails } from "./task-details";
-import { TaskCreationDialog } from "./task-creation-dialog";
+import { TaskDialog } from "@/components/task-dialog";
+import { completeTaskAction } from "@/lib/actions";
 
 interface TaskListContainerProps {
   initialTasks: Task[];
@@ -164,6 +164,7 @@ export function TaskListContainer({
     selectedTags,
     sortOption,
     taskOrder,
+    epics,
   ]);
 
   const sections = useMemo(() => {
@@ -265,16 +266,9 @@ export function TaskListContainer({
         epics={epics}
         disabled={disabled}
       />
-      <TaskCreationDialog
-        open={showCreateDialog}
+      <TaskDialog
+        isOpen={showCreateDialog}
         onOpenChange={setShowCreateDialog}
-        epics={epics}
-        initialTasks={initialTasks}
-        onSuccess={() => {
-          onStateChange?.();
-          router.refresh();
-        }}
-        disabled={disabled}
       />
     </div>
   );

@@ -1,65 +1,132 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { createBrowserClient } from '@supabase/ssr'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Alert } from '@/components/ui/alert'
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { createBrowserClient } from "@supabase/ssr";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Alert } from "@/components/ui/alert";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { FaGithub, FaDiscord } from "react-icons/fa";
+import { FlickeringGrid } from "@/components/ui/flickering-grid";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
-      })
+      });
 
       if (error) {
-        throw error
+        throw error;
       }
 
-      router.refresh()
-      router.push('/')
+      router.refresh();
+      router.push("/");
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to sign in')
+      setError(error instanceof Error ? error.message : "Failed to sign in");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+
+  const handleOAuthSignIn = async (provider: "github" | "discord") => {
+    try {
+      setError(null);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : `Failed to sign in with ${provider}`,
+      );
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="relative min-h-screen flex items-center justify-center p-4 bg-transparent">
+      <div className="absolute inset-0 bg-black">
+        <FlickeringGrid
+          className="w-full h-full"
+          squareSize={8}
+          gridGap={8}
+          color="rgb(255, 255, 255)"
+          accentColor="#00FF00"
+          accentChance={0.05}
+          maxOpacity={0.4}
+          flickerChance={0.2}
+        />
+      </div>
+      <Card className="w-full max-w-md relative z-10 bg-black/80 backdrop-blur">
         <CardHeader>
-          <h1 className="text-2xl font-bold text-center">Sign In</h1>
-          <p className="text-zinc-400 text-center mt-2">
+          <h1 className="text-2xl font-bold">Sign In</h1>
+          <p className="text-zinc-400 mt-2">
             Welcome back! Please sign in to continue.
           </p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full bg-[#24292e] hover:bg-[#2f363d] text-white border-[#24292e]"
+              onClick={() => handleOAuthSignIn("github")}
+            >
+              <FaGithub className="mr-2 h-4 w-4" />
+              GitHub
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white border-[#5865F2]"
+              onClick={() => handleOAuthSignIn("discord")}
+            >
+              <FaDiscord className="mr-2 h-4 w-4" />
+              Discord
+            </Button>
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <Separator className="w-full" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-zinc-400">
+                Or continue with
+              </span>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                {error}
-              </Alert>
-            )}
+            {error && <Alert variant="destructive">{error}</Alert>}
             <div className="space-y-2">
               <label htmlFor="email" className="block text-sm font-medium">
                 Email
@@ -92,12 +159,8 @@ export default function LoginPage() {
                 autoComplete="current-password"
               />
             </div>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={loading}
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
         </CardContent>
@@ -109,7 +172,7 @@ export default function LoginPage() {
             Forgot your password?
           </Link>
           <div className="text-sm text-zinc-400">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{" "}
             <Link
               href="/auth/signup"
               className="text-blue-500 hover:text-blue-400"
@@ -120,5 +183,5 @@ export default function LoginPage() {
         </CardFooter>
       </Card>
     </div>
-  )
-} 
+  );
+}

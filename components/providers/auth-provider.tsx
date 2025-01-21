@@ -1,48 +1,53 @@
-'use client'
+"use client";
 
-import { createContext, useContext, useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase/client'
+import { createContext, useContext } from "react";
+import { User } from "@supabase/supabase-js";
+import { useSession } from "@/lib/hooks/use-session";
 
 interface AuthContextType {
-  user: User | null
-  loading: boolean
+  user: User | null;
+  loading: boolean;
+  error: Error | null;
+  refreshSession: () => Promise<void>;
+  clearSession: () => Promise<void>;
+  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
-})
+  error: null,
+  refreshSession: async () => {},
+  clearSession: async () => {},
+  isAuthenticated: false,
+});
 
 export const useAuth = () => {
-  return useContext(AuthContext)
-}
+  return useContext(AuthContext);
+};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Check active sessions and sets the user
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    // Listen for changes on auth state (logged in, signed out, etc.)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
+  const {
+    session,
+    loading,
+    error,
+    refreshSession,
+    clearSession,
+    isAuthenticated,
+  } = useSession();
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider
+      value={{
+        user: session?.user ?? null,
+        loading,
+        error,
+        refreshSession,
+        clearSession,
+        isAuthenticated,
+      }}
+    >
       {children}
     </AuthContext.Provider>
-  )
-} 
+  );
+}

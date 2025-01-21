@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { Task } from "@/lib/tasks";
-import { getDependencyFilename, normalizeDependencyFilename } from "@/lib/utils/dependencies";
+import {
+  getDependencyFilename,
+  normalizeDependencyFilename,
+} from "@/lib/utils/dependencies";
 import { updateTaskAction } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
@@ -24,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { TaskCategory } from "@/lib/types/tags";
 
 interface TaskEditDialogProps {
   task: Task | null;
@@ -183,27 +187,25 @@ export function TaskEditDialog({
                 <label className="text-sm font-medium text-zinc-400">
                   Priority
                 </label>
-                <div className="flex gap-2">
-                  {(["low", "medium", "high"] as const).map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() =>
-                        setEditedTask((prev) =>
-                          prev ? { ...prev, priority: p } : null,
-                        )
-                      }
-                      className={cn(
-                        "px-3 py-1.5 rounded-md capitalize text-sm flex-1 border",
-                        editedTask.priority === p
-                          ? "bg-zinc-800 text-zinc-100 border-zinc-700"
-                          : "bg-zinc-900/50 text-zinc-400 hover:text-zinc-300 border-zinc-800",
-                      )}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
+                <Select
+                  value={editedTask.priority}
+                  onValueChange={(value) =>
+                    setEditedTask((prev) =>
+                      prev
+                        ? { ...prev, priority: value as Task["priority"] }
+                        : null,
+                    )
+                  }
+                >
+                  <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800">
+                    <SelectValue placeholder="Select a priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
@@ -227,6 +229,36 @@ export function TaskEditDialog({
                     <SelectItem value="todo">Todo</SelectItem>
                     <SelectItem value="in-progress">In Progress</SelectItem>
                     <SelectItem value="done">Done</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-zinc-400">
+                  Category
+                </label>
+                <Select
+                  value={editedTask.category}
+                  onValueChange={(value) =>
+                    setEditedTask((prev) =>
+                      prev
+                        ? { ...prev, category: value as TaskCategory }
+                        : null,
+                    )
+                  }
+                >
+                  <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={TaskCategory.CHORE}>Chore</SelectItem>
+                    <SelectItem value={TaskCategory.BUG}>Bug</SelectItem>
+                    <SelectItem value={TaskCategory.FEATURE}>
+                      Feature
+                    </SelectItem>
+                    <SelectItem value={TaskCategory.ITERATION}>
+                      Iteration
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -302,7 +334,20 @@ export function TaskEditDialog({
               </div>
 
               <div className="space-y-2">
-                <TagInput value={editTagInput} onChange={setEditTagInput} />
+                <label className="text-sm font-medium text-zinc-400">
+                  Tags
+                </label>
+                <TagInput
+                  selectedTags={
+                    editTagInput
+                      ? editTagInput
+                          .split(",")
+                          .map((t) => t.trim())
+                          .filter(Boolean)
+                      : []
+                  }
+                  onTagsChange={(tags) => setEditTagInput(tags.join(", "))}
+                />
               </div>
             </div>
           </div>
@@ -327,13 +372,16 @@ export function TaskEditDialog({
                   >
                     <Checkbox
                       checked={
-                        editedTask.dependencies?.includes(normalizeDependencyFilename(t.filename)) || false
+                        editedTask.dependencies?.includes(
+                          normalizeDependencyFilename(t.filename),
+                        ) || false
                       }
                       onCheckedChange={(checked) => {
                         setEditedTask((prev) => {
                           if (!prev) return null;
                           const deps = new Set(prev.dependencies || []);
-                          const normalizedFilename = normalizeDependencyFilename(t.filename);
+                          const normalizedFilename =
+                            normalizeDependencyFilename(t.filename);
                           if (checked) {
                             deps.add(normalizedFilename);
                           } else {

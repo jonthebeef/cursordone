@@ -60,8 +60,13 @@ export function TaskListContainer({
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
+  // Debounce taskOrder updates to localStorage
   useEffect(() => {
-    localStorage.setItem("taskOrder", JSON.stringify(taskOrder));
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem("taskOrder", JSON.stringify(taskOrder));
+    }, 1000); // Save after 1 second of no changes
+
+    return () => clearTimeout(timeoutId);
   }, [taskOrder]);
 
   const sensors = useSensors(
@@ -72,6 +77,7 @@ export function TaskListContainer({
     }),
   );
 
+  // Memoize filtered tasks with stable references
   const filteredTasks = useMemo(() => {
     let tasks = initialTasks;
 
@@ -89,7 +95,23 @@ export function TaskListContainer({
 
     // Filter by epic
     if (selectedEpic) {
-      tasks = tasks.filter((task) => task.epic === selectedEpic);
+      if (selectedEpic === "none") {
+        tasks = tasks.filter((task) => !task.epic);
+      } else {
+        const epicTitle = epics.find((e) => e.id === selectedEpic)?.title;
+        if (epicTitle) {
+          const normalizedEpicTitle = epicTitle
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-");
+          tasks = tasks.filter((task) => {
+            if (!task.epic) return false;
+            const normalizedTaskEpic = task.epic
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-");
+            return normalizedTaskEpic === normalizedEpicTitle;
+          });
+        }
+      }
     }
 
     // Filter by tags
@@ -99,48 +121,42 @@ export function TaskListContainer({
       );
     }
 
-    // Sort tasks
-    switch (sortOption) {
-      case "date-newest":
-        return [...tasks].sort(
-          (a, b) =>
-            new Date(b.created).getTime() - new Date(a.created).getTime(),
+    // Create stable sort functions
+    const sortFunctions = {
+      "date-newest": (a: Task, b: Task) =>
+        new Date(b.created).getTime() - new Date(a.created).getTime(),
+      "date-oldest": (a: Task, b: Task) =>
+        new Date(a.created).getTime() - new Date(b.created).getTime(),
+      "priority-high": (a: Task, b: Task) => {
+        const priorities = { high: 3, medium: 2, low: 1 };
+        return (
+          priorities[b.priority || "medium"] -
+          priorities[a.priority || "medium"]
         );
-      case "date-oldest":
-        return [...tasks].sort(
-          (a, b) =>
-            new Date(a.created).getTime() - new Date(b.created).getTime(),
+      },
+      "priority-low": (a: Task, b: Task) => {
+        const priorities = { high: 3, medium: 2, low: 1 };
+        return (
+          priorities[a.priority || "medium"] -
+          priorities[b.priority || "medium"]
         );
-      case "priority-high":
-        return [...tasks].sort((a, b) => {
-          const priorities = { high: 3, medium: 2, low: 1 };
-          return (
-            priorities[b.priority || "medium"] -
-            priorities[a.priority || "medium"]
-          );
-        });
-      case "priority-low":
-        return [...tasks].sort((a, b) => {
-          const priorities = { high: 3, medium: 2, low: 1 };
-          return (
-            priorities[a.priority || "medium"] -
-            priorities[b.priority || "medium"]
-          );
-        });
-      default:
-        // Manual sorting
-        if (taskOrder.length > 0) {
-          return [...tasks].sort((a, b) => {
-            const aIndex = taskOrder.indexOf(a.filename);
-            const bIndex = taskOrder.indexOf(b.filename);
-            if (aIndex === -1 && bIndex === -1) return 0;
-            if (aIndex === -1) return 1;
-            if (bIndex === -1) return -1;
-            return aIndex - bIndex;
-          });
-        }
-        return tasks;
-    }
+      },
+      manual: (a: Task, b: Task) => {
+        if (!taskOrder.length) return 0;
+        const aIndex = taskOrder.indexOf(a.filename);
+        const bIndex = taskOrder.indexOf(b.filename);
+        if (aIndex === -1 && bIndex === -1) return 0;
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+        return aIndex - bIndex;
+      },
+    };
+
+    // Sort tasks with stable function
+    return [...tasks].sort(
+      sortFunctions[sortOption as keyof typeof sortFunctions] ||
+        sortFunctions.manual,
+    );
   }, [
     initialTasks,
     searchQuery,

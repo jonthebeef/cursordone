@@ -2,16 +2,31 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Task } from "@/lib/tasks";
-import { getDependencyFilename, normalizeDependencyFilename } from "@/lib/utils/dependencies";
+import {
+  getDependencyFilename,
+  normalizeDependencyFilename,
+} from "@/lib/utils/dependencies";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { updateTaskAction } from "@/lib/actions";
 import { Search } from "lucide-react";
 import { TagInput } from "@/components/ui/tag-input";
 import { TextEditor } from "@/components/ui/text-editor";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { TaskCategory } from "@/lib/types/tags";
 
 // Only need id and title for the dialog
 type EpicSummary = {
@@ -78,23 +93,33 @@ export function TaskEditDialogTest({
   // Prevent any state updates during save
   const updateEditedTask = (updates: Partial<Task>) => {
     if (isSaving) return;
-    setEditedTask(prev => prev ? { ...prev, ...updates } : null);
+    setEditedTask((prev) => (prev ? { ...prev, ...updates } : null));
   };
 
   const updateTags = (value: string) => {
     if (isSaving) return;
-    setTags(value.split(",").map(t => t.trim()).filter(Boolean));
+    setTags(
+      value
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
+    );
   };
 
   const updateDependencies = (filename: string, checked: boolean) => {
     if (isSaving) return;
-    setEditedTask(prev => {
+    setEditedTask((prev) => {
       if (!prev) return null;
       return {
         ...prev,
         dependencies: checked
-          ? [...(prev.dependencies || []), normalizeDependencyFilename(filename)]
-          : (prev.dependencies || []).filter(d => d !== normalizeDependencyFilename(filename))
+          ? [
+              ...(prev.dependencies || []),
+              normalizeDependencyFilename(filename),
+            ]
+          : (prev.dependencies || []).filter(
+              (d) => d !== normalizeDependencyFilename(filename),
+            ),
       };
     });
   };
@@ -145,7 +170,10 @@ export function TaskEditDialogTest({
           <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6">
             {/* Title */}
             <div className="space-y-2">
-              <label htmlFor="title" className="text-sm font-medium text-zinc-400">
+              <label
+                htmlFor="title"
+                className="text-sm font-medium text-zinc-400"
+              >
                 Title
               </label>
               <input
@@ -158,7 +186,10 @@ export function TaskEditDialogTest({
 
             {/* Content */}
             <div className="space-y-2">
-              <label htmlFor="content" className="text-sm font-medium text-zinc-400">
+              <label
+                htmlFor="content"
+                className="text-sm font-medium text-zinc-400"
+              >
                 Content
               </label>
               <TextEditor
@@ -169,59 +200,202 @@ export function TaskEditDialogTest({
             </div>
 
             {/* Metadata Grid */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-4 gap-4">
               {/* Priority */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400">Priority</label>
+                <label className="text-sm font-medium text-zinc-400">
+                  Priority
+                </label>
                 <Select
-                  value={editedTask?.priority || "medium"}
-                  onValueChange={(value) => updateEditedTask({ priority: value as Task["priority"] })}
+                  value={editedTask?.priority}
+                  onValueChange={(value) =>
+                    setEditedTask((prev) =>
+                      prev
+                        ? { ...prev, priority: value as Task["priority"] }
+                        : null,
+                    )
+                  }
                 >
-                  <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800 text-zinc-100">
-                    <SelectValue />
+                  <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800">
+                    <SelectValue placeholder="Select a priority" />
                   </SelectTrigger>
-                  <SelectContent className="z-[150] bg-zinc-900 border border-zinc-800">
-                    <SelectItem value="low" className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800">Low</SelectItem>
-                    <SelectItem value="medium" className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800">Medium</SelectItem>
-                    <SelectItem value="high" className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800">High</SelectItem>
+                  <SelectContent
+                    position="popper"
+                    sideOffset={4}
+                    className="z-[200] bg-zinc-900 border border-zinc-800"
+                  >
+                    <SelectItem
+                      value="low"
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      Low
+                    </SelectItem>
+                    <SelectItem
+                      value="medium"
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      Medium
+                    </SelectItem>
+                    <SelectItem
+                      value="high"
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      High
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Status */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400">Status</label>
+                <label className="text-sm font-medium text-zinc-400">
+                  Status
+                </label>
                 <Select
-                  value={editedTask?.status || "todo"}
-                  onValueChange={(value) => updateEditedTask({ status: value as Task["status"] })}
+                  value={editedTask?.status}
+                  onValueChange={(value) =>
+                    setEditedTask((prev) =>
+                      prev
+                        ? { ...prev, status: value as Task["status"] }
+                        : null,
+                    )
+                  }
                 >
-                  <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800 text-zinc-100">
-                    <SelectValue />
+                  <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800">
+                    <SelectValue placeholder="Select a status" />
                   </SelectTrigger>
-                  <SelectContent className="z-[150] bg-zinc-900 border border-zinc-800">
-                    <SelectItem value="todo" className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800">Todo</SelectItem>
-                    <SelectItem value="in-progress" className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800">In Progress</SelectItem>
-                    <SelectItem value="done" className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800">Done</SelectItem>
+                  <SelectContent
+                    position="popper"
+                    sideOffset={4}
+                    className="z-[200] bg-zinc-900 border border-zinc-800"
+                  >
+                    <SelectItem
+                      value="todo"
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      Todo
+                    </SelectItem>
+                    <SelectItem
+                      value="in-progress"
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      In Progress
+                    </SelectItem>
+                    <SelectItem
+                      value="done"
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      Done
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Category */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-zinc-400">
+                  Category
+                </label>
+                <Select
+                  value={editedTask?.category}
+                  onValueChange={(value) =>
+                    setEditedTask((prev) =>
+                      prev
+                        ? { ...prev, category: value as TaskCategory }
+                        : null,
+                    )
+                  }
+                  required
+                >
+                  <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent
+                    position="popper"
+                    sideOffset={4}
+                    className="z-[200] bg-zinc-900 border border-zinc-800"
+                  >
+                    <SelectItem
+                      value={TaskCategory.CHORE}
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      Chore
+                    </SelectItem>
+                    <SelectItem
+                      value={TaskCategory.BUG}
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      Bug
+                    </SelectItem>
+                    <SelectItem
+                      value={TaskCategory.FEATURE}
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      Feature
+                    </SelectItem>
+                    <SelectItem
+                      value={TaskCategory.ITERATION}
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      Iteration
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Complexity */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400">Complexity</label>
+                <label className="text-sm font-medium text-zinc-400">
+                  Complexity
+                </label>
                 <Select
-                  value={editedTask?.complexity || "M"}
-                  onValueChange={(value) => updateEditedTask({ complexity: value as Task["complexity"] })}
+                  value={editedTask?.complexity}
+                  onValueChange={(value) =>
+                    setEditedTask((prev) =>
+                      prev
+                        ? { ...prev, complexity: value as Task["complexity"] }
+                        : null,
+                    )
+                  }
                 >
-                  <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800 text-zinc-100">
-                    <SelectValue />
+                  <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800">
+                    <SelectValue placeholder="Select complexity" />
                   </SelectTrigger>
-                  <SelectContent className="z-[150] bg-zinc-900 border border-zinc-800">
-                    <SelectItem value="XS" className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800">XS</SelectItem>
-                    <SelectItem value="S" className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800">S</SelectItem>
-                    <SelectItem value="M" className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800">M</SelectItem>
-                    <SelectItem value="L" className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800">L</SelectItem>
-                    <SelectItem value="XL" className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800">XL</SelectItem>
+                  <SelectContent
+                    position="popper"
+                    sideOffset={4}
+                    className="z-[200] bg-zinc-900 border border-zinc-800"
+                  >
+                    <SelectItem
+                      value="XS"
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      XS
+                    </SelectItem>
+                    <SelectItem
+                      value="S"
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      S
+                    </SelectItem>
+                    <SelectItem
+                      value="M"
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      M
+                    </SelectItem>
+                    <SelectItem
+                      value="L"
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      L
+                    </SelectItem>
+                    <SelectItem
+                      value="XL"
+                      className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                    >
+                      XL
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -232,28 +406,32 @@ export function TaskEditDialogTest({
               <label className="text-sm font-medium text-zinc-400">Epic</label>
               <Select
                 value={editedTask?.epic || "none"}
-                onValueChange={(value) => updateEditedTask({ epic: value === "none" ? undefined : value })}
+                onValueChange={(value) =>
+                  updateEditedTask({
+                    epic: value === "none" ? undefined : value,
+                  })
+                }
               >
-                <SelectTrigger 
+                <SelectTrigger
                   className="w-full bg-zinc-900/50 border-zinc-800 text-zinc-100 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <SelectValue placeholder="Select an epic" />
                 </SelectTrigger>
-                <SelectContent 
+                <SelectContent
                   className="z-[200] bg-zinc-900 border border-zinc-800"
                   position="popper"
                   sideOffset={4}
                 >
-                  <SelectItem 
+                  <SelectItem
                     value="none"
                     className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
                   >
                     None
                   </SelectItem>
                   {epics.map((epic) => (
-                    <SelectItem 
-                      key={epic.id} 
+                    <SelectItem
+                      key={epic.id}
                       value={epic.id}
                       className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
                     >
@@ -267,15 +445,14 @@ export function TaskEditDialogTest({
             {/* Tags */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-zinc-400">Tags</label>
-              <TagInput
-                value={tags.join(", ")}
-                onChange={updateTags}
-              />
+              <TagInput selectedTags={tags} onTagsChange={setTags} />
             </div>
 
             {/* Dependencies */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-400">Dependencies</label>
+              <label className="text-sm font-medium text-zinc-400">
+                Dependencies
+              </label>
               <div className="relative">
                 <div className="flex items-center px-3 py-1.5 bg-zinc-900/50 border border-zinc-800 rounded-md mb-2">
                   <Search className="w-4 h-4 text-zinc-400 mr-2" />
@@ -302,7 +479,8 @@ export function TaskEditDialogTest({
                         }}
                       >
                         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                          const task = filteredDependencyTasks[virtualRow.index];
+                          const task =
+                            filteredDependencyTasks[virtualRow.index];
                           return (
                             <div
                               key={task.filename}
@@ -314,8 +492,12 @@ export function TaskEditDialogTest({
                             >
                               <Checkbox
                                 id={`dep-${task.filename}`}
-                                checked={editedTask?.dependencies?.includes(normalizeDependencyFilename(task.filename))}
-                                onCheckedChange={(checked) => updateDependencies(task.filename, !!checked)}
+                                checked={editedTask?.dependencies?.includes(
+                                  normalizeDependencyFilename(task.filename),
+                                )}
+                                onCheckedChange={(checked) =>
+                                  updateDependencies(task.filename, !!checked)
+                                }
                                 className="border-zinc-700 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
                               />
                               <label
@@ -327,7 +509,9 @@ export function TaskEditDialogTest({
                                     {task.ref}
                                   </span>
                                 )}
-                                <span className="font-medium">{task.title}</span>
+                                <span className="font-medium">
+                                  {task.title}
+                                </span>
                                 {task.epic && (
                                   <span className="ml-2 text-zinc-400">
                                     in {task.epic}
@@ -366,4 +550,4 @@ export function TaskEditDialogTest({
       </DialogContent>
     </Dialog>
   );
-} 
+}

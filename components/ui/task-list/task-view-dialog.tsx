@@ -87,6 +87,12 @@ export function TaskViewDialog({
               </div>
               <div>
                 <div className="font-medium mb-1 text-muted-foreground">
+                  Category
+                </div>
+                <Badge variant="outline">{task.category}</Badge>
+              </div>
+              <div>
+                <div className="font-medium mb-1 text-muted-foreground">
                   Complexity
                 </div>
                 <Badge variant="outline">{task.complexity}</Badge>

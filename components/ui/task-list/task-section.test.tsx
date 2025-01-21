@@ -27,6 +27,7 @@ const mockTasks: Task[] = [
     complexity: "M",
     created: "2024-01-15",
     ref: "TSK-001",
+    owner: "user",
   },
   {
     id: "task-2",
@@ -37,6 +38,7 @@ const mockTasks: Task[] = [
     complexity: "S",
     created: "2024-01-15",
     ref: "TSK-002",
+    owner: "user",
   },
 ];
 

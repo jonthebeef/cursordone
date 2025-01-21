@@ -4,6 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import { getNextRef, markRefAsUnused } from './ref-counter'
+import { TaskCategory } from '@/lib/types/tags'
 
 export interface Task {
   id: string
@@ -13,6 +14,7 @@ export interface Task {
   status: 'todo' | 'in-progress' | 'done'
   priority: 'low' | 'medium' | 'high'
   complexity?: 'XS' | 'S' | 'M' | 'L' | 'XL'
+  category: TaskCategory
   epic?: string
   owner: string
   worker?: string
@@ -31,6 +33,7 @@ interface TaskFrontmatter {
   status: Task['status']
   priority: Task['priority']
   complexity?: Task['complexity']
+  category: TaskCategory
   epic?: string
   owner: string
   worker?: string
@@ -150,6 +153,7 @@ export async function createTask(task: Omit<Task, 'filename' | 'content' | 'ref'
     status: task.status,
     priority: task.priority,
     complexity: task.complexity,
+    category: task.category,
     epic: task.epic?.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     owner: task.owner,
     parent: task.parent,
@@ -180,8 +184,12 @@ export async function updateTask(filename: string, task: Omit<Task, 'filename'>)
     status: task.status,
     priority: task.priority,
     complexity: task.complexity,
+    category: task.category,
     epic: task.epic,
     owner: task.owner,
+    worker: task.worker,
+    started_date: task.started_date,
+    completion_date: task.completion_date,
     parent: task.parent,
     dependencies: task.dependencies || [],
     tags: task.tags || [],
@@ -197,7 +205,7 @@ export async function updateTask(filename: string, task: Omit<Task, 'filename'>)
   })
   
   const fileContent = matter.stringify(task.content || '', frontmatter)
-  fs.writeFileSync(filePath, fileContent)
+  await fs.promises.writeFile(filePath, fileContent)
 }
 
 export async function deleteTask(filename: string) {

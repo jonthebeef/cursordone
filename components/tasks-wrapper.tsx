@@ -60,23 +60,24 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
   // Update tasks when they change from the server
   useEffect(() => {
     if (!isInitialLoad) {
-      const hasNewTasks = tasks.some(
-        (task) => !currentTasks.find((ct) => ct.filename === task.filename),
-      );
-      const hasRemovedTasks = currentTasks.some(
-        (task) => !tasks.find((t) => t.filename === task.filename),
-      );
-      const hasChangedTasks = tasks.some((task) => {
-        const currentTask = currentTasks.find(
-          (ct) => ct.filename === task.filename,
-        );
+      // Create maps for O(1) lookups
+      const currentTaskMap = new Map(currentTasks.map(task => [task.filename, task]));
+      const newTaskMap = new Map(tasks.map(task => [task.filename, task]));
+
+      // Check for new or removed tasks
+      const hasNewTasks = tasks.some(task => !currentTaskMap.has(task.filename));
+      const hasRemovedTasks = currentTasks.some(task => !newTaskMap.has(task.filename));
+
+      // Check for changed tasks more efficiently
+      const hasChangedTasks = tasks.some(task => {
+        const currentTask = currentTaskMap.get(task.filename);
+        if (!currentTask) return false;
+
+        // Only compare fields that should trigger a refresh
         return (
-          currentTask &&
-          (currentTask.status !== task.status ||
-            currentTask.title !== task.title ||
-            currentTask.priority !== task.priority ||
-            currentTask.epic !== task.epic ||
-            JSON.stringify(currentTask.tags) !== JSON.stringify(task.tags))
+          currentTask.status !== task.status ||
+          currentTask.epic !== task.epic ||
+          (currentTask.tags || []).join(',') !== (task.tags || []).join(',')
         );
       });
 
@@ -118,9 +119,9 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
   const filteredTasks = currentTasks.filter((task) => {
     const selectedEpicTitle = epics.find((e) => e.id === selectedEpic)?.title;
 
-    // Normalize epic titles (lowercase and replace spaces with hyphens)
+    // Normalize epic titles (lowercase and replace non-alphanumeric with hyphens)
     const normalizeEpicTitle = (title: string | undefined) =>
-      title?.toLowerCase().replace(/\s+/g, "-") || "";
+      title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || '';
 
     // Filter by epic - match normalized epic titles
     const matchesEpic =

@@ -1,6 +1,7 @@
 "use client";
 
 import { Task } from "@/lib/tasks";
+import { TaskCategory } from "@/lib/types/tags";
 import {
   completeTaskAction,
   deleteTaskAction,
@@ -80,7 +81,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TextEditor } from "@/components/ui/text-editor";
-import { getDependencyFilename, normalizeDependencyFilename } from "@/lib/utils/dependencies";
+import {
+  getDependencyFilename,
+  normalizeDependencyFilename,
+} from "@/lib/utils/dependencies";
 import { TaskViewDialog } from "./task-list/task-view-dialog";
 
 const sortOptions = [
@@ -115,12 +119,12 @@ export function TaskList({
   const router = useRouter();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
+  const [dependencySearchQuery, setDependencySearchQuery] = useState("");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTask, setEditedTask] = useState<Task | null>(null);
   const [editTagInput, setEditTagInput] = useState("");
-  const [dependencySearchQuery, setDependencySearchQuery] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [taskOrder, setTaskOrder] = useState<string[]>(
@@ -136,19 +140,20 @@ export function TaskList({
   const [isCreating, setIsCreating] = useState(false);
   const [sortOption, setSortOption] = useState<SortOption>("manual");
   const [newTask, setNewTask] = useState<
-    Omit<Task, 'ref' | 'filename'> & { content: string }
+    Omit<Task, "ref" | "filename"> & { content: string; category: TaskCategory }
   >({
-    id: '0',
-    title: '',
-    priority: 'medium',
-    status: 'todo',
-    content: '',
-    created: '',
-    owner: 'user',
-    complexity: 'M',
-    epic: '',
+    id: "0",
+    title: "",
+    priority: "medium",
+    status: "todo",
+    content: "",
+    created: "",
+    owner: "user",
+    category: TaskCategory.CHORE,
+    complexity: "M",
+    epic: "",
     dependencies: [],
-    tags: []
+    tags: [],
   });
   const [tagInput, setTagInput] = useState("");
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
@@ -168,9 +173,7 @@ export function TaskList({
     return allTasks.filter(
       (task) =>
         task.title?.toLowerCase().includes(query) ||
-        false ||
-        task.ref?.toLowerCase().includes(query) ||
-        false,
+        task.epic?.toLowerCase().includes(query),
     );
   }, [allTasks, dependencySearchQuery]);
 
@@ -435,34 +438,42 @@ export function TaskList({
 
       const taskToCreate = {
         ...newTask,
-        tags: tagInput ? tagInput.split(',').map(t => t.trim()).filter(Boolean) : [],
-        dependencies: (newTask.dependencies || []).map(d => normalizeDependencyFilename(d)),
+        tags: tagInput
+          ? tagInput
+              .split(",")
+              .map((t) => t.trim())
+              .filter(Boolean)
+          : [],
+        dependencies: (newTask.dependencies || []).map((d) =>
+          normalizeDependencyFilename(d),
+        ),
         id: Date.now().toString(),
-        content: (newTask.content || '') + guidelines,
-        created: new Date().toISOString().split('T')[0]
-      }
+        content: (newTask.content || "") + guidelines,
+        created: new Date().toISOString().split("T")[0],
+      };
       const filename = await createTaskAction(taskToCreate);
       if (filename) {
-        setTaskOrder(prev => [...prev, filename]);
+        setTaskOrder((prev) => [...prev, filename]);
       }
       onStateChange?.();
       setShowCreateDialog(false);
       setNewTask({
-        id: '0',
-        title: '',
-        priority: 'medium',
-        status: 'todo',
-        content: '',
-        created: '',
-        owner: 'user',
-        complexity: 'M',
-        epic: '',
+        id: "0",
+        title: "",
+        priority: "medium",
+        status: "todo",
+        content: "",
+        created: "",
+        owner: "user",
+        category: TaskCategory.CHORE,
+        complexity: "M",
+        epic: "",
         dependencies: [],
-        tags: []
+        tags: [],
       });
-      setTagInput('');
+      setTagInput("");
     } catch (error) {
-      console.error('Failed to create task:', error);
+      console.error("Failed to create task:", error);
     } finally {
       setIsCreating(false);
     }
@@ -507,12 +518,12 @@ export function TaskList({
 
   // Initialize newTask with current date on mount
   useEffect(() => {
-    setNewTask(prev => ({
+    setNewTask((prev) => ({
       ...prev,
       id: Date.now().toString(),
-      created: new Date().toISOString().split('T')[0]
-    }))
-  }, [])
+      created: new Date().toISOString().split("T")[0],
+    }));
+  }, []);
 
   if (isLoading || tasks.length === 0) {
     return (
@@ -639,18 +650,16 @@ export function TaskList({
                       </span>
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="pt-4">
-                      {inProgressTasks.map((task, i) => (
-                        <SortableTaskCard
-                          key={task.filename}
-                          task={task}
-                          number={i + 1}
-                          onClick={handleTaskClick}
-                          onComplete={handleComplete}
-                        />
-                      ))}
-                    </div>
+                  <AccordionContent className="pt-6 space-y-4">
+                    {inProgressTasks.map((task, i) => (
+                      <SortableTaskCard
+                        key={task.filename}
+                        task={task}
+                        number={i + 1}
+                        onClick={handleTaskClick}
+                        onComplete={handleComplete}
+                      />
+                    ))}
                   </AccordionContent>
                 </AccordionItem>
               )}
@@ -819,7 +828,7 @@ export function TaskList({
               </div>
 
               {/* Metadata Row */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-4 gap-4">
                 {/* Priority */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-zinc-400">
@@ -895,6 +904,53 @@ export function TaskList({
                         className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
                       >
                         Done
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Category */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-zinc-400">
+                    Category
+                  </label>
+                  <Select
+                    value={newTask.category}
+                    onValueChange={(value) =>
+                      setNewTask((prev) => ({
+                        ...prev,
+                        category: value as TaskCategory,
+                      }))
+                    }
+                    required
+                  >
+                    <SelectTrigger className="w-full bg-zinc-900/50 border-zinc-800 text-zinc-100">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[150] bg-zinc-900 border border-zinc-800">
+                      <SelectItem
+                        value={TaskCategory.CHORE}
+                        className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                      >
+                        Chore
+                      </SelectItem>
+                      <SelectItem
+                        value={TaskCategory.BUG}
+                        className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                      >
+                        Bug
+                      </SelectItem>
+                      <SelectItem
+                        value={TaskCategory.FEATURE}
+                        className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                      >
+                        Feature
+                      </SelectItem>
+                      <SelectItem
+                        value={TaskCategory.ITERATION}
+                        className="text-zinc-100 hover:bg-zinc-800 focus:bg-zinc-800"
+                      >
+                        Iteration
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -1002,10 +1058,15 @@ export function TaskList({
                   Tags
                 </label>
                 <TagInput
-                  value={tagInput}
-                  onChange={setTagInput}
-                  className="w-full"
-                  placeholder="Enter tags separated by commas"
+                  selectedTags={
+                    tagInput
+                      ? tagInput
+                          .split(",")
+                          .map((t) => t.trim())
+                          .filter(Boolean)
+                      : []
+                  }
+                  onTagsChange={(tags) => setTagInput(tags.join(", "))}
                 />
               </div>
 

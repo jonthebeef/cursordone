@@ -137,20 +137,24 @@ export function TagInput({
         )}
         placeholder="Enter tags separated by commas"
       />
-      {isOpen && suggestions.length > 0 && (
+      {isOpen && (
         <div className="absolute w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-md shadow-lg z-50 max-h-[200px] overflow-y-auto">
-          {suggestions.map((suggestion, index) => (
-            <div
-              key={suggestion}
-              className={cn(
-                "px-3 py-2 cursor-pointer text-zinc-100",
-                index === selectedIndex ? "bg-zinc-800" : "hover:bg-zinc-800",
-              )}
-              onClick={() => handleSelectTag(suggestion)}
-            >
-              {suggestion}
-            </div>
-          ))}
+          {suggestions.length > 0 ? (
+            suggestions.map((suggestion, index) => (
+              <div
+                key={suggestion}
+                className={cn(
+                  "px-3 py-2 cursor-pointer text-zinc-100",
+                  index === selectedIndex ? "bg-zinc-800" : "hover:bg-zinc-800",
+                )}
+                onClick={() => handleSelectTag(suggestion)}
+              >
+                {suggestion}
+              </div>
+            ))
+          ) : (
+            <div className="px-3 py-2 text-zinc-500">No suggestions</div>
+          )}
         </div>
       )}
       {selectedTags.length > 0 && (

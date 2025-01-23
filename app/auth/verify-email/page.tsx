@@ -1,41 +1,51 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
+import { Suspense } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import ErrorMessage from "./error-message";
+
+function VerifyEmailContent() {
+  return (
+    <Card className="w-full max-w-md mx-auto">
+      <CardHeader>
+        <h1 className="text-2xl font-bold text-center">Check your email</h1>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-center text-muted-foreground">
+          We&apos;ve sent you a verification link. If you don&apos;t see it,
+          check your spam folder.
+        </p>
+        <p className="text-center text-sm text-muted-foreground">
+          The link will expire in 24 hours.
+        </p>
+        <Suspense
+          fallback={
+            <p className="text-center text-sm">Loading error details...</p>
+          }
+        >
+          <ErrorMessage />
+        </Suspense>
+      </CardContent>
+      <CardFooter>
+        <Button asChild className="w-full">
+          <Link href="/auth/login">Back to sign in</Link>
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
 
 export default function VerifyEmailPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <h1 className="text-2xl font-bold text-center">Check Your Email</h1>
-          <p className="text-zinc-400 text-center mt-2">
-            We've sent you a verification link. Please check your email to continue.
-          </p>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center text-zinc-400">
-            <p className="mb-4">
-              Click the link in the email to verify your account. If you don't see it,
-              check your spam folder.
-            </p>
-            <p>
-              The link will expire in 24 hours.
-            </p>
-          </div>
-        </CardContent>
-        <CardFooter>
-          <p className="text-sm text-zinc-400 text-center w-full">
-            Return to{' '}
-            <Link
-              href="/auth/login"
-              className="text-blue-500 hover:text-blue-400"
-            >
-              Sign in
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
-    </div>
-  )
-} 
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
+  );
+}

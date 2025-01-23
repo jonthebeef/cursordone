@@ -1,65 +1,64 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createMiddlewareClient } from "@/lib/supabase/middleware";
 
-// CSRF token validation
-const validateCSRFToken = (request: NextRequest) => {
-  const csrfToken = request.cookies.get("csrf_token")?.value;
-  const csrfHeader = request.headers.get("x-csrf-token");
-
-  if (request.method === "GET") return true;
-  return csrfToken && csrfHeader && csrfToken === csrfHeader;
-};
-
 export async function middleware(request: NextRequest) {
-  // Skip CSRF check for auth endpoints and static files
-  const isAuthEndpoint = request.nextUrl.pathname.startsWith("/auth");
-  const isStaticFile = request.nextUrl.pathname.match(
-    /\.(js|css|png|jpg|jpeg|gif|ico|svg)$/,
-  );
-
-  if (!isAuthEndpoint && !isStaticFile && !validateCSRFToken(request)) {
-    return new NextResponse(null, {
-      status: 403,
-      statusText: "Invalid CSRF token",
-    });
-  }
-
-  const response = NextResponse.next({
+  let response = NextResponse.next({
     request: {
       headers: request.headers,
     },
   });
 
-  // Add security headers
-  response.headers.set("X-Frame-Options", "DENY");
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  response.headers.set(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';",
-  );
-  response.headers.set("X-XSS-Protection", "1; mode=block");
-  response.headers.set(
-    "Strict-Transport-Security",
-    "max-age=31536000; includeSubDomains",
-  );
-
-  // Handle auth session
   const supabase = createMiddlewareClient(request, response);
-  await supabase.auth.getSession();
 
-  return response;
+  try {
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
+
+    if (error) {
+      console.error("Session error:", error);
+    }
+
+    // Handle auth routes
+    if (request.nextUrl.pathname.startsWith("/auth/")) {
+      // Always allow access to callback route
+      if (request.nextUrl.pathname === "/auth/callback") {
+        return response;
+      }
+
+      // Redirect to home if already authenticated
+      if (session) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+
+      // Allow access to auth pages if not authenticated
+      return response;
+    }
+
+    // Protect all other routes
+    if (!session) {
+      const redirectUrl = new URL("/auth/login", request.url);
+      redirectUrl.searchParams.set("redirect", request.nextUrl.pathname);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    return response;
+  } catch (error) {
+    console.error("Middleware error:", error);
+    return response;
+  }
 }
 
 export const config = {
   matcher: [
     /*
-     * Match all request paths except:
+     * Match all request paths except for the ones starting with:
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - public folder
+     * Feel free to modify this pattern to include more paths.
      */
-    "/((?!_next/static|_next/image|favicon.ico|public/).*)",
+    "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };

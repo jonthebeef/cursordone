@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Link2, Calendar, Shirt, Tag } from "lucide-react";
-import { updateTaskStatusAction } from "@/lib/actions";
+import { updateTaskStatusAction, completeTaskAction } from "@/lib/actions";
 import { TaskCategory } from "@/lib/types/tags";
 
 interface TaskCardProps {
@@ -30,21 +30,17 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
 
     setIsUpdating(true);
     try {
-      let newStatus: Task["status"];
-      if (task.status === "todo" && checked) {
-        newStatus = "in-progress";
+      if (task.status === "done" || (task.status === "todo" && checked)) {
+        await completeTaskAction(task.filename);
+      } else if (task.status === "todo" && checked) {
+        await updateTaskStatusAction(task.filename, "in-progress");
       } else if (task.status === "in-progress" && checked) {
-        newStatus = "done";
-      } else if (task.status === "done" && !checked) {
-        newStatus = "todo";
+        await updateTaskStatusAction(task.filename, "done");
       } else if (task.status === "in-progress" && !checked) {
-        newStatus = "todo";
-      } else {
-        newStatus = task.status;
+        await updateTaskStatusAction(task.filename, "todo");
       }
-
-      await updateTaskStatusAction(task.filename, newStatus);
-      router.refresh();
+      // Force a client-side revalidation
+      window.location.reload();
     } catch (error) {
       console.error("Failed to change status:", error);
     } finally {

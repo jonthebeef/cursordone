@@ -1,121 +1,133 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase/client";
 
-const SESSION_TIMEOUT = 1000 * 60 * 60 * 24; // 24 hours
-const TOKEN_REFRESH_MARGIN = 1000 * 60 * 5; // 5 minutes before expiry
-
 export function useSession() {
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [sessionLoading, setSessionLoading] = useState(true);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  // Initialize session from storage and set up refresh timer
+  // Initialize session
   useEffect(() => {
+    const isAuthPage = pathname?.startsWith("/auth/");
+
+    // Skip session check on auth pages
+    if (isAuthPage) {
+      setSessionLoading(false);
+      setInitialLoadComplete(true);
+      return;
+    }
+
+    let mounted = true;
     const initSession = async () => {
       try {
         const {
           data: { session },
+          error: sessionError,
         } = await supabase.auth.getSession();
-        setSession(session);
 
-        if (session?.expires_at) {
-          const expiresAt = new Date(session.expires_at * 1000);
-          const now = new Date();
-          const timeUntilExpiry = expiresAt.getTime() - now.getTime();
+        if (!mounted) return;
 
-          // If token is close to expiry, refresh it
-          if (timeUntilExpiry < TOKEN_REFRESH_MARGIN) {
-            const {
-              data: { session: refreshedSession },
-            } = await supabase.auth.refreshSession();
-            setSession(refreshedSession);
-          }
+        if (sessionError) throw sessionError;
+
+        if (!session) {
+          router.replace("/auth/login");
+          return;
         }
+
+        setSession(session);
       } catch (err) {
-        setError(
-          err instanceof Error
-            ? err
-            : new Error("Failed to initialize session"),
-        );
+        console.error("Session initialization error:", err);
+        if (mounted) {
+          setError(
+            err instanceof Error
+              ? err
+              : new Error("Failed to initialize session"),
+          );
+          router.replace("/auth/login");
+        }
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setSessionLoading(false);
+          // Add a small delay before marking initial load complete to prevent flashing
+          setTimeout(() => {
+            if (mounted) {
+              setInitialLoadComplete(true);
+            }
+          }, 100);
+        }
       }
     };
 
     initSession();
-  }, []);
 
-  // Set up auth state change listener
-  useEffect(() => {
+    // Set up auth state change listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setSession(session);
-      setLoading(false);
+      if (!mounted) return;
 
-      // Handle session recovery
-      if (event === "TOKEN_REFRESHED") {
-        setError(null); // Clear any previous errors
+      if (event === "SIGNED_OUT") {
+        setSession(null);
+        if (!isAuthPage) {
+          router.replace("/auth/login");
+        }
+        return;
       }
+
+      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        setSession(session);
+        if (isAuthPage) {
+          router.replace("/");
+        }
+        return;
+      }
+
+      setSession(session);
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
-
-  // Set up session timeout
-  useEffect(() => {
-    if (!session) return;
-
-    const timeoutId = setTimeout(() => {
-      supabase.auth.signOut();
-    }, SESSION_TIMEOUT);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [session]);
-
-  // Expose session management functions
-  const refreshSession = useCallback(async () => {
-    try {
-      setLoading(true);
-      const {
-        data: { session },
-      } = await supabase.auth.refreshSession();
-      setSession(session);
-      setError(null);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err : new Error("Failed to refresh session"),
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  }, [pathname, router]);
 
   const clearSession = useCallback(async () => {
     try {
-      setLoading(true);
-      await supabase.auth.signOut();
+      setSessionLoading(true);
+
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      // Clear session state
       setSession(null);
       setError(null);
+
+      // Hard redirect to login to ensure clean state
+      window.location.href = "/auth/login?clear=1&t=" + Date.now();
     } catch (err) {
+      console.error("Logout error:", err);
       setError(
         err instanceof Error ? err : new Error("Failed to clear session"),
       );
+      router.replace("/auth/login");
     } finally {
-      setLoading(false);
+      setSessionLoading(false);
     }
-  }, []);
+  }, [router]);
+
+  // Combine session loading and initial load state
+  const loading = sessionLoading || !initialLoadComplete;
 
   return {
     session,
     loading,
     error,
-    refreshSession,
     clearSession,
     isAuthenticated: !!session,
   };

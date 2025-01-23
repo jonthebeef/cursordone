@@ -1,5 +1,5 @@
-import { createServerComponentClient } from "@/lib/supabase/server";
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import { createMiddlewareClient } from "@/lib/supabase/middleware";
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
@@ -9,7 +9,8 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const response = new NextResponse();
-    const supabase = createServerComponentClient(request, response);
+    const supabase = createMiddlewareClient(request, response);
+
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       const forwardedHost = request.headers.get("x-forwarded-host");

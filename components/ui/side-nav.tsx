@@ -23,6 +23,7 @@ import { useState, useEffect } from "react";
 import { Button } from "./button";
 import { useToast } from "./use-toast";
 import { supabase } from "@/lib/supabase/client";
+import { useAuth } from "@/components/providers/auth-provider";
 
 type AppRoute = "/" | "/docs" | "/epics";
 
@@ -58,6 +59,7 @@ export function SideNav({
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
+  const { clearSession } = useAuth();
 
   // Load starred tags
   useEffect(() => {
@@ -141,18 +143,7 @@ export function SideNav({
   };
 
   const handleLogout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      router.push("/auth/login");
-    } catch (error) {
-      console.error("Error logging out:", error);
-      toast({
-        title: "Error",
-        description: "Failed to log out",
-        variant: "destructive",
-      });
-    }
+    await clearSession();
   };
 
   const navItems: NavItem[] = [

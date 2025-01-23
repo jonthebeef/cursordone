@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { createBrowserClient } from "@supabase/ssr";
+import { supabase } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert } from "@/components/ui/alert";
@@ -17,19 +17,122 @@ import { Separator } from "@/components/ui/separator";
 import { FaGithub, FaDiscord } from "react-icons/fa";
 import { FlickeringGrid } from "@/components/ui/flickering-grid";
 
-export default function LoginPage() {
+function LoginForm({
+  onSubmit,
+  onOAuthSignIn,
+  error,
+  loading,
+}: {
+  onSubmit: (email: string, password: string) => Promise<void>;
+  onOAuthSignIn: (provider: "github" | "discord") => Promise<void>;
+  error: string | null;
+  loading: boolean;
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSubmit(email, password);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 gap-4">
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full bg-[#24292e] hover:bg-[#2f363d] text-white border-[#24292e]"
+          onClick={() => onOAuthSignIn("github")}
+          disabled={loading}
+        >
+          <FaGithub className="mr-2 h-4 w-4" />
+          {loading ? "Signing in..." : "GitHub"}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white border-[#5865F2]"
+          onClick={() => onOAuthSignIn("discord")}
+          disabled={loading}
+        >
+          <FaDiscord className="mr-2 h-4 w-4" />
+          {loading ? "Signing in..." : "Discord"}
+        </Button>
+      </div>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator className="w-full" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-zinc-400">
+            Or continue with
+          </span>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {error && <Alert variant="destructive">{error}</Alert>}
+        <div className="space-y-2">
+          <label htmlFor="email" className="block text-sm font-medium">
+            Email
+          </label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full"
+            placeholder="you@example.com"
+            autoComplete="email"
+            disabled={loading}
+          />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="password" className="block text-sm font-medium">
+            Password
+          </label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full"
+            placeholder="••••••••"
+            autoComplete="current-password"
+            disabled={loading}
+          />
+        </div>
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? "Signing in..." : "Sign In"}
+        </Button>
+      </form>
+    </div>
+  );
+}
+
+function LoginContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
+  const searchParams = useSearchParams();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // Handle error messages from URL parameters
+  useEffect(() => {
+    const errorType = searchParams.get("error");
+    const errorMessage = searchParams.get("message");
+
+    if (errorType) {
+      setError(errorMessage || "Authentication failed. Please try again.");
+    }
+  }, [searchParams]);
+
+  const handleSubmit = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
 
@@ -55,19 +158,21 @@ export default function LoginPage() {
   const handleOAuthSignIn = async (provider: "github" | "discord") => {
     try {
       setError(null);
-      const { error } = await supabase.auth.signInWithOAuth({
+      setLoading(true);
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          scopes: provider === "github" ? "repo gist" : "identify email",
         },
       });
+
       if (error) throw error;
     } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : `Failed to sign in with ${provider}`,
-      );
+      console.error("OAuth error:", error);
+      setError("Failed to sign in");
+      setLoading(false);
     }
   };
 
@@ -92,77 +197,13 @@ export default function LoginPage() {
             Welcome back! Please sign in to continue.
           </p>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full bg-[#24292e] hover:bg-[#2f363d] text-white border-[#24292e]"
-              onClick={() => handleOAuthSignIn("github")}
-            >
-              <FaGithub className="mr-2 h-4 w-4" />
-              GitHub
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white border-[#5865F2]"
-              onClick={() => handleOAuthSignIn("discord")}
-            >
-              <FaDiscord className="mr-2 h-4 w-4" />
-              Discord
-            </Button>
-          </div>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator className="w-full" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-zinc-400">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && <Alert variant="destructive">{error}</Alert>}
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium">
-                Email
-              </label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full"
-                placeholder="you@example.com"
-                autoComplete="email"
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-medium">
-                Password
-              </label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full"
-                placeholder="••••••••"
-                autoComplete="current-password"
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
+        <CardContent>
+          <LoginForm
+            onSubmit={handleSubmit}
+            onOAuthSignIn={handleOAuthSignIn}
+            error={error}
+            loading={loading}
+          />
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
           <Link
@@ -183,5 +224,13 @@ export default function LoginPage() {
         </CardFooter>
       </Card>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

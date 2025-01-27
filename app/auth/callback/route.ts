@@ -2,36 +2,42 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createMiddlewareClient } from "@/lib/supabase/middleware";
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get("code");
-  // if "next" is in param, use it as the redirect URL
-  const next = searchParams.get("next") ?? "/";
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
 
-  if (code) {
-    const response = new NextResponse();
-    const supabase = createMiddlewareClient(request, response);
-
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      const forwardedHost = request.headers.get("x-forwarded-host");
-      const isLocalEnv = process.env.NODE_ENV === "development";
-      if (isLocalEnv) {
-        // we can be sure that there is no load balancer in between
-        return NextResponse.redirect(`${origin}${next}`, {
-          headers: response.headers,
-        });
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`, {
-          headers: response.headers,
-        });
-      } else {
-        return NextResponse.redirect(`${origin}${next}`, {
-          headers: response.headers,
-        });
-      }
-    }
+  if (!code) {
+    return NextResponse.redirect(new URL("/auth/login", requestUrl.origin));
   }
 
-  // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+  // Create a response early so we can modify its cookies
+  const response = NextResponse.redirect(new URL("/", requestUrl.origin));
+
+  // Create a supabase client that can modify the response cookies
+  const supabase = createMiddlewareClient(request, response);
+
+  try {
+    // Exchange the code for a session
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (error) {
+      console.error("Auth error:", error.message);
+      return NextResponse.redirect(
+        new URL(
+          `/auth/login?error=auth&message=${error.message}`,
+          requestUrl.origin,
+        ),
+      );
+    }
+
+    // Return the response with cookies set
+    return response;
+  } catch (error) {
+    console.error("Callback error:", error);
+    return NextResponse.redirect(
+      new URL(
+        "/auth/login?error=auth&message=Authentication failed",
+        requestUrl.origin,
+      ),
+    );
+  }
 }

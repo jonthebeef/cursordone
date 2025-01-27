@@ -44,10 +44,10 @@ export async function signInWithOAuth(provider: "github" | "discord") {
   });
 
   if (error) {
-    return redirect("/auth/login?error=Could not authenticate user");
+    throw new Error("Could not authenticate user");
   }
 
-  return redirect(data.url);
+  return data.url;
 }
 
 export async function signOut() {

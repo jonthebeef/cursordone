@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
+import { signInWithOAuth } from "../actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert } from "@/components/ui/alert";
@@ -16,6 +17,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { FaGithub, FaDiscord } from "react-icons/fa";
 import { FlickeringGrid } from "@/components/ui/flickering-grid";
+import { createBrowserClient } from "@supabase/ssr";
 
 function LoginForm({
   onSubmit,
@@ -121,6 +123,7 @@ function LoginContent() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
 
   // Handle error messages from URL parameters
   useEffect(() => {
@@ -147,7 +150,9 @@ function LoginContent() {
       }
 
       router.refresh();
-      router.push("/");
+      router.push(
+        redirect.startsWith("/") ? redirect : (`/${redirect}` as any),
+      );
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to sign in");
     } finally {
@@ -159,8 +164,20 @@ function LoginContent() {
     try {
       setError(null);
       setLoading(true);
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          auth: {
+            flowType: "pkce",
+            detectSessionInUrl: true,
+            persistSession: true,
+            autoRefreshToken: true,
+          },
+        },
+      );
 
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,

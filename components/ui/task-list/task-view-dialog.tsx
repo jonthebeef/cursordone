@@ -19,12 +19,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Pencil, Trash2 } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import type { Task } from "@/lib/tasks";
 import { Badge } from "../badge";
 import { format } from "date-fns";
 import { normalizeDependencyFilename } from "@/lib/utils/dependencies";
+import { MarkdownPreview } from "@/components/ui/markdown-preview";
 
 interface TaskViewDialogProps {
   task: Task | null;
@@ -139,10 +138,10 @@ export function TaskViewDialog({
           </div>
 
           {/* Content */}
-          <div className="prose prose-invert max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {task.content}
-            </ReactMarkdown>
+          <div>
+            <MarkdownPreview
+              content={task.content?.replace(/\r\n/g, "\n") || ""}
+            />
           </div>
 
           {/* Dependencies */}

@@ -480,8 +480,10 @@ export function TaskList({
   };
 
   const handleTaskClick = (task: Task) => {
-    // Get the latest task data from initialTasks
-    const latestTask = initialTasks.find((t) => t.filename === task.filename);
+    // Get the latest task data from initialTasks or allTasks
+    const latestTask =
+      initialTasks.find((t) => t.filename === task.filename) ||
+      allTasks.find((t) => t.filename === task.filename);
     if (!latestTask) return;
 
     setSelectedTask(latestTask);

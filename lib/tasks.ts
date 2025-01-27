@@ -7,7 +7,7 @@ import { getNextRef, markRefAsUnused } from "./ref-counter";
 import { TaskCategory } from "@/lib/types/tags";
 
 export interface Task {
-  id: string;
+  id?: string;
   ref: string;
   filename: string;
   title: string;

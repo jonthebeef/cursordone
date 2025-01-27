@@ -387,9 +387,9 @@
     },
     "related tasks": {
       "name": "related tasks",
-      "usageCount": 1,
-      "lastUsed": "2025-01-20T21:11:32.957Z",
-      "tasks": ["change-dependencies-to-related--1736444158468.md"]
+      "usageCount": 2,
+      "lastUsed": "2025-01-27T20:31:51.279Z",
+      "tasks": ["change-dependencies-to-related--1736444158468.md", "new"]
     },
     "logs": {
       "name": "logs",
@@ -488,8 +488,8 @@
     },
     "testing": {
       "name": "testing",
-      "usageCount": 7,
-      "lastUsed": "2025-01-20T21:11:32.959Z",
+      "usageCount": 8,
+      "lastUsed": "2025-01-27T20:24:22.729Z",
       "tasks": [
         "create-beta-testing-plan.md",
         "implement-end-to-end-testing.md",
@@ -497,7 +497,8 @@
         "implement-security-testing.md",
         "test-authentication-flows.md",
         "test-edge-functions.md",
-        "validate-database-migrations.md"
+        "validate-database-migrations.md",
+        "new"
       ]
     },
     "day 4": {
@@ -662,8 +663,8 @@
     },
     "ux": {
       "name": "ux",
-      "usageCount": 4,
-      "lastUsed": "2025-01-21T10:49:28.943Z",
+      "usageCount": 5,
+      "lastUsed": "2025-01-27T20:31:47.792Z",
       "tasks": [
         "create-tutorial-tasks.md",
         "enhance-task-creation-dialog.md",
@@ -845,8 +846,8 @@
     },
     "error-handling": {
       "name": "error-handling",
-      "usageCount": 8,
-      "lastUsed": "2025-01-21T10:49:21.472Z",
+      "usageCount": 9,
+      "lastUsed": "2025-01-27T20:31:44.312Z",
       "tasks": [
         "implement-basic-file-operations-error-handling.md",
         "implement-cli-error-handling.md",
@@ -1126,19 +1127,19 @@
       "day 3",
       "day 4",
       "day 5",
-      "auth"
+      "error-handling"
     ],
     "recentlyUsed": [
-      "filters",
+      "related tasks",
       "ux",
       "error-handling",
+      "testing",
+      "filters",
       "day 1",
       "day 2",
       "auth",
       "task refs",
-      "dialog",
-      "when",
-      "category"
+      "dialog"
     ]
   }
 }

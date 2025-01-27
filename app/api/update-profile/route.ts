@@ -1,70 +1,38 @@
-"use server";
-
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    console.log("Received profile update request");
-    const { name, avatarUrl } = await request.json();
-    console.log("Update data:", { name, avatarUrl });
-
-    if (!name && !avatarUrl) {
-      console.log("Missing required fields");
-      return NextResponse.json(
-        { error: "Name or avatar URL is required" },
-        { status: 400 },
-      );
-    }
-
-    // Create Supabase client
-    const supabase = createRouteHandlerClient({ cookies });
-    console.log("Created Supabase client");
-
-    // Get authenticated user
+    const supabase = await createClient();
     const {
-      data: { session },
-      error: sessionError,
-    } = await supabase.auth.getSession();
-    console.log("Session response:", {
-      session: session?.user?.id,
-      error: sessionError,
-    });
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
 
-    if (sessionError || !session?.user) {
-      console.error("Session error:", sessionError);
-      return NextResponse.json(
-        { error: "Authentication failed" },
-        { status: 401 },
-      );
+    if (userError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { user } = session;
-    console.log("Updating profile for user:", user.id);
+    const { name, avatarUrl } = await request.json();
 
-    // Update profile using upsert
-    const { data: profile, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from("profiles")
-      .upsert({
-        id: user.id,
+      .update({
         full_name: name,
         avatar_url: avatarUrl,
         updated_at: new Date().toISOString(),
       })
-      .select()
-      .single();
+      .eq("id", user.id);
 
     if (updateError) {
-      console.error("Failed to update profile:", updateError);
+      console.error("Profile update error:", updateError);
       return NextResponse.json(
         { error: "Failed to update profile" },
         { status: 500 },
       );
     }
 
-    console.log("Profile updated successfully:", profile);
-    return NextResponse.json({ profile });
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Unexpected error:", error);
     return NextResponse.json(

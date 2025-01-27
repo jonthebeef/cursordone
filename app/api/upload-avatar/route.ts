@@ -1,54 +1,52 @@
-import { NextResponse } from 'next/server'
-import { writeFile, mkdir, readdir, unlink } from 'fs/promises'
-import { join } from 'path'
-import { existsSync } from 'fs'
+import { createClient } from "@/lib/supabase/server";
+import { NextResponse } from "next/server";
+import { writeFile } from "fs/promises";
+import path from "path";
 
 export async function POST(request: Request) {
   try {
-    const formData = await request.formData()
-    const file = formData.get('avatar') as File
-    const userId = formData.get('userId') as string
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
 
-    if (!file || !userId) {
-      return NextResponse.json(
-        { error: 'File and user ID are required' },
-        { status: 400 }
-      )
+    if (userError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Ensure avatars directory exists
-    const avatarsDir = join(process.cwd(), 'public', 'avatars')
-    if (!existsSync(avatarsDir)) {
-      await mkdir(avatarsDir, { recursive: true })
+    const formData = await request.formData();
+    const file = formData.get("avatar") as File;
+    const userId = formData.get("userId") as string;
+
+    if (!file) {
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Clean up old avatars for this user
-    const files = await readdir(avatarsDir)
-    for (const existingFile of files) {
-      if (existingFile.startsWith(userId)) {
-        await unlink(join(avatarsDir, existingFile))
-      }
+    if (userId !== user.id) {
+      return NextResponse.json({ error: "Invalid user ID" }, { status: 403 });
     }
 
-    // Get file extension
-    const ext = file.name.split('.').pop()
-    const filename = `${userId}.${ext}`
-    const filepath = join(avatarsDir, filename)
+    // Create a unique filename
+    const fileExtension = path.extname(file.name);
+    const fileName = `${user.id}-${Date.now()}${fileExtension}`;
+    const filePath = path.join(process.cwd(), "public", "avatars", fileName);
 
-    // Write the new file
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-    await writeFile(filepath, buffer)
+    // Convert File to Buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Write file to public/avatars directory
+    await writeFile(filePath, buffer);
 
     // Return the public URL
-    const avatarUrl = `/avatars/${filename}`
-    
-    return NextResponse.json({ avatarUrl })
+    const avatarUrl = `/avatars/${fileName}`;
+    return NextResponse.json({ avatarUrl });
   } catch (error) {
-    console.error('Error uploading avatar:', error)
+    console.error("Unexpected error:", error);
     return NextResponse.json(
-      { error: 'Failed to upload avatar' },
-      { status: 500 }
-    )
+      { error: "An unexpected error occurred" },
+      { status: 500 },
+    );
   }
-} 
+}

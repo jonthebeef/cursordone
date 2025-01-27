@@ -12,6 +12,7 @@ tags:
   - posthog
   - subscriptions
 created: 2024-01-11T00:00:00.000Z
+ref: TSK-272
 ---
 
 Implement a system to gate AI enhancement features behind subscription plans, integrating with PostHog for feature flags and user identification.
@@ -31,28 +32,28 @@ Implement a system to gate AI enhancement features behind subscription plans, in
 
 ```typescript
 interface SubscriptionPlan {
-  tier: 'free' | 'pro' | 'enterprise'
+  tier: "free" | "pro" | "enterprise";
   aiFeatures: {
-    enabled: boolean
-    maxDailyTokens: number
-    maxRequestTokens: number
-    models: Array<'deepseek-chat-r1' | 'deepseek-chat-v3'>
-  }
+    enabled: boolean;
+    maxDailyTokens: number;
+    maxRequestTokens: number;
+    models: Array<"deepseek-chat-r1" | "deepseek-chat-v3">;
+  };
   pricing: {
-    monthly: number
-    yearly: number
-  }
+    monthly: number;
+    yearly: number;
+  };
 }
 
 interface UserSubscription {
-  userId: string
-  planId: string
-  status: 'active' | 'past_due' | 'canceled'
+  userId: string;
+  planId: string;
+  status: "active" | "past_due" | "canceled";
   aiUsage: {
-    periodStart: string
-    currentTokens: number
-    maxTokens: number
-  }
+    periodStart: string;
+    currentTokens: number;
+    maxTokens: number;
+  };
 }
 ```
 
@@ -61,33 +62,35 @@ interface UserSubscription {
 ```typescript
 // PostHog user properties for subscription
 interface SubscriptionProperties {
-  subscription_tier: string
-  subscription_status: string
-  ai_features_enabled: boolean
-  ai_usage_current: number
-  ai_usage_limit: number
+  subscription_tier: string;
+  subscription_status: string;
+  ai_features_enabled: boolean;
+  ai_usage_current: number;
+  ai_usage_limit: number;
 }
 
 // Feature flag conditions
 const aiFeatureConditions = {
-  flag: 'ai-enhancement-enabled',
+  flag: "ai-enhancement-enabled",
   conditions: [
-    { property: 'subscription_tier', operator: 'is', value: 'pro' },
-    { property: 'subscription_tier', operator: 'is', value: 'enterprise' },
-    { property: 'beta_tester', operator: 'is', value: true }
-  ]
-}
+    { property: "subscription_tier", operator: "is", value: "pro" },
+    { property: "subscription_tier", operator: "is", value: "enterprise" },
+    { property: "beta_tester", operator: "is", value: true },
+  ],
+};
 ```
 
 ### 3. Feature Gating Implementation
 
 1. Subscription Check Flow
+
    - Check subscription status before AI operations
    - Handle graceful degradation for free users
    - Show upgrade prompts at appropriate times
    - Cache subscription status locally
 
 2. Usage Tracking
+
    - Monitor token usage per subscription period
    - Alert users approaching limits
    - Handle overage scenarios
@@ -102,6 +105,7 @@ const aiFeatureConditions = {
 ### 4. Migration Strategy
 
 1. Existing Users
+
    - Identify current AI feature users
    - Define grandfathering rules
    - Set up transition period
@@ -116,6 +120,7 @@ const aiFeatureConditions = {
 ### 5. Billing Integration
 
 1. Stripe Integration
+
    - Plan configuration
    - Usage-based billing
    - Overage charges
@@ -130,18 +135,21 @@ const aiFeatureConditions = {
 ## Implementation Steps
 
 1. Infrastructure
+
    - [ ] Set up subscription plans in Stripe
    - [ ] Configure PostHog feature flags
    - [ ] Create usage tracking events
    - [ ] Set up billing webhooks
 
 2. Backend
+
    - [ ] Implement subscription checks
    - [ ] Add usage tracking
    - [ ] Create billing integration
    - [ ] Set up caching layer
 
 3. Frontend
+
    - [ ] Add premium feature indicators
    - [ ] Create upgrade flows
    - [ ] Implement usage displays
@@ -164,7 +172,8 @@ const aiFeatureConditions = {
 ---
 
 ## Guidelines
+
 - The fewer lines of code, the better
-- Proceed like a Senior Developer // 10x engineer 
+- Proceed like a Senior Developer // 10x engineer
 - DO NOT STOP WORKING until task is complete
-- Start reasoning paragraphs with uncertainty, then build confidence through analysis 
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

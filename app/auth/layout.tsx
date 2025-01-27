@@ -1,40 +1,30 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
+import { FlickeringGrid } from "@/components/ui/flickering-grid";
 
-function ErrorDisplay() {
-  const searchParams = useSearchParams();
-  const error = searchParams.get("error");
+interface AuthLayoutProps {
+  children: React.ReactNode;
+}
 
-  if (!error) return null;
-
+export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <>
-      {error === "session_error" && (
-        <div className="p-4 bg-red-500/10 text-red-500 text-sm text-center">
-          There was a problem with your session. Please try logging in again.
-        </div>
-      )}
-      {error === "no_code" && (
-        <div className="p-4 bg-red-500/10 text-red-500 text-sm text-center">
-          No authentication code was provided. Please try signing in again.
-        </div>
-      )}
-      {error === "auth_failed" && (
-        <div className="p-4 bg-red-500/10 text-red-500 text-sm text-center">
-          Authentication failed. Please try signing in again.
-        </div>
-      )}
-    </>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-black">
+      <div className="absolute inset-0 -z-10">
+        <FlickeringGrid />
+      </div>
+      <AuthLayoutContent>{children}</AuthLayoutContent>
+    </div>
   );
 }
 
 function AuthLayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [mounted, setMounted] = useState(false);
+  const mountedRef = useRef(false);
+  const checkingRef = useRef(false);
   const [isChecking, setIsChecking] = useState(true);
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -46,17 +36,23 @@ function AuthLayoutContent({ children }: { children: React.ReactNode }) {
         persistSession: true,
         autoRefreshToken: true,
       },
-    },
+    }
   );
 
   // Handle component mounting
   useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mountedRef.current) return;
+
+    // Prevent multiple checks
+    if (checkingRef.current) return;
+    checkingRef.current = true;
 
     const checkAuth = async () => {
       try {
@@ -70,25 +66,50 @@ function AuthLayoutContent({ children }: { children: React.ReactNode }) {
           return;
         }
 
-        if (session) {
-          const redirect = searchParams.get("redirect") || "/";
-          window.location.href = redirect;
+        if (session && mountedRef.current) {
+          const redirect = searchParams.get("redirect");
+          if (redirect && redirect.startsWith("/")) {
+            router.replace(redirect);
+          } else {
+            router.replace("/");
+          }
           return;
         }
       } catch (err) {
         console.error("Session check error:", err);
       } finally {
-        setIsChecking(false);
+        if (mountedRef.current) {
+          setIsChecking(false);
+          checkingRef.current = false;
+        }
       }
     };
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN") {
-        const redirect = searchParams.get("redirect") || "/";
-        window.location.href = redirect;
+      if (!mountedRef.current) return;
+
+      if (event === "SIGNED_IN" && session) {
+        const redirect = searchParams.get("redirect");
+        if (redirect && redirect.startsWith("/")) {
+          router.replace(redirect);
+        } else {
+          router.replace("/");
+        }
         return;
+      }
+
+      // Handle other auth state changes if needed
+      switch (event) {
+        case "TOKEN_REFRESHED":
+          // Session updated, no redirect needed
+          break;
+        case "SIGNED_OUT":
+          // Already on auth page, no redirect needed
+          break;
+        default:
+          break;
       }
     });
 
@@ -97,38 +118,15 @@ function AuthLayoutContent({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [mounted, router, searchParams, supabase.auth]);
+  }, [router, searchParams, supabase.auth]);
 
-  // Don't render anything until mounted
-  if (!mounted) return null;
-
-  // Show loading state while checking auth
   if (isChecking) {
     return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-        <div className="text-zinc-400">Loading...</div>
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-zinc-400">Checking authentication...</div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-zinc-900">
-      <Suspense fallback={null}>
-        <ErrorDisplay />
-      </Suspense>
-      {children}
-    </div>
-  );
-}
-
-export default function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AuthLayoutContent>{children}</AuthLayoutContent>
-    </Suspense>
-  );
+  return <>{children}</>;
 }

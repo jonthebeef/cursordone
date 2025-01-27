@@ -1,21 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { GeistMono } from 'geist/font/mono';
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from '@/components/providers/auth-provider'
 import { GeistSans } from 'geist/font/sans'
 
-const inter = Inter({ 
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: 'swap',
-});
-
 export const metadata: Metadata = {
-  title: "Todo List",
-  description: "A simple todo list application",
+  title: "CursorDone",
+  description: "A modern task management system for developers",
 };
 
 export default function RootLayout({
@@ -26,15 +18,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full dark">
       <body className={cn(
-        inter.variable,
-        GeistMono.variable,
-        GeistSans.variable,
-        "font-inter h-full bg-zinc-900 text-zinc-50"
+        GeistSans.className,
+        "min-h-screen bg-zinc-900 text-zinc-50 antialiased"
       )}>
         <AuthProvider>
           {children}
+          <Toaster />
         </AuthProvider>
-        <Toaster />
       </body>
     </html>
   );

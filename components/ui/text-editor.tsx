@@ -2,8 +2,9 @@
 
 import { useState, useCallback } from 'react'
 import { cn } from '@/lib/utils'
-import { Bold, Italic, List, ListOrdered, ImagePlus, FileUp, Eye, Edit2 } from 'lucide-react'
+import { Bold, Italic, List, ListOrdered, ImagePlus, FileUp, Eye, Edit2, Wand2 } from 'lucide-react'
 import { MarkdownPreview } from '@/components/ui/markdown-preview'
+import { MagicEnhanceButton } from '@/components/MagicEnhanceButton'
 
 interface TextEditorProps {
   value: string
@@ -12,6 +13,10 @@ interface TextEditorProps {
   onFileUpload?: (file: File) => Promise<string>
   className?: string
   placeholder?: string
+  context?: {
+    epic?: string
+    tags?: string[]
+  }
 }
 
 export function TextEditor({
@@ -20,7 +25,8 @@ export function TextEditor({
   onImageUpload,
   onFileUpload,
   className,
-  placeholder = 'Type your content here...'
+  placeholder = 'Type your content here...',
+  context
 }: TextEditorProps) {
   const [selectionStart, setSelectionStart] = useState(0)
   const [selectionEnd, setSelectionEnd] = useState(0)
@@ -107,6 +113,12 @@ export function TextEditor({
             >
               <ListOrdered className="w-4 h-4" />
             </button>
+            <MagicEnhanceButton
+              fieldId="content"
+              currentContent={value}
+              onEnhancement={onChange}
+              context={context}
+            />
             {(onImageUpload || onFileUpload) && (
               <>
                 <div className="w-px h-4 bg-zinc-800 mx-1" />

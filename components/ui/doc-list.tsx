@@ -95,7 +95,7 @@ export function DocList({ docs, searchQuery }: DocListProps) {
 
   return (
     <>
-      <div className="space-y-1">
+      <div className="space-y-4">
         {filteredDocs.map((doc) => (
           <div
             key={doc.filename}

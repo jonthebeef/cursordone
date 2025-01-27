@@ -183,7 +183,7 @@ export function EpicList({ initialEpics }: EpicListProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end mb-6">
+      <div className="flex justify-end">
         <Button
           onClick={() => setShowCreateDialog(true)}
           className="bg-blue-500 text-white hover:bg-blue-600"
@@ -192,52 +192,45 @@ export function EpicList({ initialEpics }: EpicListProps) {
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="space-y-4">
         {initialEpics.map((epic) => (
-          <Card
+          <div
             key={epic.id}
-            className={cn(
-              "cursor-pointer transition-all hover:shadow-md border-[1px]",
-              priorityColors[epic.priority],
-            )}
             onClick={() => setSelectedEpic(epic)}
+            className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-lg hover:border-zinc-700 transition-colors cursor-pointer"
           >
-            <CardHeader className="space-y-2">
-              <div className="space-y-2">
-                <div className="flex justify-between items-start gap-4">
-                  <h3 className="font-semibold leading-none tracking-tight text-foreground">
-                    {epic.title}
-                  </h3>
-                  <span
-                    className={cn(
-                      "px-2.5 py-0.5 text-xs font-semibold rounded-full capitalize shrink-0",
-                      statusColors[epic.status],
-                    )}
-                  >
-                    {epic.status}
-                  </span>
-                </div>
-                <p className="text-sm text-foreground/80 line-clamp-2">
-                  {epic.description}
-                </p>
-              </div>
-              <div className="space-y-2 text-sm text-foreground/70">
-                <div>Created: {formatDate(epic.created)}</div>
-                {epic.tags && epic.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {epic.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2 py-0.5 bg-muted/80 text-foreground rounded-full text-xs"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+            <div className="flex items-center justify-between gap-4">
+              <h3 className="text-lg font-medium text-zinc-100">
+                {epic.title}
+              </h3>
+              <span
+                className={cn(
+                  "px-2.5 py-0.5 text-xs font-semibold rounded-full capitalize shrink-0",
+                  statusColors[epic.status],
                 )}
+              >
+                {epic.status}
+              </span>
+            </div>
+            <p className="mt-2 text-sm text-zinc-400 line-clamp-2">
+              {epic.description}
+            </p>
+            {epic.tags && epic.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-3">
+                {epic.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-2 py-0.5 bg-zinc-800/50 rounded text-xs text-zinc-400"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
-            </CardHeader>
-          </Card>
+            )}
+            <div className="mt-2 text-xs text-zinc-500">
+              Created: {formatDate(epic.created)}
+            </div>
+          </div>
         ))}
       </div>
 

@@ -5,7 +5,7 @@ priority: high
 created: "2024-01-22"
 owner: AI
 complexity: M
-epic: team-collaboration-implementation
+epic: team-collaboration
 tags:
   - teams-1
   - team-config

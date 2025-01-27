@@ -1,7 +1,7 @@
 ---
 ref: TSK-066
 title: Enable authentication providers
-status: in-progress
+status: done
 priority: high
 epic: authentication-integration
 dependencies: []
@@ -13,10 +13,10 @@ tags:
 created: 2025-01-10T00:00:00.000Z
 owner: AI
 worker: AI
-started_date: 2024-01-21
+started_date: 2024-01-21T00:00:00.000Z
 complexity: M
+completion_date: '2025-01-23'
 ---
-
 # Enable authentication providers
 
 Implement Discord and GitHub OAuth authentication using Supabase's new SSR package and Next.js 15 Server Components.

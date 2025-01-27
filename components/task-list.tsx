@@ -29,6 +29,7 @@ import {
   Search,
   ListTodo,
   CheckCircle2,
+  ListOrdered,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
@@ -61,6 +62,8 @@ import {
 import { getOrderKey } from "@/lib/task-order";
 import Image from "next/image";
 import { CategorySelect } from "@/components/ui/category-select";
+import { MagicEnhanceButton } from '@/components/MagicEnhanceButton';
+import { TextEditor } from "@/components/ui/text-editor";
 
 interface TaskListProps {
   initialTasks: Task[];
@@ -633,61 +636,37 @@ export function TaskList({
                     >
                       Content
                     </label>
-                    <div className="space-y-2">
-                      <textarea
-                        id="content"
-                        value={newTask.content}
-                        onChange={(e) =>
-                          setNewTask((prev) => ({
-                            ...prev,
-                            content: e.target.value,
-                          }))
+                    <TextEditor
+                      value={newTask.content}
+                      onChange={(value) =>
+                        setNewTask((prev) => ({
+                          ...prev,
+                          content: value,
+                        }))
+                      }
+                      className="min-h-[200px]"
+                      context={{
+                        epic: newTask.epic,
+                        tags: tagInput ? tagInput.split(',').map(t => t.trim()).filter(Boolean) : []
+                      }}
+                      onImageUpload={async (file) => {
+                        const safeFilename = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
+                        const formData = new FormData();
+                        formData.append("file", file);
+                        formData.append("filename", safeFilename);
+
+                        const response = await fetch("/api/upload", {
+                          method: "POST",
+                          body: formData,
+                        });
+
+                        if (!response.ok) {
+                          throw new Error("Failed to upload image");
                         }
-                        className="w-full h-24 px-3 py-2 bg-zinc-900/50 border border-zinc-800 rounded-md text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                        required
-                      />
-                      <div className="flex items-center gap-2">
-                        <label
-                          htmlFor="create-image-upload"
-                          className="cursor-pointer"
-                        >
-                          <div className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-300">
-                            <ImagePlus className="h-4 w-4" />
-                            Add Image
-                          </div>
-                          <input
-                            id="create-image-upload"
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (!file) return;
 
-                              const safeFilename = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-                              const formData = new FormData();
-                              formData.append("file", file);
-                              formData.append("filename", safeFilename);
-
-                              try {
-                                await fetch("/api/upload", {
-                                  method: "POST",
-                                  body: formData,
-                                });
-
-                                const imageMarkdown = `\n![${file.name}](/task-images/${safeFilename})\n`;
-                                setNewTask((prev) => ({
-                                  ...prev,
-                                  content: prev.content + imageMarkdown,
-                                }));
-                              } catch (error) {
-                                console.error("Failed to upload image:", error);
-                              }
-                            }}
-                          />
-                        </label>
-                      </div>
-                    </div>
+                        return `/task-images/${safeFilename}`;
+                      }}
+                    />
                   </div>
 
                   <div className="space-y-2">
@@ -1089,69 +1068,21 @@ export function TaskList({
                           >
                             Content
                           </label>
-                          <div className="space-y-2">
-                            <textarea
-                              id="content"
-                              value={editedTask?.content || ""}
-                              onChange={(e) =>
-                                setEditedTask((prev) =>
-                                  prev
-                                    ? { ...prev, content: e.target.value }
-                                    : null,
-                                )
-                              }
-                              className="w-full h-24 px-3 py-2 bg-zinc-900/50 border-zinc-800 rounded-md text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20"
-                            />
-                            <div className="flex items-center gap-2">
-                              <label
-                                htmlFor="image-upload"
-                                className="cursor-pointer"
-                              >
-                                <div className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-300">
-                                  <ImagePlus className="h-4 w-4" />
-                                  Add Image
-                                </div>
-                                <input
-                                  id="image-upload"
-                                  type="file"
-                                  accept="image/*"
-                                  className="hidden"
-                                  onChange={async (e) => {
-                                    const file = e.target.files?.[0];
-                                    if (!file) return;
-
-                                    const safeFilename = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-                                    const formData = new FormData();
-                                    formData.append("file", file);
-                                    formData.append("filename", safeFilename);
-
-                                    try {
-                                      await fetch("/api/upload", {
-                                        method: "POST",
-                                        body: formData,
-                                      });
-
-                                      const imageMarkdown = `\n![${file.name}](/task-images/${safeFilename})\n`;
-                                      setEditedTask((prev) =>
-                                        prev
-                                          ? {
-                                              ...prev,
-                                              content:
-                                                prev.content + imageMarkdown,
-                                            }
-                                          : null,
-                                      );
-                                    } catch (error) {
-                                      console.error(
-                                        "Failed to upload image:",
-                                        error,
-                                      );
-                                    }
-                                  }}
-                                />
-                              </label>
-                            </div>
-                          </div>
+                          <TextEditor
+                            value={editedTask?.content || ""}
+                            onChange={(value) =>
+                              setEditedTask((prev) =>
+                                prev
+                                  ? { ...prev, content: value }
+                                  : null,
+                              )
+                            }
+                            className="min-h-[200px]"
+                            context={{
+                              epic: editedTask?.epic,
+                              tags: editTagInput ? editTagInput.split(',').map(t => t.trim()).filter(Boolean) : []
+                            }}
+                          />
                         </div>
                       </div>
 

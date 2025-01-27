@@ -1,22 +1,22 @@
 ---
+ref: TSK-069
 title: Test authentication flows
-status: todo
+status: done
 priority: high
 complexity: S
+category: feature
 epic: testing-and-validation
+owner: AI
 dependencies:
-  - enable-authentication-providers.md
-  - implement-cli-login-command.md
+  - enable-authentication-providers
+  - implement-cli-login-command
 tags:
   - testing
   - authentication
   - supabase
   - day 4
-created: "2025-01-10"
-ref: TSK-069
-owner: AI
+created: '2025-01-10'
 ---
-
 Test all authentication flows for both CLI and UI. Include the following:
 
 1. Test Google and GitHub OAuth login flows.

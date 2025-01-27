@@ -30,17 +30,21 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
 
     setIsUpdating(true);
     try {
-      if (task.status === "done" || (task.status === "todo" && checked)) {
-        await completeTaskAction(task.filename);
+      if (task.status === "done") {
+        // From done -> todo
+        await updateTaskStatusAction(task.filename, "todo");
       } else if (task.status === "todo" && checked) {
+        // From todo -> in-progress
         await updateTaskStatusAction(task.filename, "in-progress");
       } else if (task.status === "in-progress" && checked) {
+        // From in-progress -> done
         await updateTaskStatusAction(task.filename, "done");
       } else if (task.status === "in-progress" && !checked) {
+        // From in-progress -> todo
         await updateTaskStatusAction(task.filename, "todo");
       }
-      // Force a client-side revalidation
-      window.location.reload();
+      // Use router.refresh() for a smoother update
+      router.refresh();
     } catch (error) {
       console.error("Failed to change status:", error);
     } finally {

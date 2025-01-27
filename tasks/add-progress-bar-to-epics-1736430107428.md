@@ -4,8 +4,11 @@ title: Add progress bar to epics
 status: todo
 priority: medium
 complexity: S
+category: feature
 epic: ui-cleanup
 owner: AI
+worker: user
+started_date: '2025-01-24'
 dependencies: []
 tags:
   - enhancement

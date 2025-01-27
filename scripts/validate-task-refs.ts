@@ -88,6 +88,7 @@ async function validateTaskRefs(autoFix: boolean = false): Promise<ValidationRes
   // Auto-fix if requested
   if (autoFix && !result.isValid) {
     console.log(chalk.yellow('\nAttempting to fix issues...'))
+    let fixesApplied = false
 
     // Fix missing refs
     for (const file of result.missingRefs) {
@@ -98,6 +99,7 @@ async function validateTaskRefs(autoFix: boolean = false): Promise<ValidationRes
       const updatedContent = matter.stringify(markdown, data)
       fs.writeFileSync(filePath, updatedContent)
       console.log(chalk.green(`✓ Added ref ${data.ref} to ${file}`))
+      fixesApplied = true
     }
 
     // Fix invalid refs
@@ -109,6 +111,7 @@ async function validateTaskRefs(autoFix: boolean = false): Promise<ValidationRes
       const updatedContent = matter.stringify(markdown, data)
       fs.writeFileSync(filePath, updatedContent)
       console.log(chalk.green(`✓ Fixed invalid ref in ${file} to ${data.ref}`))
+      fixesApplied = true
     }
 
     // Fix duplicates
@@ -128,7 +131,14 @@ async function validateTaskRefs(autoFix: boolean = false): Promise<ValidationRes
         const updatedContent = matter.stringify(markdown, data)
         fs.writeFileSync(filePath, updatedContent)
         console.log(chalk.green(`✓ Updated ${task.file} with new ref ${newRef}`))
+        fixesApplied = true
       }
+    }
+
+    // Re-validate if fixes were applied
+    if (fixesApplied) {
+      console.log(chalk.blue('\nRe-validating after fixes...'))
+      return validateTaskRefs(false)
     }
   }
 
@@ -162,7 +172,9 @@ function printValidationResult(result: ValidationResult) {
     }
   }
 
-  console.log('\nRun with --fix to automatically resolve these issues.')
+  if (!result.isValid) {
+    console.log('\nRun with --fix to automatically resolve these issues.')
+  }
 }
 
 // Run if called directly

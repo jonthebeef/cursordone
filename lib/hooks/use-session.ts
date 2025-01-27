@@ -1,64 +1,68 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase/client";
 
 export function useSession() {
   const [session, setSession] = useState<Session | null>(null);
-  const [sessionLoading, setSessionLoading] = useState(true);
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const mountedRef = useRef(false);
+  const initializingRef = useRef(false);
   const router = useRouter();
   const pathname = usePathname();
 
+  // Safe state updates - only if mounted
+  const safeSetState = useCallback(<T>(setter: (value: T) => void, value: T) => {
+    if (mountedRef.current) {
+      setter(value);
+    }
+  }, []);
+
   // Initialize session
   useEffect(() => {
+    mountedRef.current = true;
     const isAuthPage = pathname?.startsWith("/auth/");
 
     // Skip session check on auth pages
     if (isAuthPage) {
-      setSessionLoading(false);
-      setInitialLoadComplete(true);
+      safeSetState(setLoading, false);
       return;
     }
 
-    let mounted = true;
+    // Prevent multiple initializations
+    if (initializingRef.current) return;
+    initializingRef.current = true;
+
     const initSession = async () => {
       try {
         const {
-          data: { session },
+          data: { session: initialSession },
           error: sessionError,
         } = await supabase.auth.getSession();
 
-        if (!mounted) return;
+        if (!mountedRef.current) return;
 
         if (sessionError) throw sessionError;
 
-        if (!session) {
+        if (!initialSession) {
           router.replace("/auth/login");
           return;
         }
 
-        setSession(session);
+        safeSetState(setSession, initialSession);
       } catch (err) {
         console.error("Session initialization error:", err);
-        if (mounted) {
-          setError(
-            err instanceof Error
-              ? err
-              : new Error("Failed to initialize session"),
+        if (mountedRef.current) {
+          safeSetState(
+            setError,
+            err instanceof Error ? err : new Error("Failed to initialize session")
           );
           router.replace("/auth/login");
         }
       } finally {
-        if (mounted) {
-          setSessionLoading(false);
-          // Add a small delay before marking initial load complete to prevent flashing
-          setTimeout(() => {
-            if (mounted) {
-              setInitialLoadComplete(true);
-            }
-          }, 100);
+        if (mountedRef.current) {
+          safeSetState(setLoading, false);
         }
       }
     };
@@ -68,11 +72,11 @@ export function useSession() {
     // Set up auth state change listener
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!mounted) return;
+    } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      if (!mountedRef.current) return;
 
       if (event === "SIGNED_OUT") {
-        setSession(null);
+        safeSetState(setSession, null);
         if (!isAuthPage) {
           router.replace("/auth/login");
         }
@@ -80,49 +84,52 @@ export function useSession() {
       }
 
       if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
-        setSession(session);
+        safeSetState(setSession, newSession);
         if (isAuthPage) {
           router.replace("/");
         }
         return;
       }
 
-      setSession(session);
+      safeSetState(setSession, newSession);
     });
 
     return () => {
-      mounted = false;
+      mountedRef.current = false;
       subscription.unsubscribe();
     };
-  }, [pathname, router]);
+  }, [router, pathname, safeSetState]);
 
   const clearSession = useCallback(async () => {
+    if (!mountedRef.current) return;
+
     try {
-      setSessionLoading(true);
+      safeSetState(setLoading, true);
 
       // Sign out from Supabase
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
       // Clear session state
-      setSession(null);
-      setError(null);
+      safeSetState(setSession, null);
+      safeSetState(setError, null);
 
-      // Hard redirect to login to ensure clean state
-      window.location.href = "/auth/login?clear=1&t=" + Date.now();
+      // Redirect to login
+      router.replace("/auth/login");
     } catch (err) {
       console.error("Logout error:", err);
-      setError(
-        err instanceof Error ? err : new Error("Failed to clear session"),
-      );
-      router.replace("/auth/login");
+      if (mountedRef.current) {
+        safeSetState(
+          setError,
+          err instanceof Error ? err : new Error("Failed to clear session")
+        );
+      }
     } finally {
-      setSessionLoading(false);
+      if (mountedRef.current) {
+        safeSetState(setLoading, false);
+      }
     }
-  }, [router]);
-
-  // Combine session loading and initial load state
-  const loading = sessionLoading || !initialLoadComplete;
+  }, [router, safeSetState]);
 
   return {
     session,

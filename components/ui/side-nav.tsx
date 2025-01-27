@@ -24,6 +24,8 @@ import { Button } from "./button";
 import { useToast } from "./use-toast";
 import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@/components/providers/auth-provider";
+import { Separator } from "@/components/ui/separator";
+import { ProfileButton } from "@/components/user/profile-button";
 
 type AppRoute = "/" | "/docs" | "/epics";
 
@@ -59,7 +61,7 @@ export function SideNav({
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
-  const { clearSession } = useAuth();
+  const { clearSession, user, loading } = useAuth();
 
   // Load starred tags
   useEffect(() => {
@@ -193,8 +195,13 @@ export function SideNav({
           {/* Header */}
           <div className="flex items-center h-14 px-4 border-b border-zinc-800">
             <h1 className="text-xl font-semibold tracking-tight text-zinc-100 font-mono">
-              Todo List
+              CursorDone
             </h1>
+          </div>
+
+          {/* Profile Button */}
+          <div className="px-2 py-2 border-b border-zinc-800">
+            {!loading && <ProfileButton email={user?.email} />}
           </div>
 
           {/* Main navigation */}

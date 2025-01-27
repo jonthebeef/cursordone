@@ -177,8 +177,8 @@ function LoginContent() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4 bg-transparent">
-      <div className="absolute inset-0 bg-black">
+    <div className="relative w-full h-full flex items-center justify-center">
+      <div className="absolute inset-0">
         <FlickeringGrid
           className="w-full h-full"
           squareSize={8}
@@ -190,7 +190,7 @@ function LoginContent() {
           flickerChance={0.2}
         />
       </div>
-      <Card className="w-full max-w-md relative z-10 bg-black/80 backdrop-blur">
+      <Card className="w-full max-w-md relative z-10 bg-black/80 backdrop-blur mx-4">
         <CardHeader>
           <h1 className="text-2xl font-bold">Sign In</h1>
           <p className="text-zinc-400 mt-2">
@@ -230,7 +230,9 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <LoginContent />
+      <div className="fixed inset-0 w-screen h-screen overflow-hidden">
+        <LoginContent />
+      </div>
     </Suspense>
   );
 }

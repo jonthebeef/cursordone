@@ -10,7 +10,7 @@ tags:
   - day 2
 created: '2024-01-15'
 owner: AI
-ref: TSK-209
+ref: TSK-267
 ---
 
 # Command Pattern Support for Cursor Rules

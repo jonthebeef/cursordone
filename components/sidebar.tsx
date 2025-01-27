@@ -3,6 +3,8 @@
 import { RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
+import { ProfileButton } from "@/components/user/profile-button"
+import { Separator } from "@/components/ui/separator"
 
 export function Sidebar() {
   const { toast } = useToast()
@@ -57,7 +59,15 @@ export function Sidebar() {
   return (
     <aside className="pb-12 w-64 border-r">
       <div className="space-y-4 py-4">
-        {/* Existing sidebar content */}
+        <div className="px-4 py-2">
+          <h2 className="text-lg font-semibold tracking-tight">CursorDone</h2>
+        </div>
+        <Separator className="mx-4" />
+        <div className="px-2">
+          <ProfileButton />
+        </div>
+        <Separator className="mx-4" />
+        {/* Navigation links will go here */}
       </div>
       
       <div className="px-3 py-2 mt-auto">

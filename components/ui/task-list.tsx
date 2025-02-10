@@ -138,7 +138,24 @@ export function TaskList({
   const [isInitialized, setIsInitialized] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-  const [sortOption, setSortOption] = useState<SortOption>("manual");
+  const [sortOption, setSortOption] = useState<SortOption>(() => {
+    try {
+      const saved = localStorage.getItem("taskSortOption");
+      if (!saved) return "manual";
+
+      // Validate that the saved option is valid
+      const validOptions = [
+        "manual",
+        "date-newest",
+        "date-oldest",
+        "priority-high",
+        "priority-low",
+      ];
+      return validOptions.includes(saved) ? (saved as SortOption) : "manual";
+    } catch {
+      return "manual";
+    }
+  });
   const [newTask, setNewTask] = useState<
     Omit<Task, "ref" | "filename"> & { content: string; category: TaskCategory }
   >({
@@ -292,16 +309,28 @@ export function TaskList({
       });
     }
 
+    // Helper function to parse dates consistently
+    const parseDate = (dateStr: string | undefined) => {
+      if (!dateStr) return 0; // Handle undefined dates by sorting them to the end
+
+      try {
+        // Remove any quotes and trim whitespace
+        const cleanDate = dateStr.replace(/['"]/g, "").trim();
+        const timestamp = new Date(cleanDate).getTime();
+        return isNaN(timestamp) ? 0 : timestamp; // Handle invalid dates
+      } catch (error) {
+        return 0; // Handle any parsing errors
+      }
+    };
+
     switch (sortOption) {
       case "date-newest":
         return tasks.sort(
-          (a, b) =>
-            new Date(b.created).getTime() - new Date(a.created).getTime(),
+          (a, b) => parseDate(b.created) - parseDate(a.created),
         );
       case "date-oldest":
         return tasks.sort(
-          (a, b) =>
-            new Date(a.created).getTime() - new Date(b.created).getTime(),
+          (a, b) => parseDate(a.created) - parseDate(b.created),
         );
       case "priority-high":
         return tasks.sort((a, b) => {
@@ -472,8 +501,32 @@ export function TaskList({
         tags: [],
       });
       setTagInput("");
+
+      // Force a router refresh to ensure we get the latest tasks
+      router.refresh();
+
+      // Temporarily disabled toasts for demo
+      /*
+      // Show a toast notification
+      toast({
+        title: "✨ Task created",
+        description: "The task has been created successfully.",
+      });
+      */
+
+      // If sorted by date, ensure we stay in that mode
+      if (sortOption === "date-newest" || sortOption === "date-oldest") {
+        localStorage.setItem("taskSortOption", sortOption);
+      }
     } catch (error) {
       console.error("Failed to create task:", error);
+      /*
+      toast({
+        title: "Error",
+        description: "Failed to create task. Please try again.",
+        variant: "destructive",
+      });
+      */
     } finally {
       setIsCreating(false);
     }
@@ -527,6 +580,11 @@ export function TaskList({
     }));
   }, []);
 
+  // Save sort option when it changes
+  useEffect(() => {
+    localStorage.setItem("taskSortOption", sortOption);
+  }, [sortOption]);
+
   if (isLoading || tasks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-8 space-y-4">
@@ -568,7 +626,7 @@ export function TaskList({
               value={sortOption}
               onValueChange={(value: SortOption) => setSortOption(value)}
             >
-              <SelectTrigger className="w-[180px] bg-zinc-900 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20">
+              <SelectTrigger className="w-[220px] bg-zinc-900 border-zinc-800 text-zinc-100 hover:bg-zinc-800/50 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20">
                 <SelectValue placeholder="Sort by..." />
               </SelectTrigger>
               <SelectContent className="bg-zinc-900 border border-zinc-800">

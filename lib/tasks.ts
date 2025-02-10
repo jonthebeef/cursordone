@@ -5,6 +5,7 @@ import path from "path";
 import matter from "gray-matter";
 import { getNextRef, markRefAsUnused } from "./ref-counter";
 import { TaskCategory } from "@/lib/types/tags";
+import { normalizeDependencyFilename } from "@/lib/utils/dependencies";
 
 export interface Task {
   id?: string;
@@ -69,10 +70,6 @@ export async function getAllTasks(): Promise<Task[]> {
     const content = fs.readFileSync(path.join(TASKS_DIR, file), "utf8");
     const { data, content: markdown } = matter(content);
 
-    if (data.dependencies?.length > 0) {
-      console.log(`Task ${file} has dependencies:`, data.dependencies);
-    }
-
     tasks.push({
       filename: file,
       ...data,
@@ -86,6 +83,15 @@ export async function getAllTasks(): Promise<Task[]> {
     tasks.filter((t) => t.dependencies && t.dependencies.length > 0).length,
   );
   console.log("=== End Loading Tasks ===\n");
+
+  // Quietly validate dependencies without logging
+  for (const task of tasks) {
+    if (task.dependencies) {
+      task.dependencies = task.dependencies.map((dep) =>
+        normalizeDependencyFilename(dep),
+      );
+    }
+  }
 
   return tasks;
 }

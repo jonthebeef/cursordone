@@ -1,0 +1,101 @@
+---
+title: Initialize Substacky Project
+status: todo
+priority: high
+complexity: S
+epic: substack-integration
+tags: [setup, initialization]
+created: 2024-03-26
+owner: AI
+---
+description: |
+  Create a minimal version of Substacky focused on markdown and front matter handling for Substack post management.
+
+success_criteria:
+  - New project initialized with clean structure
+  - Markdown and front matter handling preserved
+  - Basic project structure ready for Substack integration
+  - Development environment functional
+
+implementation_details:
+  1. Project Initialization:
+     ```bash
+     # Create new directory and initialize
+     mkdir substacky
+     cd substacky
+     
+     # Initialize new git repository
+     git init
+     
+     # Initialize new npm project
+     npm init -y
+     
+     # Install core dependencies
+     npm install next react react-dom typescript @types/react @types/node
+     npm install gray-matter marked   # For markdown & front matter
+     npm install @tailwindcss/typography tailwindcss postcss autoprefixer  # For styling
+     
+     # Initialize TypeScript
+     npx tsc --init
+     
+     # Initialize Next.js
+     npx create-next-app@latest . --typescript --tailwind --no-app --no-eslint
+     ```
+
+  2. Minimal File Structure:
+     ```
+     substacky/
+     ├── lib/
+     │   ├── posts.ts        # Post management
+     │   ├── markdown.ts     # Markdown/front matter handling
+     │   └── substack.ts     # Substack API integration
+     ├── components/
+     │   └── PostEditor.tsx  # Simple markdown editor
+     ├── pages/
+     │   ├── api/
+     │   │   └── posts/
+     │   ├── posts/
+     │   │   └── [slug].tsx
+     │   └── index.tsx
+     ├── posts/             # Where markdown files live
+     └── types/
+         └── post.ts        # TypeScript definitions
+     ```
+
+  3. Basic Post Schema:
+     ```typescript
+     interface Post {
+       title: string;
+       status: 'draft' | 'scheduled' | 'published';
+       publishDate?: string;
+       tags: string[];
+       content: string;
+       subtitle?: string;
+       featuredImage?: string;
+       substackId?: string;
+     }
+     ```
+
+  4. Initial Files to Create:
+     - Basic markdown handling utilities
+     - Simple post management functions
+     - Minimal UI for post creation/editing
+     - Type definitions
+
+checklist:
+  - [ ] Initialize project
+  - [ ] Set up basic dependencies
+  - [ ] Create file structure
+  - [ ] Implement markdown utilities
+  - [ ] Create basic post management
+  - [ ] Set up minimal UI
+  - [ ] Test markdown handling
+  - [ ] Document setup process
+
+---
+
+## Guidelines
+- The fewer lines of code, the better
+- Proceed like a Senior Developer // 10x engineer 
+- DO NOT STOP WORKING until task is complete
+- Start reasoning paragraphs with uncertainty, then build confidence through analysis

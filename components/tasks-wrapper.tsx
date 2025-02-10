@@ -59,44 +59,60 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
 
   // Update tasks when they change from the server
   useEffect(() => {
-    if (!isInitialLoad) {
-      // Create maps for O(1) lookups
-      const currentTaskMap = new Map(currentTasks.map(task => [task.filename, task]));
-      const newTaskMap = new Map(tasks.map(task => [task.filename, task]));
+    // Always update tasks on first load
+    if (isInitialLoad) {
+      setCurrentTasks(tasks);
+      setIsInitialLoad(false);
+      return;
+    }
 
-      // Check for new or removed tasks
-      const hasNewTasks = tasks.some(task => !currentTaskMap.has(task.filename));
-      const hasRemovedTasks = currentTasks.some(task => !newTaskMap.has(task.filename));
+    // Create maps for O(1) lookups
+    const currentTaskMap = new Map(
+      currentTasks.map((task) => [task.filename, task]),
+    );
+    const newTaskMap = new Map(tasks.map((task) => [task.filename, task]));
 
-      // Check for changed tasks more efficiently
-      const hasChangedTasks = tasks.some(task => {
-        const currentTask = currentTaskMap.get(task.filename);
-        if (!currentTask) return false;
+    // Check for new or removed tasks
+    const hasNewTasks = tasks.some(
+      (task) => !currentTaskMap.has(task.filename),
+    );
+    const hasRemovedTasks = currentTasks.some(
+      (task) => !newTaskMap.has(task.filename),
+    );
 
-        // Only compare fields that should trigger a refresh
-        return (
-          currentTask.status !== task.status ||
-          currentTask.epic !== task.epic ||
-          (currentTask.tags || []).join(',') !== (task.tags || []).join(',')
-        );
-      });
+    // Check for changed tasks
+    const hasChangedTasks = tasks.some((task) => {
+      const currentTask = currentTaskMap.get(task.filename);
+      if (!currentTask) return false;
 
-      if (hasNewTasks || hasRemovedTasks || hasChangedTasks) {
-        setCurrentTasks(tasks);
-        if (hasNewTasks) {
-          toast({
-            title: "🔄 Task list updated",
-            description: "New tasks have been added to your list",
-            variant: "default",
-          });
-        } else if (hasChangedTasks) {
-          toast({
-            title: "🔄 Task list updated",
-            description: "Tasks have been modified",
-            variant: "default",
-          });
-        }
+      // Compare all relevant fields
+      return (
+        currentTask.status !== task.status ||
+        currentTask.epic !== task.epic ||
+        currentTask.created !== task.created ||
+        (currentTask.tags || []).join(",") !== (task.tags || []).join(",")
+      );
+    });
+
+    if (hasNewTasks || hasRemovedTasks || hasChangedTasks) {
+      setCurrentTasks(tasks);
+
+      // Temporarily disabled toasts for demo
+      /*
+      if (hasNewTasks) {
+        toast({
+          title: "✨ Task list updated",
+          description: "New tasks have been added to your list",
+          variant: "default",
+        });
+      } else if (hasChangedTasks) {
+        toast({
+          title: "🔄 Task list updated",
+          description: "Tasks have been modified",
+          variant: "default",
+        });
       }
+      */
     }
   }, [tasks, currentTasks, toast, isInitialLoad]);
 
@@ -106,11 +122,11 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
     });
   }, [router]);
 
-  // Set up automatic refresh interval
+  // Increase refresh frequency for better responsiveness
   useEffect(() => {
     const interval = setInterval(() => {
       refresh();
-    }, 5000); // Check for updates every 5 seconds
+    }, 2000); // Check for updates every 2 seconds
 
     return () => clearInterval(interval);
   }, [refresh]);
@@ -121,7 +137,7 @@ export function TasksWrapper({ tasks, epics, tags }: TasksWrapperProps) {
 
     // Normalize epic titles (lowercase and replace non-alphanumeric with hyphens)
     const normalizeEpicTitle = (title: string | undefined) =>
-      title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || '';
+      title?.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "";
 
     // Filter by epic - match normalized epic titles
     const matchesEpic =

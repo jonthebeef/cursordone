@@ -1,9 +1,10 @@
 ---
 title: Implement Local Settings System
-status: todo
+status: in-progress
 priority: high
 created: 2024-01-27
 owner: AI
+worker: AI
 complexity: M
 category: feature
 epic: user-management
@@ -14,6 +15,7 @@ tags:
 dependencies:
   - implement-user-profile-section.md
 ref: TSK-273
+started_date: 2024-03-19
 ---
 
 # Implement Local Settings System

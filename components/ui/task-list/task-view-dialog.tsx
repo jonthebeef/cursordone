@@ -141,6 +141,37 @@ export function TaskViewDialog({
           <div>
             <MarkdownPreview
               content={task.content?.replace(/\r\n/g, "\n") || ""}
+              isEditable={!!onEdit}
+              onCheckboxChange={
+                onEdit
+                  ? (index, checked) => {
+                      if (!task.content) return;
+
+                      // Split content into lines
+                      const lines = task.content.split("\n");
+                      let checkboxCount = 0;
+
+                      // Find and update the correct checkbox
+                      const newLines = lines.map((line) => {
+                        // Match task list items (- [ ] or * [ ])
+                        if (line.match(/^(\s*[-*])\s*\[[ x]\]/i)) {
+                          if (checkboxCount === index) {
+                            // Keep the original bullet point and spacing
+                            const [, bullet] =
+                              line.match(/^(\s*[-*])\s*/) || [];
+                            const newLine = `${bullet} [${checked ? "x" : " "}]${line.slice(line.indexOf("]") + 1)}`;
+                            return newLine;
+                          }
+                          checkboxCount++;
+                        }
+                        return line;
+                      });
+
+                      // Call onEdit to trigger the edit mode
+                      onEdit();
+                    }
+                  : undefined
+              }
             />
           </div>
 

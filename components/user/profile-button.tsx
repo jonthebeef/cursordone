@@ -5,15 +5,13 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/components/providers/auth-provider";
+import { useSettings } from "@/components/providers/settings-provider";
 
 export function ProfileButton() {
   const { user } = useAuth();
-  const displayName =
-    user?.user_metadata?.full_name ||
-    user?.user_metadata?.name ||
-    user?.email ||
-    "Set up profile";
-  const avatarUrl = user?.user_metadata?.avatar_url;
+  const { display } = useSettings();
+
+  const displayName = display?.displayName || user?.email || "Set up profile";
 
   return (
     <Button
@@ -23,9 +21,9 @@ export function ProfileButton() {
     >
       <Link href={{ pathname: "/profile" }}>
         <div className="h-6 w-6 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-          {avatarUrl ? (
+          {display?.avatarPath ? (
             <Image
-              src={avatarUrl}
+              src={`/api/avatar/${display.avatarPath}`}
               alt={displayName}
               width={24}
               height={24}

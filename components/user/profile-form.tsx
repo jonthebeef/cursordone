@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/components/providers/auth-provider";
+import { useSettings } from "@/components/providers/settings-provider";
 import { User } from "lucide-react";
 import Image from "next/image";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 interface ProfileFormProps {
   onSuccess?: () => void;
@@ -16,68 +16,12 @@ interface ProfileFormProps {
 
 export function ProfileForm({ onSuccess }: ProfileFormProps) {
   const { user } = useAuth();
+  const { display, updateDisplay } = useSettings();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
+  const [name, setName] = useState(display?.displayName || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hasChanges, setHasChanges] = useState(false);
-  const supabase = createClientComponentClient();
-
-  useEffect(() => {
-    async function loadProfile() {
-      if (!user?.id) return;
-
-      setIsLoading(true);
-      try {
-        const { data: profile, error } = await supabase
-          .from("profiles")
-          .select("full_name, avatar_url")
-          .eq("id", user.id)
-          .single();
-
-        if (error) {
-          if (error.code === "PGRST116") {
-            // Profile doesn't exist, create it
-            const { data: newProfile, error: createError } = await supabase
-              .from("profiles")
-              .upsert({
-                id: user.id,
-                full_name:
-                  user.user_metadata?.full_name ||
-                  user.user_metadata?.name ||
-                  "",
-                avatar_url: user.user_metadata?.avatar_url || "",
-                updated_at: new Date().toISOString(),
-              })
-              .select()
-              .single();
-
-            if (createError) throw createError;
-
-            setName(newProfile?.full_name || "");
-            setAvatarUrl(newProfile?.avatar_url || "");
-          } else {
-            throw error;
-          }
-        } else {
-          setName(profile?.full_name || "");
-          setAvatarUrl(profile?.avatar_url || "");
-        }
-      } catch (error) {
-        console.error("Profile error:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load profile",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadProfile();
-  }, [user?.id, user?.user_metadata, supabase, toast]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -86,7 +30,7 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !user?.id) return;
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
@@ -108,10 +52,12 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const formData = new FormData();
       formData.append("avatar", file);
-      formData.append("userId", user?.id || "");
+      formData.append("userId", user.id);
 
       const response = await fetch("/api/upload-avatar", {
         method: "POST",
@@ -123,9 +69,14 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
         throw new Error(error.error || "Failed to upload avatar");
       }
 
-      const { avatarUrl: newAvatarUrl } = await response.json();
-      setAvatarUrl(newAvatarUrl);
+      const { avatarPath } = await response.json();
+      await updateDisplay({ avatarPath });
       setHasChanges(true);
+
+      toast({
+        title: "Success",
+        description: "Avatar updated successfully",
+      });
     } catch (error) {
       console.error("Failed to upload avatar:", error);
       toast({
@@ -134,6 +85,8 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
           error instanceof Error ? error.message : "Failed to upload avatar",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -144,14 +97,9 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.from("profiles").upsert({
-        id: user.id,
-        full_name: name,
-        avatar_url: avatarUrl,
-        updated_at: new Date().toISOString(),
+      await updateDisplay({
+        displayName: name,
       });
-
-      if (error) throw error;
 
       toast({
         title: "Success",
@@ -172,8 +120,7 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
   };
 
   const handleCancel = () => {
-    setName(user?.user_metadata?.full_name || user?.user_metadata?.name || "");
-    setAvatarUrl(user?.user_metadata?.avatar_url || "");
+    setName(display?.displayName || "");
     setHasChanges(false);
   };
 
@@ -182,9 +129,9 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
       <div className="space-y-4">
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-full overflow-hidden bg-zinc-800 flex items-center justify-center">
-            {avatarUrl ? (
+            {display?.avatarPath ? (
               <Image
-                src={avatarUrl}
+                src={`/api/avatar/${display.avatarPath}`}
                 alt={name || "Profile"}
                 width={64}
                 height={64}

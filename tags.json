@@ -488,8 +488,8 @@
     },
     "testing": {
       "name": "testing",
-      "usageCount": 8,
-      "lastUsed": "2025-01-27T20:24:22.729Z",
+      "usageCount": 10,
+      "lastUsed": "2025-02-10T09:46:06.319Z",
       "tasks": [
         "create-beta-testing-plan.md",
         "implement-end-to-end-testing.md",
@@ -1125,15 +1125,15 @@
       "system",
       "supabase",
       "day 3",
+      "testing",
       "day 4",
-      "day 5",
-      "error-handling"
+      "day 5"
     ],
     "recentlyUsed": [
+      "testing",
       "related tasks",
       "ux",
       "error-handling",
-      "testing",
       "filters",
       "day 1",
       "day 2",

@@ -38,3 +38,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local settings
+.cursordone/user/settings.local.json
+.cursordone/analytics/usage.local.json
+.cursordone/user/avatar-*

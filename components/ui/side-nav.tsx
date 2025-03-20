@@ -16,6 +16,7 @@ import {
   FileText,
   Star,
   LogOut,
+  Settings,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
@@ -26,6 +27,8 @@ import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Separator } from "@/components/ui/separator";
 import { ProfileButton } from "@/components/user/profile-button";
+import { GitSyncStatusComponent } from "@/components/GitSyncStatus";
+import { useGitSync } from "@/lib/hooks/use-git-sync";
 
 type AppRoute = "/" | "/docs" | "/epics";
 
@@ -58,10 +61,12 @@ export function SideNav({
   const [isUpdating, setIsUpdating] = useState(false);
   const [starredTags, setStarredTags] = useState<string[]>([]);
   const [isLoadingStars, setIsLoadingStars] = useState(true);
+  const [showGitSettings, setShowGitSettings] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
   const { clearSession, user, loading } = useAuth();
+  const gitSync = useGitSync();
 
   // Load starred tags
   useEffect(() => {
@@ -149,6 +154,11 @@ export function SideNav({
 
   const handleLogout = async () => {
     await clearSession();
+  };
+
+  // Git sync settings handler
+  const handleOpenGitSettings = () => {
+    setShowGitSettings(true);
   };
 
   const navItems: NavItem[] = [
@@ -360,33 +370,40 @@ export function SideNav({
             </div>
           )}
 
-          {/* Add the update refs button at the bottom */}
-          <div className="mt-auto p-4 border-t border-zinc-800">
+          {/* Footer with Update and Logout */}
+          <div className="mt-auto p-2 space-y-2">
+            {/* Git Sync Status */}
+            <div className="px-2 py-1 border-t border-zinc-800 pt-2">
+              <GitSyncStatusComponent
+                status={gitSync.status}
+                onSyncNow={gitSync.syncNow}
+                onOpenSettings={handleOpenGitSettings}
+              />
+            </div>
+
+            {/* Update Refs Button */}
             <Button
-              variant="outline"
-              className={cn(
-                "w-full justify-start transition-colors",
-                isUpdating && "opacity-70 cursor-not-allowed",
-              )}
               onClick={updateRefs}
               disabled={isUpdating}
+              variant="outline"
+              className="w-full border-zinc-700 hover:bg-zinc-800 hover:border-zinc-600"
             >
-              <RefreshCw
-                className={cn("mr-2 h-4 w-4", isUpdating && "animate-spin")}
-              />
-              {isUpdating ? "Updating..." : "Update Task Refs"}
+              {isUpdating ? (
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <RefreshCw className="h-4 w-4 mr-2" />
+              )}
+              Update Refs
             </Button>
-          </div>
 
-          {/* Logout button */}
-          <div className="mt-auto p-4 border-t border-zinc-800">
+            {/* Logout Button */}
             <Button
-              variant="ghost"
-              className="w-full justify-start gap-2 text-zinc-300 hover:text-zinc-100"
               onClick={handleLogout}
+              variant="outline"
+              className="w-full border-zinc-700 hover:bg-zinc-800 hover:border-zinc-600"
             >
-              <LogOut className="h-5 w-5" />
-              Log Out
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
             </Button>
           </div>
         </div>

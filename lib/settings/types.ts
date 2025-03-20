@@ -5,6 +5,9 @@ export const DisplaySettingsSchema = z.object({
   version: z.number().default(1),
   displayName: z.string().optional(),
   avatarPath: z.string().optional(),
+  avatarUrl: z.string().optional(), // For remote avatars (e.g. GitHub)
+  role: z.string().optional(),
+  location: z.string().optional(),
   theme: z.enum(["system", "light", "dark"]).default("system"),
   accentColor: z.string().optional(),
   showGitMetrics: z.boolean().default(true),
@@ -12,6 +15,19 @@ export const DisplaySettingsSchema = z.object({
 });
 
 export type DisplaySettings = z.infer<typeof DisplaySettingsSchema>;
+
+// Git sync settings schema
+export const GitSyncSettingsSchema = z.object({
+  enabled: z.boolean().default(true),
+  autoPullEnabled: z.boolean().default(true),
+  autoPushEnabled: z.boolean().default(true),
+  autoPullInterval: z.number().min(1).max(60).default(5), // Minutes
+  batchCommitsThreshold: z.number().min(1).max(50).default(5), // Files
+  batchCommitsTimeout: z.number().min(5000).max(3600000).default(30000), // Milliseconds
+  gitPaths: z.array(z.string()).default(["tasks", "epics", "docs"]),
+});
+
+export type GitSyncSettings = z.infer<typeof GitSyncSettingsSchema>;
 
 // User settings - private, git ignored
 export const UserSettingsSchema = z.object({
@@ -31,6 +47,7 @@ export const UserSettingsSchema = z.object({
       discord: z.string().optional(),
     })
     .optional(),
+  gitSync: GitSyncSettingsSchema.default({}),
 });
 
 export type UserSettings = z.infer<typeof UserSettingsSchema>;
@@ -59,6 +76,16 @@ export const DEFAULT_DISPLAY_SETTINGS: DisplaySettings = {
   compactMode: false,
 };
 
+export const DEFAULT_GIT_SYNC_SETTINGS: GitSyncSettings = {
+  enabled: true,
+  autoPullEnabled: true,
+  autoPushEnabled: true,
+  autoPullInterval: 5, // Minutes
+  batchCommitsThreshold: 5, // Files
+  batchCommitsTimeout: 30000, // Milliseconds (30 seconds)
+  gitPaths: ["tasks", "epics", "docs"],
+};
+
 export const createDefaultUserSettings = (
   userId: string,
   email: string,
@@ -73,6 +100,7 @@ export const createDefaultUserSettings = (
     telemetryEnabled: true,
     backupEnabled: true,
   },
+  gitSync: DEFAULT_GIT_SYNC_SETTINGS,
 });
 
 export const createDefaultAnalyticsData = (userId: string): AnalyticsData => ({

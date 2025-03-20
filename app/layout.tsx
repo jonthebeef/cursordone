@@ -6,6 +6,7 @@ import { AuthProvider } from "@/components/providers/auth-provider";
 import { Inter } from "next/font/google";
 import { GeistMono } from "geist/font/mono";
 import { SettingsProvider } from "@/components/providers/settings-provider";
+import { GitSyncProvider } from "@/components/providers/git-sync-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,8 +30,10 @@ export default function RootLayout({
       >
         <AuthProvider>
           <SettingsProvider>
-            {children}
-            <Toaster />
+            <GitSyncProvider>
+              {children}
+              <Toaster />
+            </GitSyncProvider>
           </SettingsProvider>
         </AuthProvider>
       </body>

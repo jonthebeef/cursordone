@@ -1,12 +1,5 @@
 "use client";
 
-import { exec, spawn } from "child_process";
-import { promisify } from "util";
-import * as fs from "fs/promises";
-import * as path from "path";
-
-const execAsync = promisify(exec);
-
 export interface GitStatus {
   isRepo: boolean;
   hasChanges: boolean;
@@ -39,18 +32,6 @@ export const DEFAULT_GIT_SYNC_CONFIG: GitSyncConfig = {
   batchCommitsTimeout: 60 * 1000, // 1 minute
   gitPaths: ["tasks", "epics", "docs"],
 };
-
-/**
- * Check if the current directory is a Git repository
- */
-export async function isGitRepo(dir: string = process.cwd()): Promise<boolean> {
-  try {
-    await execAsync("git rev-parse --is-inside-work-tree", { cwd: dir });
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
 
 /**
  * Get the current Git status
@@ -280,9 +261,6 @@ export function watchForChanges(
       }
     }
   };
-
-  // In a real implementation, you'd set up file watchers here
-  // For now, this is just a stub
 
   // Return a cleanup function
   return () => {

@@ -1,3 +1,5 @@
+"use client";
+
 import { useContext, useEffect } from "react";
 import { GitSyncContext } from "@/lib/contexts/GitSyncContext";
 import { SyncState } from "@/lib/git-sync-manager";
@@ -9,10 +11,14 @@ export function useGitSync() {
     throw new Error("useGitSync must be used within a GitSyncProvider");
   }
 
-  // Initialize Git sync on mount
+  // Initialize the Git sync manager on first render
   useEffect(() => {
-    context.initialize();
-  }, [context]);
+    if (context.initialize) {
+      context.initialize().catch((error) => {
+        console.error("Failed to initialize Git sync:", error);
+      });
+    }
+  }, [context.initialize]);
 
   // Computed property for active state
   const isActive = () => {

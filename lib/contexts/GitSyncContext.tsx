@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   GitSyncManager,
@@ -14,7 +16,7 @@ interface GitSyncContextValue {
   syncNow: () => Promise<void>;
 }
 
-const GitSyncContext = createContext<GitSyncContextValue>({
+export const GitSyncContext = createContext<GitSyncContextValue>({
   manager: null,
   status: null,
   initialize: async () => {},

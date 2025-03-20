@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { useSettings } from "@/lib/hooks/use-settings";
 import { GitSyncSettings } from "@/lib/settings/types";

@@ -1,20 +1,6 @@
+"use client";
+
 import { EventEmitter } from "events";
-import * as path from "path";
-import * as fs from "fs/promises";
-import * as chokidar from "chokidar";
-import {
-  GitStatus,
-  GitSyncConfig,
-  DEFAULT_GIT_SYNC_CONFIG,
-  getGitStatus,
-  gitPull,
-  gitAdd,
-  gitCommit,
-  gitPush,
-  hasConflicts,
-  batchCommitTasks,
-  extractTaskRefs,
-} from "./utils/git";
 
 export enum SyncState {
   IDLE = "idle",
@@ -25,6 +11,33 @@ export enum SyncState {
   ERROR = "error",
   NOT_CONFIGURED = "not-configured",
 }
+
+export interface GitStatus {
+  isRepo: boolean;
+  hasChanges: boolean;
+  branch: string;
+  conflicted: string[];
+  modified: string[];
+  added: string[];
+  deleted: string[];
+  untracked: string[];
+}
+
+export interface GitSyncConfig {
+  autoPullInterval: number; // In milliseconds
+  autoPushEnabled: boolean;
+  batchCommitsThreshold: number; // Number of changes before auto-committing
+  batchCommitsTimeout: number; // Time in milliseconds to wait before committing if below threshold
+  gitPaths: string[]; // Paths to watch for changes (e.g., ["tasks", "epics"])
+}
+
+export const DEFAULT_GIT_SYNC_CONFIG: GitSyncConfig = {
+  autoPullInterval: 5 * 60 * 1000, // 5 minutes
+  autoPushEnabled: true,
+  batchCommitsThreshold: 5,
+  batchCommitsTimeout: 60 * 1000, // 1 minute
+  gitPaths: ["tasks", "epics", "docs"],
+};
 
 export interface GitSyncStatus {
   state: SyncState;
@@ -41,19 +54,14 @@ export interface GitSyncStatus {
 export class GitSyncManager extends EventEmitter {
   private config: GitSyncConfig;
   private status: GitSyncStatus;
-  private watcher: chokidar.FSWatcher | null = null;
   private pendingChanges: Set<string> = new Set();
   private commitTimeout: NodeJS.Timeout | null = null;
   private pullInterval: NodeJS.Timeout | null = null;
-  private workDir: string;
   private initialized: boolean = false;
+  private watchInterval: NodeJS.Timeout | null = null;
 
-  constructor(
-    workDir: string = process.cwd(),
-    config: Partial<GitSyncConfig> = {},
-  ) {
+  constructor(config: Partial<GitSyncConfig> = {}) {
     super();
-    this.workDir = workDir;
     this.config = {
       ...DEFAULT_GIT_SYNC_CONFIG,
       ...config,
@@ -73,8 +81,8 @@ export class GitSyncManager extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      // Check if current directory is a Git repository
-      const gitStatus = await getGitStatus(this.workDir);
+      // Check Git repository status
+      const gitStatus = await this.fetchGitStatus();
       this.status.gitStatus = gitStatus;
 
       if (!gitStatus.isRepo) {
@@ -83,8 +91,8 @@ export class GitSyncManager extends EventEmitter {
         return;
       }
 
-      // Setup file watchers
-      await this.setupWatchers();
+      // Setup file watchers via polling
+      this.setupWatchers();
 
       // Setup auto-pull interval
       this.setupAutoPull();
@@ -104,11 +112,6 @@ export class GitSyncManager extends EventEmitter {
    * Stop the Git sync manager
    */
   stop(): void {
-    if (this.watcher) {
-      this.watcher.close();
-      this.watcher = null;
-    }
-
     if (this.pullInterval) {
       clearInterval(this.pullInterval);
       this.pullInterval = null;
@@ -117,6 +120,11 @@ export class GitSyncManager extends EventEmitter {
     if (this.commitTimeout) {
       clearTimeout(this.commitTimeout);
       this.commitTimeout = null;
+    }
+
+    if (this.watchInterval) {
+      clearInterval(this.watchInterval);
+      this.watchInterval = null;
     }
 
     this.initialized = false;
@@ -159,13 +167,8 @@ export class GitSyncManager extends EventEmitter {
     }
 
     try {
-      // First pull
-      await this.performPull();
-
-      // Then commit and push any pending changes
-      if (this.pendingChanges.size > 0) {
-        await this.performCommit();
-      }
+      // Sync using the API
+      await this.performSync();
 
       this.status.lastSync = new Date();
       this.status.state = SyncState.IDLE;
@@ -179,59 +182,68 @@ export class GitSyncManager extends EventEmitter {
   }
 
   /**
-   * Setup file watchers for tasks, epics, and docs directories
+   * Setup file watching via polling
    */
-  private async setupWatchers(): Promise<void> {
-    const watchPaths = this.config.gitPaths.map((p) =>
-      path.join(this.workDir, p),
-    );
-
-    // Ensure the directories exist before watching
-    for (const dirPath of watchPaths) {
+  private setupWatchers(): void {
+    // Check for changes every minute
+    this.watchInterval = setInterval(async () => {
       try {
-        await fs.mkdir(dirPath, { recursive: true });
+        const currentStatus = await this.fetchGitStatus();
+
+        // Compare with previous status to detect changes
+        if (this.status.gitStatus) {
+          const previousStatus = this.status.gitStatus;
+
+          // Check for new changes
+          const newChanges = [
+            ...currentStatus.modified,
+            ...currentStatus.added,
+            ...currentStatus.deleted,
+          ]
+            .filter((file) => {
+              return this.config.gitPaths.some((path) =>
+                file.startsWith(path + "/"),
+              );
+            })
+            .filter((file) => {
+              // Only consider files that weren't already tracked
+              return ![
+                ...previousStatus.modified,
+                ...previousStatus.added,
+                ...previousStatus.deleted,
+              ].includes(file);
+            });
+
+          // Add new changes to pending changes
+          for (const file of newChanges) {
+            this.pendingChanges.add(file);
+          }
+
+          this.status.pendingChanges = this.pendingChanges.size;
+          this.status.gitStatus = currentStatus;
+
+          if (newChanges.length > 0) {
+            this.emit("status", this.status);
+
+            // Schedule commit if needed
+            if (this.pendingChanges.size >= this.config.batchCommitsThreshold) {
+              if (this.commitTimeout) {
+                clearTimeout(this.commitTimeout);
+                this.commitTimeout = null;
+              }
+              this.scheduleCommit(0); // Immediate commit
+            } else if (!this.commitTimeout) {
+              this.scheduleCommit(this.config.batchCommitsTimeout);
+            }
+          }
+        } else {
+          // First time getting status
+          this.status.gitStatus = currentStatus;
+        }
       } catch (error) {
-        console.warn(`Could not create directory ${dirPath}:`, error);
+        console.error("Error checking Git status:", error);
       }
-    }
-
-    this.watcher = chokidar.watch(watchPaths, {
-      persistent: true,
-      ignoreInitial: true,
-      awaitWriteFinish: {
-        stabilityThreshold: 2000,
-        pollInterval: 100,
-      },
-    });
-
-    this.watcher
-      .on("add", (path) => this.handleFileChange(path))
-      .on("change", (path) => this.handleFileChange(path))
-      .on("unlink", (path) => this.handleFileChange(path));
-  }
-
-  /**
-   * Handle file changes
-   */
-  private handleFileChange(filePath: string): void {
-    // Only track markdown files
-    if (!filePath.endsWith(".md")) return;
-
-    const relativePath = path.relative(this.workDir, filePath);
-    this.pendingChanges.add(relativePath);
-    this.status.pendingChanges = this.pendingChanges.size;
-    this.emit("status", this.status);
-
-    // Schedule commit based on threshold
-    if (this.pendingChanges.size >= this.config.batchCommitsThreshold) {
-      if (this.commitTimeout) {
-        clearTimeout(this.commitTimeout);
-        this.commitTimeout = null;
-      }
-      this.scheduleCommit(0); // Immediate commit
-    } else if (!this.commitTimeout) {
-      this.scheduleCommit(this.config.batchCommitsTimeout);
-    }
+    }, 60000); // Check every minute
   }
 
   /**
@@ -248,12 +260,7 @@ export class GitSyncManager extends EventEmitter {
         this.status.state === SyncState.IDLE
       ) {
         try {
-          await this.performCommit();
-
-          // Push if enabled
-          if (this.config.autoPushEnabled) {
-            await this.performPush();
-          }
+          await this.performSync();
         } catch (error) {
           this.status.state = SyncState.ERROR;
           this.status.error = error as Error;
@@ -289,23 +296,63 @@ export class GitSyncManager extends EventEmitter {
   }
 
   /**
-   * Perform a pull operation
+   * Fetch Git status from API
+   */
+  private async fetchGitStatus(): Promise<GitStatus> {
+    try {
+      const response = await fetch("/api/git");
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch Git status: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || "Failed to fetch Git status");
+      }
+
+      return data.data;
+    } catch (error) {
+      console.error("Error fetching Git status:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Perform a pull operation via API
    */
   private async performPull(): Promise<void> {
     this.status.state = SyncState.PULLING;
     this.emit("status", this.status);
 
     try {
-      await gitPull(this.workDir);
+      const response = await fetch("/api/git", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ action: "pull" }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to pull: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || "Failed to pull");
+      }
 
       // Update status
-      this.status.gitStatus = await getGitStatus(this.workDir);
+      this.status.gitStatus = await this.fetchGitStatus();
 
       // Check for conflicts
-      if (await hasConflicts(this.workDir)) {
+      if (this.status.gitStatus.conflicted.length > 0) {
         this.status.state = SyncState.CONFLICT;
         this.emit("status", this.status);
-        this.emit("conflict", this.status.gitStatus?.conflicted || []);
+        this.emit("conflict", this.status.gitStatus.conflicted);
         return;
       }
 
@@ -319,9 +366,9 @@ export class GitSyncManager extends EventEmitter {
   }
 
   /**
-   * Perform a commit operation
+   * Perform a sync operation via API
    */
-  private async performCommit(): Promise<void> {
+  private async performSync(): Promise<void> {
     if (this.pendingChanges.size === 0) return;
 
     this.status.state = SyncState.COMMITTING;
@@ -329,52 +376,56 @@ export class GitSyncManager extends EventEmitter {
 
     try {
       const changedFiles = Array.from(this.pendingChanges);
-      const taskRefs = extractTaskRefs(changedFiles);
 
-      await batchCommitTasks(
-        taskRefs.length > 0 ? taskRefs : ["TSK-000"],
-        this.workDir,
-      );
+      // Extract task refs from filenames (simple implementation)
+      const taskRefs = changedFiles
+        .map((file) => {
+          const match = file.match(/TSK-\d+/);
+          return match ? match[0] : null;
+        })
+        .filter(Boolean);
+
+      const message =
+        taskRefs.length > 0
+          ? `[${taskRefs.join(", ")}] chore: auto-sync task updates`
+          : "chore: auto-sync task updates";
+
+      // Perform sync via API
+      const response = await fetch("/api/git", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "sync",
+          message,
+          remote: this.config.autoPushEnabled ? "origin" : null,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to sync: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || "Failed to sync");
+      }
 
       // Clear pending changes
       this.pendingChanges.clear();
       this.status.pendingChanges = 0;
 
       // Update status
-      this.status.gitStatus = await getGitStatus(this.workDir);
+      this.status.gitStatus = data.data.status || (await this.fetchGitStatus());
       this.status.state = SyncState.IDLE;
       this.status.lastSync = new Date();
 
       this.emit("status", this.status);
-      this.emit("committed", changedFiles);
+      this.emit("synced", changedFiles);
     } catch (error) {
-      console.error("Commit failed:", error);
-      throw error;
-    }
-  }
-
-  /**
-   * Perform a push operation
-   */
-  private async performPush(): Promise<void> {
-    this.status.state = SyncState.PUSHING;
-    this.emit("status", this.status);
-
-    try {
-      // Get the current branch name
-      const gitStatus = await getGitStatus(this.workDir);
-
-      await gitPush("origin", gitStatus.branch, this.workDir);
-
-      // Update status
-      this.status.gitStatus = await getGitStatus(this.workDir);
-      this.status.state = SyncState.IDLE;
-      this.status.lastSync = new Date();
-
-      this.emit("status", this.status);
-      this.emit("pushed");
-    } catch (error) {
-      console.error("Push failed:", error);
+      console.error("Sync failed:", error);
       throw error;
     }
   }

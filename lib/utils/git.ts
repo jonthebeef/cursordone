@@ -1,3 +1,5 @@
+"use client";
+
 import { exec, spawn } from "child_process";
 import { promisify } from "util";
 import * as fs from "fs/promises";
@@ -53,129 +55,106 @@ export async function isGitRepo(dir: string = process.cwd()): Promise<boolean> {
 /**
  * Get the current Git status
  */
-export async function getGitStatus(
-  dir: string = process.cwd(),
-): Promise<GitStatus> {
+export async function getGitStatus(): Promise<GitStatus> {
   try {
-    const isRepo = await isGitRepo(dir);
-    if (!isRepo) {
-      return {
-        isRepo: false,
-        hasChanges: false,
-        branch: "",
-        conflicted: [],
-        modified: [],
-        added: [],
-        deleted: [],
-        untracked: [],
-      };
+    const response = await fetch("/api/git");
+    if (!response.ok) {
+      throw new Error(`Failed to get Git status: ${response.statusText}`);
     }
-
-    // Get current branch
-    const { stdout: branchOutput } = await execAsync(
-      "git rev-parse --abbrev-ref HEAD",
-      { cwd: dir },
-    );
-    const branch = branchOutput.trim();
-
-    // Get status
-    const { stdout: statusOutput } = await execAsync("git status --porcelain", {
-      cwd: dir,
-    });
-    const lines = statusOutput.trim().split("\n").filter(Boolean);
-
-    const status: GitStatus = {
-      isRepo: true,
-      hasChanges: lines.length > 0,
-      branch,
+    const data = await response.json();
+    if (!data.success) {
+      throw new Error(data.error || "Failed to get Git status");
+    }
+    return data.data;
+  } catch (error) {
+    console.error("Error getting Git status:", error);
+    // Return a default empty status on error
+    return {
+      isRepo: false,
+      hasChanges: false,
+      branch: "",
       conflicted: [],
       modified: [],
       added: [],
       deleted: [],
       untracked: [],
     };
-
-    // Parse status
-    for (const line of lines) {
-      const state = line.substring(0, 2);
-      const file = line.substring(3);
-
-      // Check status
-      if (state.includes("U") || state === "DD" || state === "AA") {
-        status.conflicted.push(file);
-      } else if (state.includes("M")) {
-        status.modified.push(file);
-      } else if (state.includes("A")) {
-        status.added.push(file);
-      } else if (state.includes("D")) {
-        status.deleted.push(file);
-      } else if (state === "??") {
-        status.untracked.push(file);
-      }
-    }
-
-    return status;
-  } catch (error) {
-    console.error("Error getting Git status:", error);
-    throw error;
   }
 }
 
 /**
  * Perform a Git pull
  */
-export async function gitPull(dir: string = process.cwd()): Promise<string> {
-  try {
-    const { stdout } = await execAsync("git pull", { cwd: dir });
-    return stdout.trim();
-  } catch (error) {
-    const gitError = error as GitError;
-    console.error("Git pull error:", gitError);
-    throw gitError;
+export async function gitPull(): Promise<string> {
+  const response = await fetch("/api/git", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ action: "pull" }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to pull: ${response.statusText}`);
   }
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(data.error || "Failed to pull");
+  }
+
+  return data.data;
 }
 
 /**
  * Stage files for commit
  */
-export async function gitAdd(
-  files: string[] | string = ".",
-  dir: string = process.cwd(),
-): Promise<string> {
-  try {
-    const filesToAdd = Array.isArray(files) ? files.join(" ") : files;
-    const { stdout } = await execAsync(`git add ${filesToAdd}`, { cwd: dir });
-    return stdout.trim();
-  } catch (error) {
-    const gitError = error as GitError;
-    console.error("Git add error:", gitError);
-    throw gitError;
+export async function gitAdd(files: string[] | string = "."): Promise<string> {
+  const response = await fetch("/api/git", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ action: "add", files }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to add files: ${response.statusText}`);
   }
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(data.error || "Failed to add files");
+  }
+
+  return data.data;
 }
 
 /**
  * Commit changes with a message
  */
-export async function gitCommit(
-  message: string,
-  dir: string = process.cwd(),
-): Promise<string> {
-  try {
-    const { stdout } = await execAsync(`git commit -m "${message}"`, {
-      cwd: dir,
-    });
-    return stdout.trim();
-  } catch (error) {
-    const gitError = error as GitError;
+export async function gitCommit(message: string): Promise<string> {
+  const response = await fetch("/api/git", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ action: "commit", message }),
+  });
 
-    // If there's nothing to commit, it's not an error for our purposes
-    if (gitError.stderr && gitError.stderr.includes("nothing to commit")) {
-      return "Nothing to commit";
-    }
-
-    console.error("Git commit error:", gitError);
-    throw gitError;
+  if (!response.ok) {
+    throw new Error(`Failed to commit: ${response.statusText}`);
   }
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(data.error || "Failed to commit");
+  }
+
+  return data.data;
 }
 
 /**
@@ -184,84 +163,75 @@ export async function gitCommit(
 export async function gitPush(
   remote: string = "origin",
   branch: string = "",
-  dir: string = process.cwd(),
 ): Promise<string> {
-  try {
-    const branchArg = branch ? ` ${branch}` : "";
-    const { stdout } = await execAsync(`git push ${remote}${branchArg}`, {
-      cwd: dir,
-    });
-    return stdout.trim();
-  } catch (error) {
-    const gitError = error as GitError;
-    console.error("Git push error:", gitError);
-    throw gitError;
+  const response = await fetch("/api/git", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ action: "push", remote, branch }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to push: ${response.statusText}`);
   }
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(data.error || "Failed to push");
+  }
+
+  return data.data;
 }
 
 /**
  * Check if there are any conflicts
  */
-export async function hasConflicts(
-  dir: string = process.cwd(),
-): Promise<boolean> {
-  const status = await getGitStatus(dir);
+export async function hasConflicts(): Promise<boolean> {
+  const status = await getGitStatus();
   return status.conflicted.length > 0;
 }
 
 /**
  * Creates a batch commit for the given task paths
  */
-export async function batchCommitTasks(
-  taskRefs: string[],
-  dir: string = process.cwd(),
-): Promise<string> {
+export async function batchCommitTasks(taskRefs: string[]): Promise<string> {
   if (!taskRefs || taskRefs.length === 0) {
     return "No tasks to commit";
   }
 
-  try {
-    // First, get current status to see what needs to be added
-    const status = await getGitStatus(dir);
-
-    // Get all changed files related to tasks and epics
-    const relevantFiles = [
-      ...status.modified,
-      ...status.added,
-      ...status.deleted,
-    ].filter((file) => {
-      return (
-        file.startsWith("tasks/") ||
-        file.startsWith("epics/") ||
-        file.startsWith("docs/")
-      );
-    });
-
-    if (relevantFiles.length === 0) {
-      return "No task-related changes to commit";
-    }
-
-    // Stage these files
-    await gitAdd(relevantFiles, dir);
-
-    // Create a commit message
-    let commitMessage = "";
-
-    if (taskRefs.length === 1) {
-      commitMessage = `[${taskRefs[0]}] chore: auto-sync task updates`;
-    } else {
-      const firstThree = taskRefs.slice(0, 3);
-      const remaining =
-        taskRefs.length > 3 ? ` and ${taskRefs.length - 3} more` : "";
-      commitMessage = `[${firstThree.join(", ")}${remaining}] chore: auto-sync task updates`;
-    }
-
-    // Commit the changes
-    return gitCommit(commitMessage, dir);
-  } catch (error) {
-    console.error("Error batch committing tasks:", error);
-    throw error;
+  // Create a message with task references
+  let message = "";
+  if (taskRefs.length === 1) {
+    message = `[${taskRefs[0]}] chore: auto-sync task updates`;
+  } else {
+    const firstThree = taskRefs.slice(0, 3);
+    const remaining =
+      taskRefs.length > 3 ? ` and ${taskRefs.length - 3} more` : "";
+    message = `[${firstThree.join(", ")}${remaining}] chore: auto-sync task updates`;
   }
+
+  // Use the sync API endpoint
+  const response = await fetch("/api/git", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ action: "sync", message }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to sync: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(data.error || "Failed to sync");
+  }
+
+  return data.data;
 }
 
 /**
@@ -331,17 +301,11 @@ export function extractTaskRefs(filePaths: string[]): string[] {
   const refs = new Set<string>();
 
   for (const filePath of filePaths) {
-    // Try to extract from filename first (if it contains the ref)
-    const fileName = path.basename(filePath);
-    const fileMatch = fileName.match(taskRefRegex);
-    if (fileMatch) {
-      refs.add(fileMatch[0]);
-      continue;
+    // Try to extract from filename (if it contains the ref)
+    const match = filePath.match(taskRefRegex);
+    if (match) {
+      refs.add(match[0]);
     }
-
-    // If we couldn't extract from filename, we'd need to read the file
-    // and parse front matter, but that would need to be implemented
-    // as an async function
   }
 
   return Array.from(refs);

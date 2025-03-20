@@ -85,11 +85,14 @@ export function SideNav({
     try {
       setIsUpdating(true);
       const response = await fetch("/api/starred-tags", {
-        method: isStarred ? "DELETE" : "POST",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ tag }),
+        body: JSON.stringify({
+          tag,
+          action: isStarred ? "unstar" : "star",
+        }),
       });
 
       if (response.ok) {
@@ -201,7 +204,7 @@ export function SideNav({
 
           {/* Profile Button */}
           <div className="px-2 py-2 border-b border-zinc-800">
-            {!loading && <ProfileButton email={user?.email} />}
+            {!loading && <ProfileButton />}
           </div>
 
           {/* Main navigation */}

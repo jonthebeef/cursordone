@@ -68,15 +68,50 @@ This epic focuses on getting the core product ready for distribution, focusing o
 
 ## Related Tasks
 
+### Authentication & User Profiles (Mostly Complete)
+
 - [x] [TSK-066] Enable authentication providers
 - [x] [TSK-239] Fix Session Management
 - [x] [TSK-273] Implement Local Settings System
-- [x] [TSK-208] Fix tag starring in sidebar
+- [x] [TSK-280] Customizable Profile Page
+- [x] [TSK-120] Setup User Profile System
+- [ ] [TSK-264] Implement User Profile Section (in progress)
+
+### Team Collaboration (Priority Action)
+
+- [ ] [TSK-242] Implement Auto Git Sync
+- [ ] [TSK-244] Implement Git Conflict Detection
+- [ ] [TSK-258] Implement Ref Integrity System
 - [ ] [TSK-261] Implement Team Awareness UI
-- [ ] Implement Git-based sync
-- [ ] Package for NPM distribution
-- [ ] Create marketing landing page
-- [ ] Complete end-to-end testing
+- [ ] [TSK-253] Implement Merge Conflict UI
+
+### UI Polish & Bug Fixes
+
+- [x] [TSK-208] Fix tag starring in sidebar
+- [ ] [TSK-136] Implement UI Polish and Refinements
+- [ ] [TSK-143] Enhance Task Creation Dialog
+- [ ] [TSK-144] Redesign Task View Dialog
+
+### Packaging & Distribution
+
+- [ ] [TSK-266] Setup Package Structure
+- [ ] [TSK-105] Configure NPM Package Build
+- [ ] [TSK-106] Create CLI Framework
+- [ ] [TSK-113] Implement CLI Web Launcher
+
+### Testing & Documentation
+
+- [ ] [TSK-123] Create Beta Testing Plan
+- [ ] [TSK-124] Create Comprehensive Documentation
+- [ ] [TSK-125] Create Production Deployment Guide
+- [ ] Test Authentication Flows
+
+### Marketing & Launch
+
+- [ ] Create Marketing Landing Page
+- [ ] Document Installation Process
+- [ ] Create Quick Start Guide
+- [ ] Prepare Launch Announcement
 
 ## Launch Checklist
 
@@ -99,3 +134,10 @@ This epic focuses on getting the core product ready for distribution, focusing o
    - [ ] Documentation site
    - [ ] Marketing site
    - [ ] Install instructions
+
+## Priority Actions
+
+1. Complete team collaboration functionality
+2. Finish NPM packaging and CLI tools
+3. Complete documentation and testing
+4. Create marketing site and launch materials

@@ -17,18 +17,95 @@ import {
   Star,
   LogOut,
   Settings,
+  GitCompare,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Button } from "./button";
 import { useToast } from "./use-toast";
 import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Separator } from "@/components/ui/separator";
 import { ProfileButton } from "@/components/user/profile-button";
-import { GitSyncStatusComponent } from "@/components/GitSyncStatus";
-import { useGitSync } from "@/lib/hooks/use-git-sync";
+import dynamic from "next/dynamic";
+
+// Define a placeholder component for when GitSyncStatus is loading
+const GitSyncStatusPlaceholder = () => (
+  <div className="h-8 w-24 bg-gray-200 animate-pulse rounded" />
+);
+
+// Dynamically import the GitSyncStatus component with SSR disabled
+const GitSyncStatusComponent = dynamic(
+  () =>
+    import("../../components/GitSyncStatus").then(
+      (mod) => mod.GitSyncStatusComponent,
+    ),
+  { ssr: false, loading: () => <GitSyncStatusPlaceholder /> },
+);
+
+// Custom hook to dynamically import the useGitSync hook
+function useGitSyncHook() {
+  // Define a type for the hook data that aligns with what GitSyncStatusComponent expects
+  type GitSyncHookData = {
+    status: any; // Using 'any' to avoid type conflicts
+    syncNow: () => Promise<void>;
+    error: any;
+    isLoading: boolean;
+  };
+
+  const [hookData, setHookData] = useState<GitSyncHookData>({
+    status: null,
+    syncNow: async () => {},
+    error: null,
+    isLoading: true,
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadHook = async () => {
+      try {
+        // Dynamically import the hook
+        const hookModule = await import("@/lib/hooks/use-git-sync");
+
+        // Only execute if component is still mounted
+        if (isMounted) {
+          // Using a separate function to avoid React Hook rule violations
+          function applyHookData() {
+            const hookResult = hookModule.useGitSync();
+            return {
+              status: hookResult.status,
+              syncNow: hookResult.syncNow,
+              error: null,
+              isLoading: false,
+            };
+          }
+
+          setHookData(applyHookData());
+        }
+      } catch (err) {
+        console.error("Failed to load Git sync hook:", err);
+        if (isMounted) {
+          setHookData({
+            status: null,
+            syncNow: async () => {},
+            error: err,
+            isLoading: false,
+          });
+        }
+      }
+    };
+
+    loadHook();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  return hookData;
+}
 
 type AppRoute = "/" | "/docs" | "/epics";
 
@@ -61,12 +138,14 @@ export function SideNav({
   const [isUpdating, setIsUpdating] = useState(false);
   const [starredTags, setStarredTags] = useState<string[]>([]);
   const [isLoadingStars, setIsLoadingStars] = useState(true);
-  const [showGitSettings, setShowGitSettings] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
   const { clearSession, user, loading } = useAuth();
-  const gitSync = useGitSync();
+
+  // Use our dynamically imported hook
+  const gitSync = useGitSyncHook();
 
   // Load starred tags
   useEffect(() => {
@@ -157,9 +236,7 @@ export function SideNav({
   };
 
   // Git sync settings handler
-  const handleOpenGitSettings = () => {
-    setShowGitSettings(true);
-  };
+  const handleOpenGitSettings = () => setShowSettings(true);
 
   const navItems: NavItem[] = [
     {
@@ -374,11 +451,15 @@ export function SideNav({
           <div className="mt-auto p-2 space-y-2">
             {/* Git Sync Status */}
             <div className="px-2 py-1 border-t border-zinc-800 pt-2">
-              <GitSyncStatusComponent
-                status={gitSync.status}
-                onSyncNow={gitSync.syncNow}
-                onOpenSettings={handleOpenGitSettings}
-              />
+              <Suspense fallback={<GitSyncStatusPlaceholder />}>
+                {!gitSync.isLoading && (
+                  <GitSyncStatusComponent
+                    status={gitSync.status}
+                    onSyncNow={gitSync.syncNow}
+                    onOpenSettings={handleOpenGitSettings}
+                  />
+                )}
+              </Suspense>
             </div>
 
             {/* Update Refs Button */}

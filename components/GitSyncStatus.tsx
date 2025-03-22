@@ -1,185 +1,150 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  GitSyncStatus as GitSyncStatusType,
-  SyncState,
-} from "@/lib/git-sync-manager";
-import { useSettings } from "@/lib/hooks/use-settings";
-import {
-  CheckCircle2,
-  GitCompare,
-  AlertCircle,
-  RefreshCw,
-  Clock,
-  Upload,
-  Download,
-  Settings,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import React, { useState, useEffect } from "react";
+import { GitCompare, AlertCircle, Info } from "lucide-react";
 
-interface GitSyncStatusComponentProps {
-  status: GitSyncStatusType | null;
-  onSyncNow: () => Promise<void>;
-  onOpenSettings: () => void;
-}
+export function GitSyncStatusComponent() {
+  const [status, setStatus] = useState({
+    isConfigured: false,
+    isError: false,
+    repoInfo: {
+      url: "",
+      path: "",
+    },
+  });
 
-export function GitSyncStatusComponent({
-  status,
-  onSyncNow,
-  onOpenSettings,
-}: GitSyncStatusComponentProps) {
-  const { settings } = useSettings();
-  const [isSyncing, setIsSyncing] = useState(false);
+  // Tooltip state
+  const [showTooltip, setShowTooltip] = useState(false);
 
-  // Format last sync time
-  const formatLastSync = (date: Date | null) => {
-    if (!date) return "Never";
-
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-
-    if (diffMins < 1) return "Just now";
-    if (diffMins === 1) return "1 minute ago";
-    if (diffMins < 60) return `${diffMins} minutes ago`;
-
-    const diffHours = Math.floor(diffMins / 60);
-    if (diffHours === 1) return "1 hour ago";
-    if (diffHours < 24) return `${diffHours} hours ago`;
-
-    const diffDays = Math.floor(diffHours / 24);
-    if (diffDays === 1) return "1 day ago";
-    return `${diffDays} days ago`;
-  };
-
-  // Handle sync button click
-  const handleSyncNow = async () => {
-    if (isSyncing) return;
-
-    setIsSyncing(true);
+  // Function to check git configuration status
+  const checkGitConfig = () => {
     try {
-      await onSyncNow();
+      // Only run in client-side environments
+      if (typeof window !== "undefined") {
+        // Check localStorage for git settings
+        const storedSettings = localStorage.getItem("userSettings");
+
+        if (storedSettings) {
+          const settings = JSON.parse(storedSettings);
+          const gitConfig = settings?.gitSync || {};
+
+          setStatus({
+            isConfigured:
+              gitConfig.enabled && (gitConfig.repoPath || gitConfig.repoUrl),
+            isError: !gitConfig.repoPath && !gitConfig.repoUrl,
+            repoInfo: {
+              url: gitConfig.repoUrl || "",
+              path: gitConfig.repoPath || "",
+            },
+          });
+        }
+      }
     } catch (error) {
-      console.error("Sync failed:", error);
-    } finally {
-      setIsSyncing(false);
+      console.error("Error checking Git settings:", error);
+      setStatus({
+        isConfigured: false,
+        isError: true,
+        repoInfo: { url: "", path: "" },
+      });
     }
   };
 
-  // State icon and color
-  const getStateIcon = () => {
-    if (!status) return <Settings className="h-4 w-4 text-gray-400" />;
+  // Check local storage for settings when on client side
+  useEffect(() => {
+    // Initial check
+    checkGitConfig();
 
-    switch (status.state) {
-      case SyncState.IDLE:
-        return status.lastSync ? (
-          <CheckCircle2 className="h-4 w-4 text-green-500" />
-        ) : (
-          <GitCompare className="h-4 w-4 text-blue-500" />
-        );
-      case SyncState.PULLING:
-        return <Download className="h-4 w-4 text-blue-500 animate-pulse" />;
-      case SyncState.PUSHING:
-        return <Upload className="h-4 w-4 text-blue-500 animate-pulse" />;
-      case SyncState.COMMITTING:
-        return <RefreshCw className="h-4 w-4 text-blue-500 animate-spin" />;
-      case SyncState.CONFLICT:
-        return <AlertCircle className="h-4 w-4 text-yellow-500" />;
-      case SyncState.ERROR:
-        return <AlertCircle className="h-4 w-4 text-red-500" />;
-      case SyncState.NOT_CONFIGURED:
-        return <Settings className="h-4 w-4 text-gray-400" />;
-      default:
-        return <GitCompare className="h-4 w-4 text-gray-400" />;
-    }
+    // Setup storage change listener
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "userSettings") {
+        checkGitConfig();
+      }
+    };
+
+    // Add event listener for localStorage changes
+    window.addEventListener("storage", handleStorageChange);
+
+    // Also create a custom event listener for when settings are saved within same window
+    window.addEventListener("settingsUpdated", checkGitConfig);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("settingsUpdated", checkGitConfig);
+    };
+  }, []);
+
+  // Get status text
+  const getStatusText = () => {
+    if (status.isError) return "Git: Not Configured";
+    if (status.isConfigured) return "Git: Ready";
+    return "Git: Not Configured";
   };
 
-  // State label
-  const getStateLabel = () => {
-    if (!status) return "Not Initialized";
-
-    switch (status.state) {
-      case SyncState.IDLE:
-        return "Synced";
-      case SyncState.PULLING:
-        return "Pulling";
-      case SyncState.PUSHING:
-        return "Pushing";
-      case SyncState.COMMITTING:
-        return "Committing";
-      case SyncState.CONFLICT:
-        return "Conflicts";
-      case SyncState.ERROR:
-        return "Error";
-      case SyncState.NOT_CONFIGURED:
-        return "Not Configured";
-      default:
-        return "Unknown";
+  // Get icon
+  const getIcon = () => {
+    if (status.isError) {
+      return <AlertCircle className="h-3.5 w-3.5 mr-2 text-red-500" />;
     }
+    return <GitCompare className="h-3.5 w-3.5 mr-2" />;
   };
 
-  // If Git sync is disabled, return minimal UI
-  if (!settings?.gitSync?.enabled) {
-    return (
-      <div className="flex items-center">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-8 px-2"
-          onClick={onOpenSettings}
-        >
-          <GitCompare className="h-4 w-4 text-gray-400" />
-          <span className="ml-2 text-xs">Git Sync Disabled</span>
-        </Button>
-      </div>
-    );
-  }
+  // Get repo display info
+  const getRepoDisplayInfo = () => {
+    if (status.repoInfo.url) {
+      // Extract repo name from URL
+      try {
+        const urlObj = new URL(status.repoInfo.url);
+        const pathParts = urlObj.pathname.split("/").filter(Boolean);
+        if (pathParts.length >= 2) {
+          return `${pathParts[0]}/${pathParts[1]}`;
+        }
+        return status.repoInfo.url;
+      } catch {
+        return status.repoInfo.url;
+      }
+    }
+
+    if (status.repoInfo.path) {
+      // Get the last part of the path
+      const pathParts = status.repoInfo.path.split("/").filter(Boolean);
+      return pathParts[pathParts.length - 1] || status.repoInfo.path;
+    }
+
+    return "No repository";
+  };
 
   return (
-    <div className="flex items-center">
-      <Button
-        variant="ghost"
-        size="sm"
-        className={cn(
-          "h-8 gap-2 px-2",
-          status?.pendingChanges && status.pendingChanges > 0
-            ? "text-amber-500"
-            : "",
-        )}
-        onClick={handleSyncNow}
-        disabled={isSyncing || status?.state !== SyncState.IDLE}
+    <div className="mb-2">
+      <div
+        className="flex items-center px-2 py-1 text-zinc-400 text-xs hover:bg-zinc-800 rounded cursor-pointer relative"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
       >
-        {getStateIcon()}
-        <span className="text-xs">{getStateLabel()}</span>
+        {getIcon()}
+        <span>{getStatusText()}</span>
 
-        {status?.pendingChanges && status.pendingChanges > 0 && (
-          <span className="bg-amber-100 text-amber-800 rounded-full text-[10px] px-1.5 py-0.5">
-            {status.pendingChanges}
-          </span>
+        {status.isConfigured && <Info className="h-3 w-3 ml-1 text-zinc-500" />}
+
+        {/* Tooltip for repository info */}
+        {showTooltip && status.isConfigured && (
+          <div className="absolute left-0 bottom-full mb-1 p-2 bg-zinc-800 border border-zinc-700 rounded shadow-lg z-10 w-48">
+            <p className="text-xs font-medium text-zinc-300 mb-1">Repository</p>
+            <p className="text-xs text-zinc-400 truncate">
+              {getRepoDisplayInfo()}
+            </p>
+            {status.repoInfo.url && (
+              <p className="text-xs text-zinc-500 mt-1 truncate">
+                Remote: {status.repoInfo.url}
+              </p>
+            )}
+            {status.repoInfo.path && (
+              <p className="text-xs text-zinc-500 mt-1 truncate">
+                Local: {status.repoInfo.path}
+              </p>
+            )}
+          </div>
         )}
-
-        {status?.lastSync && (
-          <span className="text-xs text-muted-foreground hidden md:inline">
-            <Clock className="inline mr-1 h-3 w-3" />
-            {formatLastSync(status.lastSync)}
-          </span>
-        )}
-      </Button>
-
-      <Button
-        variant="ghost"
-        size="sm"
-        className="h-8 w-8 p-0"
-        onClick={onOpenSettings}
-      >
-        <Settings className="h-4 w-4" />
-        <span className="sr-only">Git Sync Settings</span>
-      </Button>
+      </div>
     </div>
   );
 }
-
-// Also export the component as default for dynamic imports
-export default { GitSyncStatusComponent };

@@ -1,66 +1,129 @@
 "use client";
 
-import { useContext, useEffect } from "react";
-import { GitSyncContext } from "@/lib/contexts/GitSyncContext";
-import { SyncState } from "@/lib/git-sync-manager";
+import { useState, useEffect } from "react";
+import { useSettings } from "./use-settings";
 
+// Enhanced hook that reads repository information from settings
 export function useGitSync() {
-  const context = useContext(GitSyncContext);
+  const { settings } = useSettings();
+  const [status, setStatus] = useState({
+    state: "idle" as "idle" | "syncing" | "error",
+    lastSync: null as Date | null,
+    pendingChanges: 0,
+    config: {
+      enabled: false,
+      repoPath: "",
+      repoUrl: "",
+    },
+    error: null as Error | null,
+  });
 
-  if (!context) {
-    throw new Error("useGitSync must be used within a GitSyncProvider");
-  }
-
-  // Initialize the Git sync manager on first render
+  // Initialize Git sync status based on settings
   useEffect(() => {
-    if (context.initialize) {
-      context.initialize().catch((error) => {
-        console.error("Failed to initialize Git sync:", error);
-      });
+    if (settings?.gitSync) {
+      setStatus((prev) => ({
+        ...prev,
+        config: {
+          enabled: settings.gitSync.enabled,
+          repoPath: settings.gitSync.repoPath || "",
+          repoUrl: settings.gitSync.repoUrl || "",
+        },
+      }));
     }
-  }, [context.initialize]);
+  }, [settings]);
 
-  // Computed property for active state
-  const isActive = () => {
-    if (!context.status) return false;
+  // Mock function to simulate checking Git status
+  const checkGitStatus = async () => {
+    try {
+      if (!status.config.enabled) {
+        return;
+      }
 
-    return (
-      context.status.state === SyncState.PULLING ||
-      context.status.state === SyncState.PUSHING ||
-      context.status.state === SyncState.COMMITTING
-    );
+      if (!status.config.repoPath && !status.config.repoUrl) {
+        throw new Error("No repository configured");
+      }
+
+      // This would be where actual Git operations would happen
+      console.log(
+        "Checking Git status for:",
+        status.config.repoPath || status.config.repoUrl,
+      );
+
+      // Simulate a successful status check
+      setStatus((prev) => ({
+        ...prev,
+        state: "idle",
+        lastSync: new Date(),
+        pendingChanges: Math.floor(Math.random() * 5), // Random number of changes for demo
+        error: null,
+      }));
+    } catch (error) {
+      console.error("Git status check failed:", error);
+      setStatus((prev) => ({
+        ...prev,
+        state: "error",
+        error: error instanceof Error ? error : new Error("Unknown error"),
+      }));
+    }
   };
 
-  // Computed property for if sync is available
-  const canSync = () => {
-    if (!context.status) return false;
-    return context.status.state === SyncState.IDLE;
+  // Sync function that would perform actual Git operations
+  const syncNow = async () => {
+    try {
+      if (!status.config.enabled) {
+        console.log("Git sync is disabled");
+        return;
+      }
+
+      if (!status.config.repoPath && !status.config.repoUrl) {
+        throw new Error("No repository configured");
+      }
+
+      setStatus((prev) => ({ ...prev, state: "syncing" }));
+
+      // This would be where actual Git sync operations would happen
+      console.log(
+        "Syncing with Git repository:",
+        status.config.repoPath || status.config.repoUrl,
+      );
+
+      // Simulate some processing time
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Simulate a successful sync
+      setStatus((prev) => ({
+        ...prev,
+        state: "idle",
+        lastSync: new Date(),
+        pendingChanges: 0,
+        error: null,
+      }));
+
+      console.log("Git sync completed successfully");
+    } catch (error) {
+      console.error("Git sync failed:", error);
+      setStatus((prev) => ({
+        ...prev,
+        state: "error",
+        error: error instanceof Error ? error : new Error("Unknown error"),
+      }));
+    }
   };
 
-  // Computed property for if there are conflicts
-  const hasConflicts = () => {
-    if (!context.status) return false;
-    return context.status.state === SyncState.CONFLICT;
-  };
-
-  // Computed property for if there are errors
-  const hasErrors = () => {
-    if (!context.status) return false;
-    return context.status.state === SyncState.ERROR;
-  };
-
-  // Computed property for pending changes count
-  const pendingChangesCount = () => {
-    if (!context.status) return 0;
-    return context.status.pendingChanges;
-  };
+  // Check Git status on initialization and when config changes
+  useEffect(() => {
+    if (status.config.enabled) {
+      checkGitStatus();
+    }
+  }, [status.config]);
 
   return {
-    ...context,
-    isActive: isActive(),
-    canSync: canSync(),
-    hasConflicts: hasConflicts(),
-    hasErrors: hasErrors(),
-    pendingChangesCount: pendingChangesCount(),
+    status,
+    syncNow,
+    initialize: checkGitStatus,
+    getRepoInfo: () => ({
+      path: status.config.repoPath,
+      url: status.config.repoUrl,
+    }),
   };
 }

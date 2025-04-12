@@ -44,69 +44,6 @@ const GitSyncStatusComponent = dynamic(
   { ssr: false, loading: () => <GitSyncStatusPlaceholder /> },
 );
 
-// Custom hook to dynamically import the useGitSync hook
-function useGitSyncHook() {
-  // Define a type for the hook data that aligns with what GitSyncStatusComponent expects
-  type GitSyncHookData = {
-    status: any; // Using 'any' to avoid type conflicts
-    syncNow: () => Promise<void>;
-    error: any;
-    isLoading: boolean;
-  };
-
-  const [hookData, setHookData] = useState<GitSyncHookData>({
-    status: null,
-    syncNow: async () => {},
-    error: null,
-    isLoading: true,
-  });
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadHook = async () => {
-      try {
-        // Dynamically import the hook
-        const hookModule = await import("@/lib/hooks/use-git-sync");
-
-        // Only execute if component is still mounted
-        if (isMounted) {
-          // Using a separate function to avoid React Hook rule violations
-          function applyHookData() {
-            const hookResult = hookModule.useGitSync();
-            return {
-              status: hookResult.status,
-              syncNow: hookResult.syncNow,
-              error: null,
-              isLoading: false,
-            };
-          }
-
-          setHookData(applyHookData());
-        }
-      } catch (err) {
-        console.error("Failed to load Git sync hook:", err);
-        if (isMounted) {
-          setHookData({
-            status: null,
-            syncNow: async () => {},
-            error: err,
-            isLoading: false,
-          });
-        }
-      }
-    };
-
-    loadHook();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  return hookData;
-}
-
 type AppRoute = "/" | "/docs" | "/epics";
 
 interface NavItem {
@@ -143,9 +80,6 @@ export function SideNav({
   const router = useRouter();
   const { toast } = useToast();
   const { clearSession, user, loading } = useAuth();
-
-  // Use our dynamically imported hook
-  const gitSync = useGitSyncHook();
 
   // Load starred tags
   useEffect(() => {
@@ -452,15 +386,21 @@ export function SideNav({
             {/* Git Sync Status */}
             <div className="px-2 py-1 border-t border-zinc-800 pt-2">
               <Suspense fallback={<GitSyncStatusPlaceholder />}>
-                {!gitSync.isLoading && (
-                  <GitSyncStatusComponent
-                    status={gitSync.status}
-                    onSyncNow={gitSync.syncNow}
-                    onOpenSettings={handleOpenGitSettings}
-                  />
-                )}
+                <GitSyncStatusComponent />
               </Suspense>
             </div>
+
+            {/* Settings Button */}
+            <Button
+              variant="outline"
+              className="w-full border-zinc-700 hover:bg-zinc-800 hover:border-zinc-600"
+              asChild
+            >
+              <Link href="/settings">
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Link>
+            </Button>
 
             {/* Update Refs Button */}
             <Button

@@ -58,7 +58,7 @@ export function TaskViewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col p-0">
+      <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col p-0 border-0">
         <DialogHeader className="border-b py-6 px-6">
           <DialogTitle className="flex items-center">
             {task.ref && (

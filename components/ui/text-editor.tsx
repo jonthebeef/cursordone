@@ -223,32 +223,7 @@ export function TextEditor({
             className,
           )}
         >
-          <MarkdownPreview
-            content={value}
-            isEditable={true}
-            onCheckboxChange={(index, checked) => {
-              // Split content into lines
-              const lines = value.split("\n");
-              let checkboxCount = 0;
-
-              // Find and update the correct checkbox
-              const newLines = lines.map((line) => {
-                // Match task list items (- [ ] or * [ ])
-                if (line.match(/^(\s*[-*])\s*\[[ x]\]/i)) {
-                  if (checkboxCount === index) {
-                    // Keep the original bullet point and spacing
-                    const [, bullet] = line.match(/^(\s*[-*])\s*/) || [];
-                    return `${bullet} [${checked ? "x" : " "}]${line.slice(line.indexOf("]") + 1)}`;
-                  }
-                  checkboxCount++;
-                }
-                return line;
-              });
-
-              // Update the content
-              onChange(newLines.join("\n"));
-            }}
-          />
+          <MarkdownPreview content={value} />
         </div>
       ) : (
         <textarea

@@ -43,3 +43,13 @@ next-env.d.ts
 .cursordone/user/settings.local.json
 .cursordone/analytics/usage.local.json
 .cursordone/user/avatar-*
+
+# Auto-generated files
+/data/starred-tags.json
+/ref-counter.json
+/tags.json
+/task-orders.json
+
+# Test files
+/app/api/direct-test/
+/app/api/test-storage/

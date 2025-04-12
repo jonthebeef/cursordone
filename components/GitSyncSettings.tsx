@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useSettings } from "@/lib/hooks/use-settings";
 import { GitSyncSettings } from "@/lib/settings/types";
-import { Info, Github, GitBranch } from "lucide-react";
+import { Info, Github, GitBranch, Code } from "lucide-react";
+import { testSettingsStorage } from "@/lib/settings/manager";
 
 export function GitSyncSettingsForm() {
   const { settings, updateSettings } = useSettings();
@@ -13,6 +14,7 @@ export function GitSyncSettingsForm() {
   const [enabled, setEnabled] = useState(false);
   const [repoUrl, setRepoUrl] = useState("");
   const [repoPath, setRepoPath] = useState("");
+  const [branchName, setBranchName] = useState("main");
   const [autoPull, setAutoPull] = useState(true);
   const [autoPush, setAutoPush] = useState(true);
   const [pullInterval, setPullInterval] = useState(5);
@@ -25,10 +27,18 @@ export function GitSyncSettingsForm() {
 
   // Initialize form with existing settings
   useEffect(() => {
+    console.log("GitSyncSettings: Settings received:", settings);
+
     if (settings?.gitSync) {
+      console.log("GitSyncSettings: gitSync settings found:", settings.gitSync);
       setEnabled(settings.gitSync.enabled || false);
       setRepoPath(settings.gitSync.repoPath || "");
       setRepoUrl(settings.gitSync.repoUrl || "");
+      console.log(
+        "GitSyncSettings: Setting branchName to:",
+        settings.gitSync.branchName || "main",
+      );
+      setBranchName(settings.gitSync.branchName || "main");
       setAutoPull(settings.gitSync.autoPullEnabled || true);
       setAutoPush(settings.gitSync.autoPushEnabled || true);
       setPullInterval(settings.gitSync.autoPullInterval || 5);
@@ -36,12 +46,15 @@ export function GitSyncSettingsForm() {
       setSyncDirectories(
         settings.gitSync.gitPaths || ["tasks", "epics", "docs"],
       );
+    } else {
+      console.log("GitSyncSettings: No gitSync settings found");
     }
   }, [settings]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
+    console.log("GitSyncSettings: handleSubmit called");
 
     try {
       // Create the updated Git sync settings
@@ -49,6 +62,7 @@ export function GitSyncSettingsForm() {
         enabled,
         repoPath,
         repoUrl,
+        branchName,
         autoPullEnabled: autoPull,
         autoPushEnabled: autoPush,
         autoPullInterval: pullInterval,
@@ -56,11 +70,26 @@ export function GitSyncSettingsForm() {
         batchCommitsTimeout: 60000, // 1 minute default
         gitPaths: syncDirectories,
       };
+      console.log("GitSyncSettings: updatedGitSync:", updatedGitSync);
+
+      // First, get the current settings to ensure we have the complete object
+      const currentSettings = settings || {};
+      console.log("GitSyncSettings: currentSettings:", currentSettings);
+
+      // Create a deep copy of the current settings
+      const completeUpdatedSettings = {
+        ...currentSettings,
+        gitSync: updatedGitSync,
+      };
+      console.log(
+        "GitSyncSettings: completeUpdatedSettings:",
+        completeUpdatedSettings,
+      );
 
       // Update settings via the hook
-      await updateSettings({
-        gitSync: updatedGitSync,
-      });
+      console.log("GitSyncSettings: Calling updateSettings...");
+      await updateSettings(completeUpdatedSettings);
+      console.log("GitSyncSettings: updateSettings call completed");
 
       // Also save to localStorage for components that need to read it directly
       try {
@@ -176,6 +205,24 @@ export function GitSyncSettingsForm() {
           </p>
         </div>
 
+        {/* Branch Name */}
+        <div className="mb-4">
+          <label className="block mb-1 font-medium flex items-center">
+            <Code className="h-4 w-4 mr-2" />
+            Branch Name
+          </label>
+          <input
+            type="text"
+            value={branchName}
+            onChange={(e) => setBranchName(e.target.value)}
+            placeholder="main"
+            className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white"
+          />
+          <p className="text-sm text-zinc-400 mt-1">
+            The branch to use for Git synchronization (e.g., main, tasks)
+          </p>
+        </div>
+
         {/* Repository Local Path */}
         <div className="mb-4">
           <label className="block mb-1 font-medium flex items-center">
@@ -287,13 +334,107 @@ export function GitSyncSettingsForm() {
         </fieldset>
 
         {/* Submit Button */}
-        <div className="mt-6">
+        <div className="mt-6 flex gap-4 flex-wrap">
           <button
             type="submit"
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Saving..." : "Save Settings"}
+          </button>
+
+          <button
+            type="button"
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors"
+            onClick={async () => {
+              console.log(
+                "TEST BUTTON: Directly updating repo URL and branch name",
+              );
+              try {
+                // Get current settings
+                const currentSettings = settings || {};
+                // Create minimal update with just gitSync
+                const testUpdate = {
+                  ...currentSettings,
+                  gitSync: {
+                    ...(currentSettings.gitSync || {}),
+                    repoUrl: "https://github.com/jonthebeef/cursordone.git",
+                    branchName: "tasks",
+                  },
+                };
+                console.log("TEST BUTTON: Sending update:", testUpdate);
+                // Update the settings
+                await updateSettings(testUpdate);
+                console.log("TEST BUTTON: Update completed");
+                alert("Test update completed - check console logs");
+              } catch (error) {
+                console.error("TEST BUTTON: Error updating settings:", error);
+                alert("Test update failed - see console for details");
+              }
+            }}
+          >
+            Test Update
+          </button>
+
+          <button
+            type="button"
+            className="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 transition-colors"
+            onClick={async () => {
+              console.log("TEST STORAGE: Testing file storage...");
+              try {
+                const result = await testSettingsStorage();
+                console.log("TEST STORAGE: Result:", result);
+                alert("Storage test completed - check console logs");
+              } catch (error) {
+                console.error("TEST STORAGE: Error testing storage:", error);
+                alert("Storage test failed - see console for details");
+              }
+            }}
+          >
+            Test Storage
+          </button>
+
+          <button
+            type="button"
+            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors"
+            onClick={async () => {
+              console.log(
+                "DIRECT TEST: Creating settings file with hardcoded values",
+              );
+              try {
+                const response = await fetch("/api/direct-test");
+                if (!response.ok) {
+                  throw new Error(`Failed with status: ${response.status}`);
+                }
+                const result = await response.json();
+                console.log("DIRECT TEST: Result:", result);
+                alert("Direct test completed - check console logs");
+                // Force reload settings
+                window.location.reload();
+              } catch (error) {
+                console.error("DIRECT TEST: Error:", error);
+                alert("Direct test failed - see console for details");
+              }
+            }}
+          >
+            Direct Test
+          </button>
+
+          <button
+            type="button"
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors"
+            onClick={async () => {
+              console.log("RELOAD SETTINGS: Refreshing settings from server");
+              try {
+                // Force reload the page to get fresh settings
+                window.location.reload();
+              } catch (error) {
+                console.error("RELOAD SETTINGS: Error:", error);
+                alert("Settings reload failed - see console for details");
+              }
+            }}
+          >
+            Reload Settings
           </button>
         </div>
       </form>

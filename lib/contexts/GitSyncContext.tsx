@@ -5,6 +5,7 @@ import {
   GitSyncManager,
   GitSyncStatus,
   SyncState,
+  GitStatus,
 } from "@/lib/git-sync-manager";
 import { useSettings } from "@/lib/hooks/use-settings";
 import { GitSyncSettings } from "@/lib/settings/types";
@@ -16,7 +17,18 @@ interface GitSyncContextValue {
   syncNow: () => Promise<void>;
 }
 
-export const GitSyncContext = createContext<GitSyncContextValue>({
+export interface GitStatus {
+  isRepo: boolean;
+  hasChanges: boolean;
+  branch: string;
+  conflicted: string[];
+  modified: string[];
+  added: string[];
+  deleted: string[];
+  untracked: string[];
+}
+
+export const GitSyncContext = React.createContext<GitSyncContextValue>({
   manager: null,
   status: null,
   initialize: async () => {},

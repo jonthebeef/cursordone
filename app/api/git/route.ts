@@ -1,10 +1,10 @@
-import { exec } from "child_process";
+import { exec as execCallback } from "child_process";
 import { promisify } from "util";
 import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 import * as path from "path";
 
-const execAsync = promisify(exec);
+const exec = promisify(execCallback);
 
 interface GitStatus {
   isRepo: boolean;
@@ -20,7 +20,7 @@ interface GitStatus {
 // Helper functions for Git operations
 async function isGitRepo(dir: string = process.cwd()): Promise<boolean> {
   try {
-    await execAsync("git rev-parse --is-inside-work-tree", { cwd: dir });
+    await exec("git rev-parse --is-inside-work-tree", { cwd: dir });
     return true;
   } catch (error) {
     return false;
@@ -44,14 +44,14 @@ async function getGitStatus(dir: string = process.cwd()): Promise<GitStatus> {
     }
 
     // Get current branch
-    const { stdout: branchOutput } = await execAsync(
+    const { stdout: branchOutput } = await exec(
       "git rev-parse --abbrev-ref HEAD",
       { cwd: dir },
     );
     const branch = branchOutput.trim();
 
     // Get status
-    const { stdout: statusOutput } = await execAsync("git status --porcelain", {
+    const { stdout: statusOutput } = await exec("git status --porcelain", {
       cwd: dir,
     });
     const lines = statusOutput.trim().split("\n").filter(Boolean);
@@ -95,7 +95,7 @@ async function getGitStatus(dir: string = process.cwd()): Promise<GitStatus> {
 
 async function gitPull(dir: string = process.cwd()): Promise<string> {
   try {
-    const { stdout } = await execAsync("git pull", { cwd: dir });
+    const { stdout } = await exec("git pull", { cwd: dir });
     return stdout.trim();
   } catch (error) {
     console.error("Git pull error:", error);
@@ -109,7 +109,7 @@ async function gitAdd(
 ): Promise<string> {
   try {
     const filesToAdd = Array.isArray(files) ? files.join(" ") : files;
-    const { stdout } = await execAsync(`git add ${filesToAdd}`, { cwd: dir });
+    const { stdout } = await exec(`git add ${filesToAdd}`, { cwd: dir });
     return stdout.trim();
   } catch (error) {
     console.error("Git add error:", error);
@@ -122,7 +122,7 @@ async function gitCommit(
   dir: string = process.cwd(),
 ): Promise<string> {
   try {
-    const { stdout } = await execAsync(`git commit -m "${message}"`, {
+    const { stdout } = await exec(`git commit -m "${message}"`, {
       cwd: dir,
     });
     return stdout.trim();
@@ -142,7 +142,7 @@ async function gitPush(
 ): Promise<string> {
   try {
     const branchArg = branch ? ` ${branch}` : "";
-    const { stdout } = await execAsync(`git push ${remote}${branchArg}`, {
+    const { stdout } = await exec(`git push ${remote}${branchArg}`, {
       cwd: dir,
     });
     return stdout.trim();
@@ -159,6 +159,7 @@ async function hasConflicts(dir: string = process.cwd()): Promise<boolean> {
 
 // API endpoint for getting Git status
 export async function GET() {
+  console.log("Git API: GET request received at", new Date().toISOString());
   try {
     const gitStatus = await getGitStatus();
     return NextResponse.json({ success: true, data: gitStatus });
@@ -172,6 +173,7 @@ export async function GET() {
 
 // API endpoint for Git operations
 export async function POST(request: Request) {
+  console.log("Git API: POST request received at", new Date().toISOString());
   try {
     const { action, files, message, remote, branch } = await request.json();
     const workDir = process.cwd();
@@ -222,6 +224,22 @@ export async function POST(request: Request) {
 
         result = { success: true, status: await getGitStatus(workDir) };
         break;
+
+      case "getCurrentBranch":
+        result = await getCurrentBranch(workDir);
+        break;
+
+      case "getBranchStatuses":
+        result = await getBranchStatuses(workDir);
+        break;
+
+      case "switchBranch":
+        if (!branch) {
+          throw new Error("Branch name is required for switchBranch action");
+        }
+        result = await switchBranch(branch, workDir);
+        break;
+
       default:
         throw new Error(`Unknown action: ${action}`);
     }
@@ -233,4 +251,91 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
+}
+
+async function getCurrentBranch(workDir: string): Promise<{ branch: string }> {
+  const { stdout } = await exec("git rev-parse --abbrev-ref HEAD", {
+    cwd: workDir,
+  });
+  return { branch: stdout.trim() };
+}
+
+async function getBranchStatuses(
+  workDir: string,
+): Promise<{ branches: Record<string, any> }> {
+  // Get list of branches
+  const { stdout: branchOutput } = await exec("git branch -v --no-abbrev", {
+    cwd: workDir,
+  });
+  const branches: Record<string, any> = {};
+
+  // Parse branch output
+  const branchLines = branchOutput.split("\n").filter(Boolean);
+  for (const line of branchLines) {
+    const match = line.match(/^[*\s]\s+(\S+)\s+([a-f0-9]+)\s+(.*)$/);
+    if (match) {
+      const [, name, commit, message] = match;
+      const isActive = line.startsWith("*");
+
+      // Get ahead/behind counts
+      const { stdout: countOutput } = await exec(
+        `git rev-list --left-right --count origin/${name}...${name}`,
+        { cwd: workDir },
+      ).catch(() => ({ stdout: "0\t0" }));
+
+      const [behind, ahead] = countOutput.trim().split("\t").map(Number);
+
+      // Check for conflicts
+      const { stdout: conflictOutput } = await exec(`git ls-files --unmerged`, {
+        cwd: workDir,
+      });
+
+      const hasConflicts = conflictOutput.trim().length > 0;
+
+      // Get last sync time (last fetch from remote)
+      const { stdout: lastSyncOutput } = await exec(
+        `git log -1 --format=%cd ${name}`,
+        { cwd: workDir },
+      ).catch(() => ({ stdout: "" }));
+
+      branches[name] = {
+        commit,
+        message: message.trim(),
+        isActive,
+        ahead,
+        behind,
+        hasConflicts,
+        lastSync: lastSyncOutput.trim()
+          ? new Date(lastSyncOutput).toISOString()
+          : null,
+      };
+    }
+  }
+
+  return { branches };
+}
+
+async function switchBranch(branch: string, workDir: string): Promise<void> {
+  // Check if branch exists
+  const { stdout: branchExists } = await exec(
+    `git show-ref --verify --quiet refs/heads/${branch} || echo "no"`,
+    { cwd: workDir },
+  );
+
+  if (branchExists.trim() === "no") {
+    throw new Error(`Branch ${branch} does not exist`);
+  }
+
+  // Check for uncommitted changes
+  const status = await getGitStatus(workDir);
+  if (
+    status.modified.length > 0 ||
+    status.added.length > 0 ||
+    status.deleted.length > 0
+  ) {
+    throw new Error("Cannot switch branches with uncommitted changes");
+  }
+
+  // Switch branch
+  await exec(`git checkout ${branch}`, { cwd: workDir });
 }

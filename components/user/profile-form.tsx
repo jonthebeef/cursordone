@@ -20,11 +20,23 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState(display?.displayName || "");
+  const [role, setRole] = useState(display?.role || "");
+  const [location, setLocation] = useState(display?.location || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
+    setHasChanges(true);
+  };
+
+  const handleRoleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRole(e.target.value);
+    setHasChanges(true);
+  };
+
+  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(e.target.value);
     setHasChanges(true);
   };
 
@@ -98,7 +110,10 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
 
     try {
       await updateDisplay({
+        ...display,
         displayName: name,
+        role,
+        location,
       });
 
       toast({
@@ -121,6 +136,8 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
 
   const handleCancel = () => {
     setName(display?.displayName || "");
+    setRole(display?.role || "");
+    setLocation(display?.location || "");
     setHasChanges(false);
   };
 
@@ -129,9 +146,9 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
       <div className="space-y-4">
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-full overflow-hidden bg-zinc-800 flex items-center justify-center">
-            {display?.avatarPath ? (
+            {display?.avatarUrl || display?.avatarPath ? (
               <Image
-                src={`/api/avatar/${display.avatarPath}`}
+                src={display.avatarUrl || `/api/avatar/${display.avatarPath}`}
                 alt={name || "Profile"}
                 width={64}
                 height={64}
@@ -168,6 +185,28 @@ export function ProfileForm({ onSuccess }: ProfileFormProps) {
             value={name}
             onChange={handleNameChange}
             disabled={isLoading}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="role">Role</Label>
+          <Input
+            id="role"
+            value={role}
+            onChange={handleRoleChange}
+            disabled={isLoading}
+            placeholder="e.g. Software Engineer, Product Manager"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="location">Location</Label>
+          <Input
+            id="location"
+            value={location}
+            onChange={handleLocationChange}
+            disabled={isLoading}
+            placeholder="e.g. San Francisco, CA"
           />
         </div>
 

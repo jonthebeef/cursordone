@@ -12,6 +12,9 @@ export function ProfileButton() {
   const { display } = useSettings();
 
   const displayName = display?.displayName || user?.email || "Set up profile";
+  const avatarSrc =
+    display?.avatarUrl ||
+    (display?.avatarPath ? `/api/avatar/${display.avatarPath}` : null);
 
   return (
     <Button
@@ -21,9 +24,9 @@ export function ProfileButton() {
     >
       <Link href={{ pathname: "/profile" }}>
         <div className="h-6 w-6 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-          {display?.avatarPath ? (
+          {avatarSrc ? (
             <Image
-              src={`/api/avatar/${display.avatarPath}`}
+              src={avatarSrc}
               alt={displayName}
               width={24}
               height={24}

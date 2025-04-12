@@ -1,6 +1,9 @@
 {
   "version": 1,
-  "avatarPath": "avatar-0643b91e-bddb-4a3d-b699-0780aa5ad69f.jpeg",
+  "displayName": "jonthebeef",
+  "avatarPath": "avatar-0643b91e-bddb-4a3d-b699-0780aa5ad69f.png",
+  "role": "Product Manager",
+  "location": "Manchester",
   "theme": "system",
   "showGitMetrics": true,
   "compactMode": false

@@ -19,6 +19,9 @@ export type DisplaySettings = z.infer<typeof DisplaySettingsSchema>;
 // Git sync settings schema
 export const GitSyncSettingsSchema = z.object({
   enabled: z.boolean().default(true),
+  repoPath: z.string().optional(),
+  repoUrl: z.string().optional(),
+  branchName: z.string().default("main"),
   autoPullEnabled: z.boolean().default(true),
   autoPushEnabled: z.boolean().default(true),
   autoPullInterval: z.number().min(1).max(60).default(5), // Minutes
@@ -34,19 +37,26 @@ export const UserSettingsSchema = z.object({
   version: z.number().default(1),
   userId: z.string(),
   email: z.string().email(),
-  lastSynced: z.string().datetime(),
-  preferences: z.object({
-    autoSave: z.boolean().default(true),
-    syncInterval: z.number().min(1).max(60).default(5),
-    telemetryEnabled: z.boolean().default(true),
-    backupEnabled: z.boolean().default(true),
-  }),
+  lastSynced: z
+    .string()
+    .datetime()
+    .optional()
+    .default(() => new Date().toISOString()),
+  preferences: z
+    .object({
+      autoSave: z.boolean().default(true),
+      syncInterval: z.number().min(1).max(60).default(5),
+      telemetryEnabled: z.boolean().default(true),
+      backupEnabled: z.boolean().default(true),
+    })
+    .default({}),
   tokens: z
     .object({
       github: z.string().optional(),
       discord: z.string().optional(),
     })
-    .optional(),
+    .optional()
+    .default({}),
   gitSync: GitSyncSettingsSchema.default({}),
 });
 
@@ -78,6 +88,9 @@ export const DEFAULT_DISPLAY_SETTINGS: DisplaySettings = {
 
 export const DEFAULT_GIT_SYNC_SETTINGS: GitSyncSettings = {
   enabled: true,
+  repoPath: "",
+  repoUrl: "",
+  branchName: "main",
   autoPullEnabled: true,
   autoPushEnabled: true,
   autoPullInterval: 5, // Minutes
@@ -100,6 +113,7 @@ export const createDefaultUserSettings = (
     telemetryEnabled: true,
     backupEnabled: true,
   },
+  tokens: {},
   gitSync: DEFAULT_GIT_SYNC_SETTINGS,
 });
 
